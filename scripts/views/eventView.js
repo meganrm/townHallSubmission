@@ -1,7 +1,5 @@
 (function(module) {
   var firebasedb = firebase.database();
-  var provider = new firebase.auth.GoogleAuthProvider();
-
   // object to hold the front end view functions
   var eventHandler = {};
 
