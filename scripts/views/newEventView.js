@@ -129,6 +129,14 @@
     $form.find('#meetingType').change();
   };
 
+  newEventView.changeParty = function (event) {
+    event.preventDefault();
+    $form = $(this).parents('form');
+    var value = $(this).attr('data-value');
+    $form.find('#Party').val(value);
+    $form.find('#Party').change();
+  };
+
   newEventView.meetingTypeChanged = function (event) {
     event.preventDefault();
     $form = $(this).parents('form');
@@ -392,6 +400,7 @@
   $('.new-event-form').on('change', '#Member', newEventView.lookupMember);
   $('.new-event-form').on('click', '#geocode-button', newEventView.geoCode);
   $('.new-event-form').on('click', '.meeting a', newEventView.changeMeetingType);
+  $('.new-event-form').on('click', '.member-info a', newEventView.changeParty);
   $('.new-event-form').on('change', '#meetingType', newEventView.meetingTypeChanged);
   $('.new-event-form').on('change', '.form-control', newEventView.newformChanged);
   $('.new-event-form').on('change', '.date-string', newEventView.dateString);
