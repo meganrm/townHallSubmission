@@ -1,0 +1,19 @@
+{
+  "name": "townhallsubmission",
+  "version": "1.0.0",
+  "description": "submission site for new town hall events",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/meganrm/townHallSubmission.git"
+  },
+  "author": "Megan Riel-Mehan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/meganrm/townHallSubmission/issues"
+  },
+  "homepage": "https://github.com/meganrm/townHallSubmission#readme"
+}

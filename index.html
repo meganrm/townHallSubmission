@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0 user-scalable=no" name="viewport">
+    <title>Town Hall Project || Find a Town Hall Near you</title>
+    <meta name="google-site-verification" content="Z-DITr7yziksJNk7OlwHxiD2WK31wNO0GbRP7px3xL8" />
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="description" content="Town Hall Project 2018 is a progressive, volunteer-based initiative working to
+      identify and promote upcoming Congressional forums nationwide.">
+      <link rel="shortcut icon" href="./Images/THP_favicon.png" type="image/x-icon">
+    <!-- Social media meta tags -->
+
+    <!-- Schema.org markup for Google+ -->
+    <meta itemprop="name" content="Town Hall Project">
+    <meta itemprop="description" content="Town Hall Project 2018 is a progressive, volunteer-based initiative working to
+    identify and promote upcoming Congressional forums nationwide.">
+    <meta itemprop="image" content="https://townhallproject-86312.firebaseapp.com/Images/THP_logo_horizontal_facebook.png">
+
+    <!-- Twitter Card data -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:site" content="@townhallproject">
+    <meta name="twitter:title" content="Town Hall Project">
+    <meta name="twitter:description" content="Town Hall Project 2018 is a progressive, volunteer-based initiative working to
+    identify and promote upcoming Congressional forums nationwide.">
+    <meta name="twitter:creator" content="@townhallproject">
+    <!-- Twitter summary card must be at least 120px x 120px -->
+    <meta name="twitter:image" content="https://townhallproject-86312.firebaseapp.com/Images/THP_logo_vertical_twitter.png">
+    <meta name="twitter:image:alt" content="The Town Hall Project wordmark with a podium">
+
+    <!-- Open Graph data -->
+    <meta property="og:title" content="Town Hall Project" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://townhallproject-86312.firebaseapp.com/" />
+    <meta property="og:image" content="https://townhallproject-86312.firebaseapp.com/Images/THP_logo_horizontal_facebook.png">
+    <meta property="og:description" content="Town Hall Project 2018 is a progressive, volunteer-based initiative working to
+    identify and promote upcoming Congressional forums nationwide.">
+    <meta property="og:site_name" content="Town Hall Project" />
+    <link href='https://actionnetwork.org/css/style-embed-whitelabel.css' rel='stylesheet' type='text/css' />
+    <link href='https://actionnetwork.org/css/style-embed-whitelabel.css' rel='stylesheet' type='text/css' />
+    <script src="https://use.fontawesome.com/316bfde8e8.js"></script>
+    <link href="https://addtocalendar.com/atc/1.5/atc-style-blue.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Raleway:300,400,900" rel="stylesheet">
+    <link rel="stylesheet" href="/styles/css/bootstrap.min.css">
+  </head>
+  <body>
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-4">
+        <button type="button" name="button" id="scroll-to-top" class="btn btn-white" style="visibility:hidden;"><i class="fa fa-chevron-up fa-4x" aria-hidden="true"></i></button>
+        <section class="session-data">
+          <h4>Welcome </h4>
+          <p>Edited this session:</p>
+          <ul id="edited" class="list-group events-table">
+          </ul><!--end table-->
+          <div class="hidden" id="list-of-current-pending">
+            <h4>Other people have submitted these events</h4>
+            <p>This member of congress has these events already submitted, please check these first so you don't submit a duplicate.</p>
+            <ul id="current-pending" class="list-group events-table">
+            </ul><!--end table-->
+          </div>
+        </section>
+      </div>
+      <div class="col-sm-8">
+
+          <div class="page" id="new-page">
+            <section class="row">
+              <div class="new-event-form col-md-9">
+                <form class="" id="new-event-form-element">
+                  <section class="member-info text-info">
+                    <h4>Member of Congress Information<br>
+                      <small>Enter their name and we will auto-fill the information</small></h4>
+                    <div class="form-group col-md-12" id="member-form-group">
+                      <label class="sr-only" for="Member">Member</label>
+                      <input type="text" class="form-control input-underline" id="Member" placeholder="Full name" value="">
+                      <span id="member-help-block" class="help-block">Only first name and last name, not titles</span>
+                    </div>
+                    <div class="form-group col-md-12">
+                      <label  for="State"class="sr-only">Home State</label>
+                      <input type="text" class="form-control input-underline" id="State" placeholder="Home State" value="">
+                    </div>
+                    <div class="form-group col-md-12">
+                      <label  for="District" class="sr-only">District</label>
+                      <input type="text" class="form-control input-underline" id="District" placeholder="District" value="">
+                      <span id="helpBlock" class="help-block">For Senate, write "Senate"; For At-Large, write MT-At-Large; Other examples: OH-08, TX-33, NY-22</span>
+                    </div>
+                    <div class="form-group party col-md-12">
+                      <label class="sr-only " for="Party">Party</label>
+                      <div class="input-group">
+                        <input type="text" class="form-control" aria-label="..." id="Party" value="" placeholder="Party" readonly>
+                        <div class="input-group-btn">
+                          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <span class="caret"></span></button>
+                          <ul class="dropdown-menu dropdown-menu-right">
+                            <li><a data-value="Democratic" href="#">Democratic</a></li>
+                            <li><a data-value="Republican" href="#">Republican</a></li>
+                            <li><a data-value="Independent" href="#">Independent</a></li>
+                          </ul>
+                        </div><!-- /btn-group -->
+                      </div><!-- /input-group -->
+                    </div><!-- /form-group -->
+                  </section>
+
+                  <section class="meeting infomation">
+                    <h4 class="text-info">Information about the Event</h4>
+                    <div class="form-group col-md-12">
+                      <label class="sr-only" for="eventName">Event name</label>
+                      <input type="text" class="form-control input-underline" id="eventName" value="" placeholder="Name of the event">
+                    </div>
+                    <div class="form-group col-md-12">
+                      <label class="sr-only" for="meetingType">Meeting Type</label>
+                      <div class="input-group">
+                        <input type="text" class="form-control" id="meetingType" value="" readonly placeholder="Meeting Type">
+                        <div class="input-group-btn">
+                          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <span class="caret"></span></button>
+                          <ul class="dropdown-menu dropdown-menu-right">
+                            <li><a data-value="Town Hall" href="#">Town Hall</a></li>
+                            <li><a data-value="Tele-Town Hall" href="#">Tele-Town Hall</a></li>
+                            <li><a data-value="Ticketed Event" href="#">Ticketed Event</a></li>
+                            <li><a data-value="Empty Chair Town Hall" href="#">Empty Chair Town Hall</a></li>
+                            <li><a data-value="Coffee" href="#">Coffee</a></li>
+                            <li><a data-value="Office Hours" href="#">Office Hours</a></li>
+                          </ul>
+                        </div><!-- /btn-group -->
+                      </div><!-- /input-group -->
+                      <span id="meetingType-error" class="help-block error-message hidden">Please select type of event</span>
+                    </div><!-- /form-group -->
+                  </section>
+                  <section class="location-data">
+                    <div class="form-group col-md-12">
+                      <label class="sr-only" for="Location">Location</label>
+                      <input type="text" class="form-control input-underline" id="Location" placeholder="Name of location (eg. Gary Recreation Center)" value="">
+                    </div>
+                    <div class="form-group col-md-12" id=location-form-group>
+                        <input type="text" class="form-control" placeholder="Street address" id="address">
+                        <span id="address-feedback" class="help-block">Enter a valid street address, if there isn't one, leave this blank</span>
+                    </div><!-- /form-group -->
+                    <div class="form-group col-md-12">
+                      <label class="sr-only" for="addressType">Address Type</label>
+                      <input class="sr-only" type="text" class="" id="addressType" placeholder="Address type" value="street" readonly>
+                    </div>
+                    <div class="form-group col-md-12">
+                      <label class="sr-only" for="locationCheck">Location Check</label>
+                      <input class="sr-only" type="text" class="text-success" id="locationCheck" placeholder="please geocode" readonly>
+                    </div>
+                  </section>
+                  <section class="time-data">
+                    <div class="checkbox col-md-12">
+                      <label>
+                        <input type="checkbox" class="date-string">
+                        <span class="checkbox-label">Click for repeating event (eg. 'First Wed')</span>
+                      </label>
+                    </div>
+                    <div class="form-group col-md-12">
+                      <label  for="yearMonthDay">Date</label>
+                      <input type="date" class="form-control datetime date " id="yearMonthDay" placeholder="Date">
+                      <span id="yearMonthDay-error" class="help-block error-message hidden">Please enter a date</span>
+                    </div>
+                    <div class="form-group hidden repeating">
+                      <label  for="repeatingString">Repeating Event</label>
+                      <input type="text" class="form-control input-underline " id="repeatingEvent" placeholder="Eg. First Tuesday of the month">
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label for="Time">Start Time (HH:MM AM/PM)</label>
+                      <input type="time" class="form-control datetime " id="timeStart24" placeholder="Start Time">
+                      <span id="timeStart24-error" class="help-block error-message hidden">Please enter a time</span>
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label for="endTime">End Time (HH:MM AM/PM)</label>
+                      <input type="time" class="form-control datetime " id="timeEnd24" placeholder="End Time">
+                    </div>
+                  </section>
+                  <section class="extra-data">
+                    <div class="form-group col-md-12">
+                      <label for="link">URL related to event (optional)</label>
+                      <input type="url" class="form-control input-underline" id="link" placeholder="Link" value="">
+                    </div>
+                    <div class="form-group col-md-12">
+                      <label  for="linkName">Link display name (optional)</label>
+                      <input type="text" class="form-control input-underline" id="linkName" placeholder="Link Name" value="">
+                    </div>
+                    <div class="row">
+                      <div class="col-md-8">
+                        <div class="form-group col-md-12">
+                          <label for="Notes">Notes</label>
+                          <textarea class="form-control" id="Notes" placeholder="Notes about event that cannot be entered anywhere else." rows=3></textarea>
+                        </div>
+                      </div>
+                    </div>
+                  </section>
+                  <button class="btn btn-default btn-secondary" type="submit" name="button">Submit Event</button>
+                </form>
+              </div>
+            </section>
+          </div>
+
+          </div>
+        </div>
+      </div>
+
+    <!-- Vendor Files -->
+    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="/vendor/scripts/bootstrap.min.js"></script>
+    <script src="/vendor/scripts/tether.js"></script>
+    <script src="/node_modules/handlebars/dist/handlebars.js"></script>
+
+    <script src="templates.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/3.6.6/firebase.js"></script>
+    <!-- Script Files -->
+    <script src="/scripts/models/event0.js"></script>
+    <script src="/scripts/data/states.js"></script>
+    <script src="/scripts/views/eventView.js"></script>
+    <script src="/scripts/views/newEventView.js"></script>
+
+  </body>
+</html>
