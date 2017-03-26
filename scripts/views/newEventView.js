@@ -50,7 +50,6 @@
     var $input = $(this);
     var $form = $input.parents('form');
     var $listgroup = $(this).parents('.list-group-item');
-    $form.find('#dateChanged').addClass('edited');
     $input.addClass('edited');
     $form.find('#update-button').addClass('btn-blue');
     $form.find('.timestamp').val(new Date());
@@ -251,6 +250,8 @@
     }
   };
 
+
+
   newEventView.lookupMember = function (event) {
     var $memberInput = $(this);
     var member = $memberInput.val();
@@ -350,9 +351,17 @@
     firebase.database().ref('MOCs/' + memberKey + '/currentEvents/').push(TownHall.currentKey);
   };
 
+  newEventView.updateUserEvents = function () {
+    var memberKey = TownHall.currentEvent.Member.split(' ')[1].toLowerCase() + '_' + TownHall.currentEvent.Member.split(' ')[0].toLowerCase();
+    firebase.database().ref('users/' + firebase.auth().currentUser.uid + '/currentEvents/').push(TownHall.currentKey);
+  };
+
   newEventView.resetData = function () {
     newEventView.updateMOCEvents();
+    newEventView.updateUserEvents();
+    $('.has-success').removeClass('has-success');
     document.getElementById('new-event-form-element').reset();
+    $("html, body").animate({ scrollTop: 0 }, "slow");
     delete TownHall.currentKey;
     TownHall.currentEvent = new TownHall();
   }
@@ -413,12 +422,28 @@
     });
   }
 
+  newEventView.showUserEvents = function () {
+    var submittedEventTemplate = Handlebars.getTemplate('submittedEvents');
+    var $list = $('#submitted');
+
+    $list.removeClass('hidden').hide().fadeIn();
+    var $submitted = $('#submitted-meta-data');
+    $submitted.removeClass('hidden').hide().fadeIn();
+    var $submittedTotal = $('#submitted-total');
+    firebase.database().ref('users/' + firebase.auth().currentUser.uid + '/currentEvents/').on('child_added', function getSnapShot(snapshot) {
+        var ele = TownHall.allTownHallsFB[snapshot.val()];
+        var total = parseInt($submittedTotal.html());
+        $submittedTotal.html(total + 1);
+        // $list.append(submittedEventTemplate(ele));
+    })
+  };
+
   firebase.auth().onAuthStateChanged(function (user) {
     if (user) {
     // User is signed in.
       console.log(user.displayName, ' is signed in');
       eventHandler.readData();
-      eventHandler.metaData();
+      newEventView.showUserEvents();
       writeUserData(user.uid, user.displayName, user.email);
     } else {
       newEventView.signIn();
