@@ -102,6 +102,7 @@
       $form.find('#address').val(geotownHall.address);
       TownHall.currentEvent.lat = geotownHall.lat;
       TownHall.currentEvent.lng = geotownHall.lng;
+      TownHall.currentEvent.address = geotownHall.address;
       $form.find('#locationCheck').val('Location is valid');
       $form.find('#address-feedback').html(`Location is valid, make sure the address is correct:<br> ${geotownHall.address}`);
     }).catch(function (error) {
@@ -147,11 +148,7 @@
     var teleInputsTemplate = Handlebars.getTemplate('teleInputs');
     var ticketInputsTemplate = Handlebars.getTemplate('ticketInputs');
     var defaultLocationTemplate = Handlebars.getTemplate('generalinputs');
-    if ($form.attr('id')) {
-      var thisTownHall = TownHall.allTownHallsFB[$form.attr('id').split('-form')[0]];
-    } else {
-      var thisTownHall = TownHall.currentEvent;
-    }
+    var thisTownHall = TownHall.currentEvent;
     switch (value.slice(0, 4)) {
       case 'Tele':
         $location.html(teleInputsTemplate(thisTownHall));
@@ -434,11 +431,11 @@
   newEventView.showUserEvents = function () {
     var submittedEventTemplate = Handlebars.getTemplate('submittedEvents');
     var $list = $('#submitted');
-
     $list.removeClass('hidden').hide().fadeIn();
     var $submitted = $('#submitted-meta-data');
     $submitted.removeClass('hidden').hide().fadeIn();
     var $submittedTotal = $('#submitted-total');
+    $submittedTotal.html('0');
     firebase.database().ref('users/' + firebase.auth().currentUser.uid + '/currentEvents/').on('child_added', function getSnapShot(snapshot) {
         var ele = TownHall.allTownHallsFB[snapshot.val()];
         var total = parseInt($submittedTotal.html());
