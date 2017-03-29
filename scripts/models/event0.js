@@ -72,16 +72,17 @@
         if (!response.timeZoneName) {
           reject('no timezone results', id, response);
         } else {
-          console.log(response);
           newTownHall.zoneString = response.timeZoneId;
           var timezoneAb = response.timeZoneName.split(' ');
           newTownHall.timeZone = timezoneAb.reduce(function (acc, cur) {
             acc = acc + cur[0];
             return acc;
           }, '');
-          console.log(newTownHall.Date.replace(/-/g, '/') + ' ' + databaseTH.Time + ' ' + newTownHall.timeZone);
-          newTownHall.dateObj = new Date(newTownHall.Date.replace(/-/g, '/') + ' ' + databaseTH.Time + ' ' + newTownHall.timeZone).getTime();
-
+          if (newTownHall.timeZone === 'HST' | newTownHall.timeZone === 'HAST') {
+            var hawaiiTime = 'UTC-1000'
+          }
+          var zone = hawaiiTime ? hawaiiTime : newTownHall.timeZone;
+          newTownHall.dateObj = new Date(newTownHall.Date.replace(/-/g, '/') + ' ' + databaseTH.Time + ' ' + zone).getTime();
           resolve(newTownHall);
         }
       });

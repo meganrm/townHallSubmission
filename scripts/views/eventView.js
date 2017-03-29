@@ -108,12 +108,12 @@
 
   eventHandler.metaData = function(){
     metaDataObj = new TownHall();
-    metaDataObj.topZeroResults = []
+    metaDataObj.topZeroResults = [];
     firebase.database().ref('/lastupdated/').on('child_added', function(snapshot){
-      metaDataObj.time = new Date(snapshot.val())
-      metaDataObj.total = TownHall.allTownHalls.length
-        var metaDataTemplate = Handlebars.getTemplate('metaData');
-        $('.metadata').html(metaDataTemplate(metaDataObj));
+      metaDataObj.time = new Date(snapshot.val());
+      metaDataObj.total = TownHall.allTownHalls.length;
+      var metaDataTemplate = Handlebars.getTemplate('metaData');
+      $('.metadata').html(metaDataTemplate(metaDataObj));
     });
   };
 
@@ -128,7 +128,7 @@
       min = '0' + min;
     }
     return hour + ':' + min + ':' + times[2];
-  }
+  };
 
   eventHandler.readData = function (){
     firebase.database().ref('/townHalls/').on('child_added', function getSnapShot(snapshot) {
@@ -164,15 +164,15 @@
 
       var $toAppend = $(tableRowTemplate(ele));
       if (!ele.meetingType) {
-        console.log(ele);
+        console.log('no meeting type', ele);
       } else {
         switch (ele.meetingType.slice(0,4)) {
-          case 'Tele':
-            $toAppend.find('.location-data').html(teleInputsTemplate(ele));
-            break;
-          case 'Tick':
-            $toAppend.find('.location-data').html(ticketInputsTemplate(ele));
-            break;
+        case 'Tele':
+          $toAppend.find('.location-data').html(teleInputsTemplate(ele));
+          break;
+        case 'Tick':
+          $toAppend.find('.location-data').html(ticketInputsTemplate(ele));
+          break;
         }
       }
       if (!ele.lat) {
@@ -186,7 +186,7 @@
       }
       $('#all-events-table').append($toAppend);
     });
-      $('[data-toggle="tooltip"]').tooltip()
+    $('[data-toggle="tooltip"]').tooltip();
 
   };
 
@@ -231,23 +231,23 @@
         console.log(ele);
       } else {
         switch (ele.meetingType.slice(0,4)) {
-          case 'Tele':
-            $toAppend.find('.location-data').html(teleInputsTemplate(ele));
-            break;
-          case 'Tick':
-            $toAppend.find('.location-data').html(ticketInputsTemplate(ele));
-            break;
+        case 'Tele':
+          $toAppend.find('.location-data').html(teleInputsTemplate(ele));
+          break;
+        case 'Tick':
+          $toAppend.find('.location-data').html(ticketInputsTemplate(ele));
+          break;
         }
       }
-      $toAppend.find('.btn-group').html(approveButtons(ele))
+      $toAppend.find('.btn-group').html(approveButtons(ele));
       $('#for-approval').append($toAppend);
 
     });
-      $('[data-toggle="tooltip"]').tooltip()
+    $('[data-toggle="tooltip"]').tooltip();
 
   };
 
 
-eventHandler.readDataUsers();
+  eventHandler.readDataUsers();
   module.eventHandler = eventHandler;
 })(window);
