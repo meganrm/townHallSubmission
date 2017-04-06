@@ -11,24 +11,28 @@
   // METHODS FOR BOTH
 
   newEventView.humanTime = function (time) {
-    var timeSplit = time.split(':');
-    var hours;
-    var minutes;
-    var meridian;
-    hours = timeSplit[0];
-    minutes = timeSplit[1];
-    if (hours > 12) {
-      meridian = 'PM';
-      hours -= 12;
-    } else if (hours < 12) {
-      meridian = 'AM';
-      if (hours === 0) {
-        hours = 12;
-      }
+    if (time.indexOf('AM') > 0 | time.indexOf('PM') > 0){
+      return time;
     } else {
-      meridian = 'PM';
+      var timeSplit = time.split(':');
+      var hours;
+      var minutes;
+      var meridian;
+      hours = timeSplit[0];
+      minutes = timeSplit[1];
+      if (hours > 12) {
+        meridian = 'PM';
+        hours -= 12;
+      } else if (hours < 12) {
+        meridian = 'AM';
+        if (hours === 0) {
+          hours = 12;
+        }
+      } else {
+        meridian = 'PM';
+      }
+      return hours + ':' + minutes + ' ' + meridian;
     }
-    return hours + ':' + minutes + ' ' + meridian;
   };
 
   newEventView.formChanged = function () {
@@ -104,6 +108,8 @@
       TownHall.currentEvent.lng = geotownHall.lng;
       TownHall.currentEvent.address = geotownHall.address;
       $form.find('#locationCheck').val('Location is valid');
+      /* eslint-env es6*/
+      /* eslint quotes: ["error", "single", { "allowTemplateLiterals": true }]*/
       $form.find('#address-feedback').html(`Location is valid, make sure the address is correct:<br> ${geotownHall.address}`);
     }).catch(function (error) {
       $feedback.addClass('has-error');
@@ -150,15 +156,15 @@
     var defaultLocationTemplate = Handlebars.getTemplate('generalinputs');
     var thisTownHall = TownHall.currentEvent;
     switch (value.slice(0, 4)) {
-      case 'Tele':
-        $location.html(teleInputsTemplate(thisTownHall));
-        newEventView.geoCodeOnState();
-        break;
-      case 'Tick':
-        $location.html(ticketInputsTemplate(thisTownHall));
-        break;
-      default:
-        $location.html(defaultLocationTemplate(thisTownHall));
+    case 'Tele':
+      $location.html(teleInputsTemplate(thisTownHall));
+      newEventView.geoCodeOnState();
+      break;
+    case 'Tick':
+      $location.html(ticketInputsTemplate(thisTownHall));
+      break;
+    default:
+      $location.html(defaultLocationTemplate(thisTownHall));
     }
   };
 
@@ -183,30 +189,56 @@
     }
   };
 
+  // converts time to 24hour time
+  newEventView.toTwentyFour = function (time) {
+    var hourmin = time.split(' ')[0];
+    var ampm = time.split(' ')[1];
+    if (ampm === 'PM') {
+      var hour = hourmin.split(':')[0];
+      if (Number(hour) !== 12) {
+        hour = Number(hour) + 12;
+      }
+      hourmin = hour + ':' + hourmin.split(':')[1];
+    } else if (Number(hourmin.split(':')[0]) === 12) {
+      hour = '00';
+      hourmin = hour + ':' + hourmin.split(':')[1];
+    }
+    return hourmin + ':' + '00';
+  };
+
+  newEventView.formatTime = function(time) {
+    console.log('format time', time);
+    if (time.indexOf('AM') > 0 | time.indexOf('PM') > 0){
+      return newEventView.toTwentyFour(time);
+    } else {
+      return time + ':00';
+    }
+  };
+
   newEventView.updatedNewTownHallObject = function updatedNewTownHallObject($form) {
     var updated = $form.find('.edited').get();
     var databaseTH = TownHall.currentEvent;
     var updates = updated.reduce(function (newObj, cur) {
       var $curValue = $(cur).val();
       switch (cur.id) {
-        case 'timeStart24':
-          newObj.timeStart24 = $curValue + ':00';
-          newObj.Time = newEventView.humanTime($curValue);
-          $('#timeStart24-error').addClass('hidden');
-          $('#timeStart24').parent().removeClass('has-error');
-          break;
-        case 'timeEnd24':
-          newObj.timeEnd24 = $curValue + ':00';
-          newObj.timeEnd = newEventView.humanTime($curValue);
-          break;
-        case 'yearMonthDay':
-          newObj[cur.id] = $curValue;
-          newObj.Date = new Date($curValue.replace(/-/g, '/')).toDateString();
-          $('#yearMonthDay-error').addClass('hidden');
-          $('#yearMonthDay').parent().removeClass('has-error');
-          break;
-        default:
-          newObj[cur.id] = $curValue;
+      case 'timeStart24':
+        newObj.timeStart24 = newEventView.formatTime($curValue);
+        newObj.Time = newEventView.humanTime($curValue);
+        $('#timeStart24-error').addClass('hidden');
+        $('#timeStart24').parent().removeClass('has-error');
+        break;
+      case 'timeEnd24':
+        newObj.timeEnd24 = newEventView.formatTime($curValue);
+        newObj.timeEnd = newEventView.humanTime($curValue);
+        break;
+      case 'yearMonthDay':
+        newObj[cur.id] = $curValue;
+        newObj.Date = new Date($curValue.replace(/-/g, '/')).toDateString();
+        $('#yearMonthDay-error').addClass('hidden');
+        $('#yearMonthDay').parent().removeClass('has-error');
+        break;
+      default:
+        newObj[cur.id] = $curValue;
       }
       return newObj;
     }, {});
@@ -222,7 +254,7 @@
       $form.find('#geocode-button').addClass('btn-blue');
       $form.find('#locationCheck').val('');
     } else if (this.id === 'phoneNumber') {
-      newEventView.validatePhoneNumber($input.val())
+      newEventView.validatePhoneNumber($input.val());
     }
     $input.addClass('edited');
     newEventView.updatedNewTownHallObject($form);
@@ -262,7 +294,7 @@
     var member = $memberInput.val();
     $form = $(this).parents('form');
     var $list = $('#current-pending');
-    $('#list-of-current-pending').addClass('hidden')
+    $('#list-of-current-pending').addClass('hidden');
     $list.empty();
     var $errorMessage = $('.new-event-form #member-help-block');
     var $memberformgroup = $('#member-form-group');
@@ -301,7 +333,7 @@
         }
       })
       .catch(function (error) {
-        console.error(error)
+        console.error(error);
       });
     }
   };
@@ -366,10 +398,10 @@
     newEventView.updateUserEvents();
     $('.has-success').removeClass('has-success');
     document.getElementById('new-event-form-element').reset();
-    $("html, body").animate({ scrollTop: 0 }, "slow");
+    $('html, body').animate({ scrollTop: 0 }, 'slow');
     delete TownHall.currentKey;
     TownHall.currentEvent = new TownHall();
-  }
+  };
 
   newEventView.submitNewEvent = function (event) {
     event.preventDefault();
@@ -405,7 +437,7 @@
   $('.new-event-form').on('submit', 'form', newEventView.submitNewEvent);
 
   $('#scroll-to-top').on('click', function () {
-    $("html, body").animate({ scrollTop: 0 }, "slow");
+    $('html, body').animate({ scrollTop: 0 }, 'slow');
   });
 
   window.addEventListener('scroll', function () {
@@ -415,9 +447,9 @@
         $('#scroll-to-top').css('visibility', 'visible').hide().fadeIn();
       }
     } else {
-    if ($('#scroll-to-top').css('visibility') === 'visible') {
-      $('#scroll-to-top').css('visibility', 'hidden').show().fadeOut('slow');
-    }
+      if ($('#scroll-to-top').css('visibility') === 'visible') {
+        $('#scroll-to-top').css('visibility', 'hidden').show().fadeOut('slow');
+      }
     }
   });
 
@@ -437,11 +469,11 @@
     var $submittedTotal = $('#submitted-total');
     $submittedTotal.html('0');
     firebase.database().ref('users/' + firebase.auth().currentUser.uid + '/currentEvents/').on('child_added', function getSnapShot(snapshot) {
-        var ele = TownHall.allTownHallsFB[snapshot.val()];
-        var total = parseInt($submittedTotal.html());
-        $submittedTotal.html(total + 1);
-        // $list.append(submittedEventTemplate(ele));
-    })
+      var ele = TownHall.allTownHallsFB[snapshot.val()];
+      var total = parseInt($submittedTotal.html());
+      $submittedTotal.html(total + 1);
+      // $list.append(submittedEventTemplate(ele));
+    });
   };
 
   firebase.auth().onAuthStateChanged(function (user) {
