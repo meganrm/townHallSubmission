@@ -294,7 +294,7 @@
     var member = $memberInput.val();
     $form = $(this).parents('form');
     var $list = $('#current-pending');
-    $('#list-of-current-pending').addClass('hidden');
+    $('#submit-success').addClass('hidden');
     $list.empty();
     var $errorMessage = $('.new-event-form #member-help-block');
     var $memberformgroup = $('#member-form-group');
@@ -397,6 +397,8 @@
     newEventView.updateMOCEvents();
     newEventView.updateUserEvents();
     $('.has-success').removeClass('has-success');
+    $('#list-of-current-pending').addClass('hidden');
+    $('#submit-success').removeClass('hidden').addClass('has-success');
     document.getElementById('new-event-form-element').reset();
     $('html, body').animate({ scrollTop: 0 }, 'slow');
     delete TownHall.currentKey;
@@ -421,6 +423,9 @@
         });
       }
     } else {
+      $('html, body').animate({
+        scrollTop: $('.has-error').offset().top
+      }, 'slow');
       console.log('missing fields');
     }
   };
