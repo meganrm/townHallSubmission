@@ -36,9 +36,6 @@
     if (filterID === 'All') {
       TownHall.filterIds[filterCol] = '';
       eventHandler.renderTableWithArray(data, $table );
-      // data.forEach(function(ele){
-      //   eventHandler.renderTable(ele, $table);
-      // })
     }
     else {
       TownHall.filterIds[filterCol] = filterID;
@@ -247,7 +244,6 @@
 
   };
 
-
-  eventHandler.readDataUsers();
+  // eventHandler.readDataUsers();
   module.eventHandler = eventHandler;
 })(window);

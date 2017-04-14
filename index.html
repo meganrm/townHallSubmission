@@ -56,7 +56,7 @@
           <ul id="submitted" class="list-group events-table">
           </ul><!--end table-->
           <div class="hidden" id="list-of-current-pending">
-            <h4>Other people have submitted these events</h4>
+            <h4>This event looks similar to others previously submitted. Please double check this list before submitting.</h4>
             <p>Here are the other events currently pending approval for this member of congress. Please first check that the event you are about to enter isn't already on the list. Thanks!</p>
             <ul id="current-pending" class="list-group events-table">
             </ul><!--end table-->
@@ -68,13 +68,13 @@
           <div class="page" id="new-page">
             <section class="row">
               <div class="new-event-form col-md-9">
-                <form class="" id="new-event-form-element">
+                <form class="hidden" id="new-event-form-element">
                   <section class="member-info text-info">
                     <h4>Member of Congress Information<br>
                       <small>Enter their name and we will auto-fill the information</small></h4>
                     <div class="form-group col-md-12" id="member-form-group">
                       <label class="sr-only" for="Member">Member</label>
-                      <input type="text" class="form-control input-underline" id="Member" placeholder="Full name" value="">
+                      <input type="text" class="form-control input-underline" id="Member" placeholder="Full name" value="" autocomplete="off">
                       <span id="member-help-block" class="help-block">Only first name and last name, not titles</span>
                     </div>
                     <div class="form-group col-md-12">
@@ -204,14 +204,16 @@
     <script src="/node_modules/jquery/dist/jquery.min.js"></script>
     <script src="/vendor/scripts/bootstrap.min.js"></script>
     <script src="/vendor/scripts/tether.js"></script>
+    <script src="/vendor/scripts/bootstrap3-typeahead.min.js"></script>
     <script src="/node_modules/handlebars/dist/handlebars.js"></script>
 
     <script src="templates.js"></script>
     <script src="https://www.gstatic.com/firebasejs/3.6.6/firebase.js"></script>
     <!-- Script Files -->
     <script src="/scripts/models/event0.js"></script>
+    <script src="/scripts/models/moc.js"></script>
     <script src="/scripts/data/states.js"></script>
-    <script src="/scripts/views/eventView.js"></script>
+    <!-- <script src="/scripts/views/eventView.js"></script> -->
     <script src="/scripts/views/newEventView.js"></script>
 
   </body>

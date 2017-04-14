@@ -10,6 +10,10 @@
 
   // METHODS FOR BOTH
 
+  newEventView.render = function () {
+    $('#new-event-form-element').removeClass('hidden').hide().fadeIn();
+  };
+
   newEventView.humanTime = function (time) {
     if (time.indexOf('AM') > 0 | time.indexOf('PM') > 0){
       return time;
@@ -260,6 +264,29 @@
     newEventView.updatedNewTownHallObject($form);
   };
 
+  newEventView.updateMember = function(selection) {
+    console.log(selection);
+    $('#Member').val(selection);
+  };
+
+  function setupTypeaheads() {
+    var typeaheadConfig = {
+      fitToElement: true,
+      delay: 200,
+      highlighter: function(item) { return item; }, // Kill ugly highlight
+      filter: function(selection) {
+        $('#Member').val(selection);
+      }
+    };
+    Moc.loadAll().then(function(allnames){
+      $('#Member').typeahead($.extend({source: allnames}, typeaheadConfig));
+      newEventView.render();
+    });
+  }
+  setupTypeaheads();
+
+
+
   newEventView.validateMember = function (member) {
     var $errorMessage = $('.new-event-form #member-help-block');
     var $memberformgroup = $('#member-form-group');
@@ -286,8 +313,6 @@
       $list.append(previewEventTemplate(ele));
     }
   };
-
-
 
   newEventView.lookupMember = function (event) {
     var $memberInput = $(this);
@@ -485,7 +510,7 @@
     if (user) {
     // User is signed in.
       console.log(user.displayName, ' is signed in');
-      eventHandler.readData();
+      // eventHandler.readData();
       newEventView.showUserEvents();
       writeUserData(user.uid, user.displayName, user.email);
     } else {
@@ -509,6 +534,5 @@
       console.log(errorCode, errorMessage);
     });
   };
-
   module.newEventView = newEventView;
 })(window);
