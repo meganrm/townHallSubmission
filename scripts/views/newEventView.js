@@ -164,9 +164,6 @@
       $location.html(teleInputsTemplate(thisTownHall));
       newEventView.geoCodeOnState();
       break;
-    case 'Tick':
-      $location.html(ticketInputsTemplate(thisTownHall));
-      break;
     default:
       $location.html(defaultLocationTemplate(thisTownHall));
     }
