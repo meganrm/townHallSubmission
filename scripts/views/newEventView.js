@@ -332,8 +332,9 @@
       } else {
         memberKey = member.split(' ')[1].toLowerCase() + '_' + member.split(' ')[0].toLowerCase();
       }
-      console.log(memberKey);
-      firebase.database().ref('MOCs/' + memberKey).once('value').then(function (snapshot) {
+      var memberid = Moc.allMocsObjs[memberKey].id;
+      console.log(memberid);
+      firebase.database().ref('mocData/' + memberid).once('value').then(function (snapshot) {
         if (snapshot.exists()) {
           mocdata = snapshot.val();
           if (mocdata.type === 'sen') {
@@ -341,6 +342,7 @@
           } else if (mocdata.type === 'rep') {
             District.val(mocdata.state + '-' + mocdata.district).addClass('edited').parent().addClass('has-success');
           }
+          $memberInput.val(mocdata.ballotpedia_id);
           Party.val(mocdata.party).addClass('edited').parent().addClass('has-success');
           State.val(statesAb[mocdata.state]).addClass('edited').parent().addClass('has-success');
           newEventView.updatedNewTownHallObject($form);
@@ -397,7 +399,7 @@
       $('#yearMonthDay-error').removeClass('hidden');
       requiredFields = false;
     }
-    if (!Object.prototype.hasOwnProperty.call(TownHall.currentEvent, 'timeStart24')) {
+    if (!Object.prototype.hasOwnProperty.call(TownHall.currentEvent, 'timeStart24') && TownHall.currentEvent.meetingType !== 'Tele-Town Hall') {
       $('#timeStart24').parent().addClass('has-error');
       $('#timeStart24-error').removeClass('hidden');
       requiredFields = false;

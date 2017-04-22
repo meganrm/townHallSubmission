@@ -5,16 +5,16 @@
     }
   }
 
-  Moc.allMocsObjs = [];
+  Moc.allMocsObjs = {};
 
   Moc.loadAll = function(){
     var allNames = [];
     return new Promise(function (resolve, reject) {
-      firebase.database().ref('MOCs/').once('value').then(function(snapshot){
+      firebase.database().ref('mocID/').once('value').then(function(snapshot){
         snapshot.forEach(function(member){
-          var memberobj = member.val();
-          Moc.allMocsObjs.push(memberobj);
-          var name = memberobj.first_name + ' ' + memberobj.last_name;
+          var memberobj = new Moc(member.val());
+          Moc.allMocsObjs[member.key] = memberobj;
+          var name = memberobj.nameEntered;
           if (!name) {
             console.log(member.key);
           } else {
@@ -27,8 +27,6 @@
       });
     });
   };
-
-
 
   module.Moc = Moc;
 })(window);
