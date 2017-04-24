@@ -342,7 +342,8 @@
           } else if (mocdata.type === 'rep') {
             District.val(mocdata.state + '-' + mocdata.district).addClass('edited').parent().addClass('has-success');
           }
-          $memberInput.val(mocdata.ballotpedia_id);
+          var fullname = mocdata.ballotpedia_id ? mocdata.ballotpedia_id: mocdata.first_name + ' ' + mocdata.last_name;
+          $memberInput.val(fullname);
           Party.val(mocdata.party).addClass('edited').parent().addClass('has-success');
           State.val(statesAb[mocdata.state]).addClass('edited').parent().addClass('has-success');
           newEventView.updatedNewTownHallObject($form);
