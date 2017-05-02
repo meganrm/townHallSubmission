@@ -411,7 +411,7 @@
   newEventView.updateMOCEvents = function () {
     var memberKey = TownHall.currentEvent.Member.split(' ')[1].toLowerCase() + '_' + TownHall.currentEvent.Member.split(' ')[0].toLowerCase();
     firebase.database().ref('mocID/' + memberKey).once('value').then(function(snapshot){
-      firebase.database().ref('mocData/' + snapshot.val() + '/currentEvents/').push(TownHall.currentKey);
+      firebase.database().ref('mocData/' + snapshot.val().id + '/currentEvents/').push(TownHall.currentKey);
     });
   };
 
