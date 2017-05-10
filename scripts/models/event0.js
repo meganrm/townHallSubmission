@@ -66,6 +66,7 @@
     }
     var time = Date.parse(newTownHall.Date + ' ' + databaseTH.Time) / 1000;
     var loc = databaseTH.lat + ',' + databaseTH.lng;
+    console.log(time, loc);
     return new Promise(function (resolve, reject) {
       url = `https://maps.googleapis.com/maps/api/timezone/json?location=${loc}&timestamp=${time}&key=AIzaSyB868a1cMyPOQyzKoUrzbw894xeoUhx9MM`;
       $.get(url, function (response) {
@@ -81,10 +82,20 @@
           if (newTownHall.timeZone === 'HST' | newTownHall.timeZone === 'HAST') {
             var hawaiiTime = 'UTC-1000'
           }
+          if (newTownHall.timeZone === 'ADT' | newTownHall.timeZone === 'AKST') {
+            var alaskaTime = 'UTC−09:00'
+          }
+          if (newTownHall.timeZone === 'AKDT') {
+            var alaskaTime = 'UTC−08:00'
+          }
+          console.log(newTownHall.timeZone);
           var zone = hawaiiTime ? hawaiiTime : newTownHall.timeZone;
+          var zone = alaskaTime ? alaskaTime : newTownHall.timeZone;
           newTownHall.dateObj = new Date(newTownHall.Date.replace(/-/g, '/') + ' ' + databaseTH.Time + ' ' + zone).getTime();
           resolve(newTownHall);
         }
+      }).fail(function(error){
+        console.log(error);
       });
     });
   };
