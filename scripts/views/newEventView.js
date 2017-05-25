@@ -333,7 +333,6 @@
         memberKey = member.split(' ')[1].toLowerCase() + '_' + member.split(' ')[0].toLowerCase();
       }
       var memberid = Moc.allMocsObjs[memberKey].id;
-      console.log(memberid);
       firebase.database().ref('mocData/' + memberid).once('value').then(function (snapshot) {
         if (snapshot.exists()) {
           mocdata = snapshot.val();
@@ -349,9 +348,6 @@
           newEventView.updatedNewTownHallObject($form);
           $errorMessage.html('');
           $memberformgroup.removeClass('has-error').addClass('has-success');
-          // if (mocdata.currentEvents) {
-          //   newEventView.showSubmittedEvents(mocdata.currentEvents, $list);
-          // }
         } else {
           $('#member-form-group').addClass('has-error');
           $('.new-event-form #member-help-block').html('That member is not in our database, please check the spelling, and only use first and last name.');
@@ -411,13 +407,13 @@
   newEventView.updateMOCEvents = function () {
     var memberKey = TownHall.currentEvent.Member.split(' ')[1].toLowerCase() + '_' + TownHall.currentEvent.Member.split(' ')[0].toLowerCase();
     firebase.database().ref('mocID/' + memberKey).once('value').then(function(snapshot){
-      firebase.database().ref('mocData/' + snapshot.val().id + '/currentEvents/').push(TownHall.currentKey);
+      firebase.database().ref('mocData/' + snapshot.val().id + '/pendingEvents/').push(TownHall.currentKey);
     });
   };
 
   newEventView.updateUserEvents = function () {
     var memberKey = TownHall.currentEvent.Member.split(' ')[1].toLowerCase() + '_' + TownHall.currentEvent.Member.split(' ')[0].toLowerCase();
-    firebase.database().ref('users/' + firebase.auth().currentUser.uid + '/currentEvents/').push(TownHall.currentKey);
+    firebase.database().ref('users/' + firebase.auth().currentUser.uid + '/currentEvents/' + TownHall.currentKey).set(TownHall.currentKey);
   };
 
   newEventView.resetData = function () {
