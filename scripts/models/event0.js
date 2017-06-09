@@ -68,7 +68,7 @@
     var loc = databaseTH.lat + ',' + databaseTH.lng;
     console.log(time, loc);
     return new Promise(function (resolve, reject) {
-      url = `https://maps.googleapis.com/maps/api/timezone/json?location=${loc}&timestamp=${time}&key=AIzaSyB868a1cMyPOQyzKoUrzbw894xeoUhx9MM`;
+      url = 'https://maps.googleapis.com/maps/api/timezone/json?location=' + loc + '&timestamp=' + time + '&key=AIzaSyB868a1cMyPOQyzKoUrzbw894xeoUhx9MM';
       $.get(url, function (response) {
         if (!response.timeZoneName) {
           reject('no timezone results', id, response);
@@ -83,14 +83,15 @@
             var hawaiiTime = 'UTC-1000'
           }
           if (newTownHall.timeZone === 'ADT' | newTownHall.timeZone === 'AKST') {
-            var alaskaTime = 'UTC−09:00'
+            var alaskaTime = 'GMT-0900'
           }
           if (newTownHall.timeZone === 'AKDT') {
-            var alaskaTime = 'UTC−08:00'
+            var alaskaTime = 'GMT-0800'
           }
           console.log(newTownHall.timeZone);
           var zone = hawaiiTime ? hawaiiTime : newTownHall.timeZone;
-          var zone = alaskaTime ? alaskaTime : newTownHall.timeZone;
+          zone = alaskaTime ? alaskaTime : newTownHall.timeZone;
+          console.log(zone, newTownHall.Date.replace(/-/g, '/') + ' ' + databaseTH.Time + ' ' + zone);
           newTownHall.dateObj = new Date(newTownHall.Date.replace(/-/g, '/') + ' ' + databaseTH.Time + ' ' + zone).getTime();
           resolve(newTownHall);
         }
