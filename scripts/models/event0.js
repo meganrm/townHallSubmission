@@ -79,20 +79,21 @@
             acc = acc + cur[0];
             return acc;
           }, '');
-          if (newTownHall.timeZone === 'HST' | newTownHall.timeZone === 'HAST') {
-            var hawaiiTime = 'UTC-1000'
+          var offset = response.rawOffset / 60 / 60 + response.dstOffset / 60 / 60
+          var utcoffset
+          if (parseInt(offset) === offset) {
+            utcoffset = 'UTC' + offset + '00'
+          } else {
+            var fract = offset * 10 % 10 /10;
+            var integr = Math.trunc(offset)
+            var mins = (Math.abs(fract * 60)).toString()
+            var zeros = '00'
+            mins = zeros.slice (mins.length) +  mins
+            utcoffset = 'UTC' + integr + mins
           }
-          if (newTownHall.timeZone === 'ADT' | newTownHall.timeZone === 'AKST') {
-            var alaskaTime = 'GMT-0900'
-          }
-          if (newTownHall.timeZone === 'AKDT') {
-            var alaskaTime = 'GMT-0800'
-          }
-          console.log(newTownHall.timeZone);
-          var zone = hawaiiTime ? hawaiiTime : newTownHall.timeZone;
-          zone = alaskaTime ? alaskaTime : newTownHall.timeZone;
-          console.log(zone, newTownHall.Date.replace(/-/g, '/') + ' ' + databaseTH.Time + ' ' + zone);
-          newTownHall.dateObj = new Date(newTownHall.Date.replace(/-/g, '/') + ' ' + databaseTH.Time + ' ' + zone).getTime();
+
+          console.log(offset, newTownHall.Date.replace(/-/g, '/') + ' ' + databaseTH.Time + ' ' + utcoffset);
+          newTownHall.dateObj = new Date(newTownHall.Date.replace(/-/g, '/') + ' ' + databaseTH.Time + ' ' + utcoffset).getTime();
           resolve(newTownHall);
         }
       }).fail(function(error){
