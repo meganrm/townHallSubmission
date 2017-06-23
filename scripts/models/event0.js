@@ -50,7 +50,9 @@
   TownHall.prototype.updateUserSubmission = function (key) {
     var newEvent = this;
     return new Promise(function (resolve, reject) {
-      firebase.database().ref('/UserSubmission/' + key).update(newEvent);
+      firebase.database().ref('/UserSubmission/' + key).update(newEvent).catch(function(error){
+        reject (error)
+      });
       resolve(newEvent);
     });
   };

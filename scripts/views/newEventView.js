@@ -116,6 +116,7 @@
       /* eslint quotes: ["error", "single", { "allowTemplateLiterals": true }]*/
       $form.find('#address-feedback').html(`Location is valid, make sure the address is correct:<br> ${geotownHall.address}`);
     }).catch(function (error) {
+      var $feedback = $form.find('#location-form-group');
       $feedback.addClass('has-error');
       $form.find('#locationCheck').val('Geocoding failed').addClass('has-error');
     });
@@ -371,6 +372,8 @@
         returnedTH.updateUserSubmission(TownHall.currentKey).then(function (writtenTH) {
           newEventView.resetData();
           console.log('wrote to database: ', writtenTH);
+        }).catch(function(error){
+          $('general-error').text(error).removeClass('hidden')
         });
         TownHall.allTownHallsFB[returnedTH.eventId] = returnedTH;
         console.log('writing to database: ', returnedTH);
@@ -420,6 +423,7 @@
     newEventView.updateMOCEvents();
     newEventView.updateUserEvents();
     $('.has-success').removeClass('has-success');
+    $('general-error').addClass('hidden')
     $('#list-of-current-pending').addClass('hidden');
     $('#submit-success').removeClass('hidden').addClass('has-success');
     document.getElementById('new-event-form-element').reset();
