@@ -431,10 +431,7 @@
   };
 
   newEventView.updateMOCEvents = function () {
-    var memberKey = TownHall.currentEvent.Member.split(' ')[1].toLowerCase() + '_' + TownHall.currentEvent.Member.split(' ')[0].toLowerCase();
-    firebase.database().ref('mocID/' + memberKey).once('value').then(function(snapshot){
-      firebase.database().ref('mocData/' + snapshot.val().id + '/pendingEvents/').push(TownHall.currentKey);
-    });
+    firebase.database().ref('mocData/' + TownHall.currentEvent.govtrack_id + '/lastUpdated/').set(Date.now());
   };
 
   newEventView.updateUserEvents = function () {
