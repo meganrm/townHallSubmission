@@ -6,6 +6,7 @@
   }
 
   Moc.allMocsObjs = {};
+  Moc.allNames = []
 
   Moc.loadAll = function(){
     var allNames = [];
@@ -24,6 +25,17 @@
           }
         });
         resolve(allNames);
+      });
+    });
+  };
+
+  Moc.prototype.updateFB = function () {
+    var mocObj = this;
+    return new Promise(function (resolve, reject) {
+      firebase.database().ref('/mocData/' + mocObj.govtrack_id).update(mocObj).then(function(){
+        resolve(mocObj);
+      }).catch(function (error) {
+        reject('could not update', mocObj);
       });
     });
   };

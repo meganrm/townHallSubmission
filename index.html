@@ -121,15 +121,17 @@
                             <li><a data-value="Ticketed Event" href="#">Ticketed Event</a></li>
                             <li><a data-value="Empty Chair Town Hall" href="#">Empty Chair Town Hall</a></li>
                             <li><a data-value="DC Event" href="#">DC Event</a></li>
+                            <li><a data-value="Adopt-A-District/State" href="#">Adopt-A-District/State</a></li>
                             <li><a data-value="Office Hours" href="#">Office Hours</a></li>
                             <li><a data-value="Other" href="#">Other</a></li>
+                            <li><a class="text-secondary" data-value="No Events" href="#">Not holding any events</a></li>
                           </ul>
                         </div><!-- /btn-group -->
                       </div><!-- /input-group -->
                       <span id="meetingType-error" class="help-block error-message hidden">Please select type of event</span>
                     </div><!-- /form-group -->
                   </section>
-                  <section class="location-data">
+                  <section class="location-data event-details">
                     <div class="form-group col-md-12">
                       <label class="sr-only" for="Location">Location</label>
                       <input type="text" class="form-control input-underline" id="Location" placeholder="Name of location (eg. Gary Recreation Center)" value="">
@@ -147,7 +149,7 @@
                       <input class="sr-only" type="text" class="text-success" id="locationCheck" placeholder="please geocode" readonly>
                     </div>
                   </section>
-                  <section class="time-data">
+                  <section class="time-data event-details">
                     <div class="checkbox col-md-12">
                       <label>
                         <input type="checkbox" class="date-string">
@@ -173,7 +175,7 @@
                       <input type="time" class="form-control datetime " id="timeEnd24" placeholder="End Time">
                     </div>
                   </section>
-                  <section class="extra-data">
+                  <section class="extra-data event-details">
                     <div class="form-group col-md-12">
                       <label for="link">URL related to event (optional)</label>
                       <input type="url" class="form-control input-underline" id="link" placeholder="Link" value="">
@@ -191,7 +193,7 @@
                       </div>
                     </div>
                   </section>
-                  <button class="btn btn-default btn-secondary" type="submit" name="button">Submit Event</button>
+                  <button class="btn btn-default btn-secondary" type="submit" name="button">Submit</button>
                   <span id="general-error" class="help-block error-message hidden"></span>
                 </form>
               </div>

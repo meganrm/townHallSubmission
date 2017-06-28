@@ -11,7 +11,9 @@
   // METHODS FOR BOTH
 
   newEventView.render = function () {
-    $('#new-event-form-element').removeClass('hidden').hide().fadeIn();
+    if ($('#new-event-form-element').hasClass('hidden')) {
+      $('#new-event-form-element').removeClass('hidden').hide().fadeIn();
+    }
   };
 
   newEventView.humanTime = function (time) {
@@ -149,6 +151,16 @@
     $form.find('#Party').change();
   };
 
+  newEventView.saveNoEvent = function (event) {
+    event.preventDefault();
+    var updateMOC = new Moc()
+    updateMOC.lastUpdated = Date.now()
+    updateMOC.govtrack_id = TownHall.currentEvent.govtrack_id
+    updateMOC.updateFB().then(function(moc){
+      newEventView.resetData()
+    })
+  }
+
   newEventView.meetingTypeChanged = function (event) {
     event.preventDefault();
     $form = $(this).parents('form');
@@ -157,13 +169,22 @@
     $('#meetingType-error').addClass('hidden');
     $('#meetingType').parent().removeClass('has-error');
     var teleInputsTemplate = Handlebars.getTemplate('teleInputs');
-    var ticketInputsTemplate = Handlebars.getTemplate('ticketInputs');
+    var adoptedDistrictTemplate = Handlebars.getTemplate('adoptedDistrictInputs');
     var defaultLocationTemplate = Handlebars.getTemplate('generalinputs');
     var thisTownHall = TownHall.currentEvent;
-    switch (value.slice(0, 4)) {
-    case 'Tele':
+    switch (value) {
+    case 'Tele-Town Hall':
       $location.html(teleInputsTemplate(thisTownHall));
       newEventView.geoCodeOnState();
+      break;
+    case 'Adopt-A-District/State':
+      $location.html(adoptedDistrictTemplate(thisTownHall), defaultLocationTemplate(thisTownHall));
+      setupTypeaheads('#districtAdopter')
+      break;
+    case 'No Events':
+      $('.event-details').addClass('hidden')
+      $('.new-event-form').unbind('submit')
+      $('.new-event-form').on('submit', newEventView.saveNoEvent)
       break;
     default:
       $location.html(defaultLocationTemplate(thisTownHall));
@@ -267,21 +288,22 @@
     $('#Member').val(selection);
   };
 
-  function setupTypeaheads() {
+  function setupTypeaheads(input) {
     var typeaheadConfig = {
       fitToElement: true,
       delay: 200,
       highlighter: function(item) { return item; }, // Kill ugly highlight
       filter: function(selection) {
-        $('#Member').val(selection);
+        $(input).val(selection);
       }
     };
     Moc.loadAll().then(function(allnames){
-      $('#Member').typeahead($.extend({source: allnames}, typeaheadConfig));
+      Moc.allNames = allnames
+      $(input).typeahead($.extend({source: allnames}, typeaheadConfig));
       newEventView.render();
     });
   }
-  setupTypeaheads();
+  setupTypeaheads('#Member');
 
 
 
@@ -344,6 +366,7 @@
           }
           var fullname = mocdata.ballotpedia_id ? mocdata.ballotpedia_id: mocdata.first_name + ' ' + mocdata.last_name;
           $memberInput.val(fullname);
+          TownHall.currentEvent.govtrack_id = memberid;
           Party.val(mocdata.party).addClass('edited').parent().addClass('has-success');
           State.val(statesAb[mocdata.state]).addClass('edited').parent().addClass('has-success');
           newEventView.updatedNewTownHallObject($form);
