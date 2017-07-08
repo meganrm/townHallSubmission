@@ -437,10 +437,12 @@
 
     newEventView.updateMOCEvents = function () {
         firebase.database().ref('mocData/' + TownHall.currentEvent.govtrack_id + '/lastUpdated/').set(Date.now());
+        firebase.database().ref('mocData/' + TownHall.currentEvent.govtrack_id + '/lastUpdatedBy/').set(firebase.auth().currentUser.displayName);
     };
 
     newEventView.updateUserEvents = function () {
         firebase.database().ref('users/' + firebase.auth().currentUser.uid + '/currentEvents/' + TownHall.currentKey).set(TownHall.currentKey);
+        firebase.database().ref('users/' + firebase.auth().currentUser.uid + '/mocs/' + TownHall.currentEvent.govtrack_id).set(Date.now());
     };
 
     newEventView.resetData = function () {
