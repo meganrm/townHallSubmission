@@ -436,8 +436,11 @@
     };
 
     newEventView.updateMOCEvents = function () {
-        firebase.database().ref('mocData/' + TownHall.currentEvent.govtrack_id + '/lastUpdated/').set(Date.now());
-        firebase.database().ref('mocData/' + TownHall.currentEvent.govtrack_id + '/lastUpdatedBy/').set(firebase.auth().currentUser.displayName);
+        if (TownHall.currentEvent.govtrack_id) {
+            firebase.database().ref('mocData/' + TownHall.currentEvent.govtrack_id + '/lastUpdated/').set(Date.now());
+            firebase.database().ref('mocData/' + TownHall.currentEvent.govtrack_id + '/lastUpdatedBy/').set(firebase.auth().currentUser.displayName);
+            firebase.database().ref('mocData/' + TownHall.currentEvent.govtrack_id + '/lastUpdatedByUID/').set(firebase.auth().currentUser.uid);
+        }
     };
 
     newEventView.updateUserEvents = function () {
