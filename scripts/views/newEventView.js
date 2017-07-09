@@ -439,7 +439,6 @@
         if (TownHall.currentEvent.govtrack_id) {
             firebase.database().ref('mocData/' + TownHall.currentEvent.govtrack_id + '/lastUpdated/').set(Date.now());
             firebase.database().ref('mocData/' + TownHall.currentEvent.govtrack_id + '/lastUpdatedBy/').set(firebase.auth().currentUser.displayName);
-            firebase.database().ref('mocData/' + TownHall.currentEvent.govtrack_id + '/lastUpdatedByUID/').set(firebase.auth().currentUser.uid);
         }
     };
 
@@ -473,6 +472,7 @@
         if (newEventView.checkForFields()) {
             newTownHall.lastUpdated = Date.now();
             newTownHall.enteredBy = firebase.auth().currentUser.email;
+            newTownHall.userID = firebase.auth().currentUser.uid;
             newTownHall = newEventView.validateDateNew(id, newTownHall);
             if (newTownHall) {
                 newTownHall.updateUserSubmission(TownHall.currentKey).then(function (dataWritten) {
