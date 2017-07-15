@@ -183,7 +183,7 @@
             newEventView.geoCodeOnState();
             break;
         case 'Adopt-A-District/State':
-            $location.html(adoptedDistrictTemplate(thisTownHall), defaultLocationTemplate(thisTownHall));
+            $location.html(adoptedDistrictTemplate(thisTownHall) + defaultLocationTemplate(thisTownHall));
             setupTypeaheads('#districtAdopter');
             break;
         case 'No Events':
