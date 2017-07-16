@@ -132,22 +132,44 @@
                       <span id="meetingType-error" class="help-block error-message hidden">Please select type of event</span>
                     </div><!-- /form-group -->
                   </section>
+                  <section class="adopter-data non-standard hidden">
+                    <div class="form-group col-md-12" id="adopter-member-form-group">
+                      <label for="districtAdopter">MOC appearing at event (adopter)</label>
+                      <input type="text" class="form-control input-underline" id="districtAdopter" placeholder="Full name" value="" autocomplete="off">
+                      <span id="adopter-member-help-block" class="help-block">Only first name and last name, not titles</span>
+                    </div>
+                  </section>
                   <section class="location-data event-details">
-                    <div class="form-group col-md-12">
+                    <div class="form-group col-md-12 general-inputs">
                       <label class="sr-only" for="Location">Location</label>
                       <input type="text" class="form-control input-underline" id="Location" placeholder="Name of location (eg. Gary Recreation Center)" value="">
                     </div>
-                    <div class="form-group col-md-12" id=location-form-group>
+                    <div class="form-group col-md-12 general-inputs" id=location-form-group>
                         <input type="text" class="form-control" placeholder="Street address" id="address">
                         <span id="address-feedback" class="help-block">Enter a valid street address, if there isn't one, leave this blank</span>
                     </div><!-- /form-group -->
-                    <div class="form-group col-md-12">
+                    <div class="form-group col-md-12 general-inputs">
                       <label class="sr-only" for="addressType">Address Type</label>
                       <input class="sr-only" type="text" class="" id="addressType" placeholder="Address type" value="street" readonly>
                     </div>
-                    <div class="form-group col-md-12">
+                    <div class="form-group col-md-12 general-inputs">
                       <label class="sr-only" for="locationCheck">Location Check</label>
                       <input class="sr-only" type="text" class="text-success" id="locationCheck" placeholder="please geocode" readonly>
+                    </div>
+                    <div class="text-info non-standard tele-inputs hidden">
+                      <div class="form-group col-md-12">
+                        <label class="" for="phoneNumber">Phone Number format: (555) 555-5555</label>
+                        <input type="tel" class="form-control" id="phoneNumber" placeholder="Phone Number" value="">
+                        <span id="phoneNumber-error" class="help-block error-message hidden">Please enter a valid phone number</span>
+                      </div>
+                      <div class="form-group">
+                        <label class="sr-only" for="addressType">Address Type</label>
+                        <input type="text" class="sr-only" id="addressType" placeholder="Address type" value="state" readonly>
+                      </div>
+                      <div class="form-group">
+                        <label class="sr-only" for="locationCheck">Location Check</label>
+                        <input type="text" class="text-success sr-only" id="locationCheck" placeholder="please geocode" readonly>
+                      </div>
                     </div>
                   </section>
                   <section class="time-data event-details">
