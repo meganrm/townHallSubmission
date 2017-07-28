@@ -175,17 +175,35 @@
     case 'Tele-Town Hall':
       $('.general-inputs').addClass('hidden');
       $('.tele-inputs').removeClass('hidden');
+      TownHall.currentEvent.iconFlag = 'tele';
       newEventView.geoCodeOnState();
       break;
     case 'Adopt-A-District/State':
       $('.general-inputs').removeClass('hidden');
       $('.adopter-data').removeClass('hidden');
+      TownHall.currentEvent.iconFlag = 'activism';
       setupTypeaheads('#districtAdopter');
       break;
     case 'No Events':
       $('.event-details').addClass('hidden');
       $('.new-event-form').unbind('submit');
       $('.new-event-form').on('submit', newEventView.saveNoEvent);
+      break;
+    case 'Ticketed Event':
+      TownHall.currentEvent.iconFlag = 'in-person';
+      $('.general-inputs').removeClass('hidden');
+      break;
+    case 'Office Hours':
+      TownHall.currentEvent.iconFlag = 'staff';
+      $('.general-inputs').removeClass('hidden');
+      break;
+    case 'Town Hall':
+      TownHall.currentEvent.iconFlag = 'in-person';
+      $('.general-inputs').removeClass('hidden');
+      break;
+    case 'Empty Chair Town Hall':
+      TownHall.currentEvent.iconFlag = 'activism';
+      $('.general-inputs').removeClass('hidden');
       break;
     default:
       $('.general-inputs').removeClass('hidden');
