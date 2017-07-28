@@ -393,7 +393,7 @@
         } else if (mocdata.type === 'rep') {
           District.val(mocdata.state + '-' + mocdata.district).addClass('edited').parent().addClass('has-success');
         }
-        var fullname = mocdata.ballotpedia_id ? mocdata.ballotpedia_id: mocdata.first_name + ' ' + mocdata.last_name;
+        var fullname = mocdata.displayName;
         $memberInput.val(fullname);
         TownHall.currentEvent.govtrack_id = mocdata.govtrack_id;
         Party.val(mocdata.party).addClass('edited').parent().addClass('has-success');
