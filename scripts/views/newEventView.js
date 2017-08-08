@@ -417,7 +417,7 @@
     } else if (newTownHall.lat) {
       console.log('getting time zone');
       newTownHall.validateZone().then(function (returnedTH) {
-        returnedTH.updateUserSubmission(TownHall.currentKey).then(function (writtenTH) {
+        returnedTH.updateUserSubmission(returnedTH.eventId).then(function (writtenTH) {
           newEventView.resetData();
           console.log('wrote to database: ', writtenTH);
         }).catch(function(error){
@@ -426,6 +426,7 @@
         TownHall.allTownHallsFB[returnedTH.eventId] = returnedTH;
         console.log('writing to database: ', returnedTH);
       }).catch(function (error) {
+        $('general-error').text(error).removeClass('hidden');
         console.log('could not get timezone', error);
       });
     } else {
@@ -502,7 +503,7 @@
       newTownHall.userID = firebase.auth().currentUser.uid;
       newTownHall = newEventView.validateDateNew(id, newTownHall);
       if (newTownHall) {
-        newTownHall.updateUserSubmission(id).then(function (dataWritten) {
+        newTownHall.updateUserSubmission(newTownHall.eventId).then(function (dataWritten) {
           TownHall.allTownHallsFB[dataWritten.eventId] = dataWritten;
           newEventView.resetData();
           console.log('wrote to database: ', newTownHall);

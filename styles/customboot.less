@@ -93,7 +93,6 @@
 @navbar-padding-horizontal:        floor((@grid-gutter-width / 2));
 @navbar-padding-vertical:          ((@navbar-height - @line-height-computed) / 2);
 @navbar-collapse-max-height:       340px;
-
 @navbar-default-color:             #777;
 @navbar-default-bg:                #ffffff;
 @navbar-default-border:            darken(@navbar-default-bg, 6.5%);
@@ -141,6 +140,7 @@
 @state-danger-bg:                @brand-danger;
 @state-danger-border:            darken(spin(@state-danger-bg, -10), 5%);
 
+@progress-bar-warning-bg: @brand-secondary-dark;
 
 // base styles
 html {
@@ -217,6 +217,18 @@ article{
   padding:10px;
 }
 
+.list-group-heading{
+  padding-bottom: 0;
+  padding-left: 0;
+  padding-right: 0;
+  .navbar-right {
+     margin-right: 0;
+  }
+  .navbar-nav{
+    margin-left: 0;
+  }
+}
+
 form{
   border-bottom: 1.5px solid @brand-gray;
   border-bottom-style: dotted;
@@ -245,8 +257,8 @@ form{
   padding: 6px;
 }
 
-.list-group-item #address{
-  width: 300px;
+.location-data .wide{
+  width: 300px!important;
 }
 
 #repeatingEvent{
@@ -359,6 +371,44 @@ form .input-underline{
    display: none;
 }
 
+.daysAgo {
+  color: white;
+  background-color: darken(@brand-cool, 70%);
+}
+
+.Never {
+  background-color: @brand-secondary-dark;
+  color: white;
+}
+.daysAgo-0 {
+  color: @brand-text;
+  background-color: @brand-cool;
+}
+
+.daysAgo-1 {
+  background-color: darken(@brand-cool, 10%);
+}
+
+.daysAgo-2 {
+  background-color: darken(@brand-cool, 20%);
+}
+
+.daysAgo-3 {
+  background-color: darken(@brand-cool, 30%);
+}
+
+.daysAgo-4 {
+  background-color: darken(@brand-cool, 40%);
+}
+
+.daysAgo-5 {
+  background-color: darken(@brand-cool, 50%);
+}
+.daysAgo-6 {
+  color: white;
+  background-color: darken(@brand-cool, 60%);
+}
+
 
 
 // Table formatting
@@ -378,6 +428,21 @@ form .input-underline{
 
 .noninteractive-header {
   padding: 6px;
+}
+#filter-info {
+  max-width: 50%;
+  margin: 20px 0 0px 20px;
+  li {
+    margin-bottom: 10px;
+    margin-right: 10px;
+    button:hover {
+      color: #fff;
+    }
+    button i.fa-times {
+      margin-left: 0.5em;
+      font-size: 0.8em;
+    }
+  }
 }
 
 // Results
