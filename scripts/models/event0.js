@@ -51,7 +51,7 @@
     var newEvent = this;
     return new Promise(function (resolve, reject) {
       firebase.database().ref('/UserSubmission/' + key).update(newEvent).catch(function(error){
-        reject (error)
+        reject (error);
       });
       resolve(newEvent);
     });
@@ -81,17 +81,17 @@
             acc = acc + cur[0];
             return acc;
           }, '');
-          var offset = response.rawOffset / 60 / 60 + response.dstOffset / 60 / 60
-          var utcoffset
+          var offset = response.rawOffset / 60 / 60 + response.dstOffset / 60 / 60;
+          var utcoffset;
           if (parseInt(offset) === offset) {
-            utcoffset = 'UTC' + offset + '00'
+            utcoffset = 'UTC' + offset + '00';
           } else {
             var fract = offset * 10 % 10 /10;
-            var integr = Math.trunc(offset)
-            var mins = (Math.abs(fract * 60)).toString()
-            var zeros = '00'
-            mins = zeros.slice (mins.length) +  mins
-            utcoffset = 'UTC' + integr + mins
+            var integr = Math.trunc(offset);
+            var mins = (Math.abs(fract * 60)).toString();
+            var zeros = '00';
+            mins = zeros.slice (mins.length) +  mins;
+            utcoffset = 'UTC' + integr + mins;
           }
 
           console.log(offset, newTownHall.Date.replace(/-/g, '/') + ' ' + databaseTH.Time + ' ' + utcoffset);

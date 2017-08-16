@@ -20,6 +20,7 @@
     "express": "^4.15.2",
     "express-request-proxy": "^2.0.0",
     "handlebars": "^4.0.6",
-    "jquery": "^3.2.1"
+    "jquery": "^3.2.1",
+    "moment": "^2.18.1"
   }
 }

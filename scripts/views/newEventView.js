@@ -166,7 +166,6 @@
 
   newEventView.meetingTypeChanged = function (event) {
     event.preventDefault();
-    var $form = $(this).parents('form');
     var value = $(this).val();
     $('.non-standard').addClass('hidden');
     $('#meetingType-error').addClass('hidden');
@@ -257,27 +256,50 @@
     }
   };
 
+  newEventView.validateDateTime = function($curValue, format, id) {
+    if (!moment($curValue, format).isValid()) {
+      $('#' + id + '-error').removeClass('hidden');
+      $('#' + id).parent().addClass('has-error');
+      return false;
+    } else {
+      $('#' + id + '-error').addClass('hidden');
+      $('#' + id).parent().removeClass('has-error');
+      return true;
+    }
+  };
+
   newEventView.updatedNewTownHallObject = function updatedNewTownHallObject($form) {
     var updated = $form.find('.edited').get();
     var databaseTH = TownHall.currentEvent;
     var updates = updated.reduce(function (newObj, cur) {
       var $curValue = $(cur).val();
+      var timeFormats = ['hh:mm A', 'h:mm A'];
       switch (cur.id) {
       case 'timeStart24':
-        newObj.timeStart24 = newEventView.formatTime($curValue);
-        newObj.Time = newEventView.humanTime($curValue);
-        $('#timeStart24-error').addClass('hidden');
-        $('#timeStart24').parent().removeClass('has-error');
+        if (!newEventView.validateDateTime($curValue, timeFormats, 'timeStart24')){
+          return;
+        }
+        newObj.timeStart24 = moment($curValue, timeFormats).format('HH:mm:ss');
+        newObj.Time = moment($curValue, timeFormats).format('h:mm A');
+        var tempEnd = moment($curValue, timeFormats).add(2, 'h');
+        newObj.timeEnd24 = moment(tempEnd).format('HH:mm:ss');
+        newObj.timeEnd = moment(tempEnd).format('h:mm A');
         break;
       case 'timeEnd24':
-        newObj.timeEnd24 = newEventView.formatTime($curValue);
-        newObj.timeEnd = newEventView.humanTime($curValue);
+        if (!newEventView.validateDateTime($curValue, timeFormats, 'timeEnd24')){
+          return;
+        }
+        newObj.timeEnd24 = moment($curValue, timeFormats).format('HH:mm:ss');
+        newObj.timeEnd = moment($curValue, timeFormats).format('h:mm A');
         break;
       case 'yearMonthDay':
-        newObj[cur.id] = $curValue;
-        newObj.Date = new Date($curValue.replace(/-/g, '/')).toDateString();
-        $('#yearMonthDay-error').addClass('hidden');
-        $('#yearMonthDay').parent().removeClass('has-error');
+        var dateFormats = ['YYYY-MM-DD', 'MM/DD/YYYY', 'MM-DD-YYYY', 'MMMM D, YYYY'];
+        if (!newEventView.validateDateTime($curValue, dateFormats, 'yearMonthDay')){
+          return;
+        }
+        newObj[cur.id] = moment($curValue, dateFormats).format('YYYY-MM-DD');
+        newObj.dateString = moment($curValue, dateFormats).format('ddd, MMM D YYYY');
+        newObj.Date = moment($curValue, dateFormats).format('ddd, MMM D YYYY');
         break;
       default:
         newObj[cur.id] = $curValue;
@@ -323,8 +345,6 @@
     });
   }
   setupTypeaheads('#Member');
-
-
 
   newEventView.validateMember = function (member, $errorMessage, $memberformgroup) {
     console.log(member);
@@ -412,7 +432,6 @@
     var newTownHall = TownHall.currentEvent;
     if (newTownHall.meetingType.slice(0, 4) === 'Tele') {
       newTownHall.dateObj = new Date(newTownHall.Date.replace(/-/g, '/') + ' ' + newTownHall.Time).getTime();
-      newTownHall.dateValid = newTownHall.dateObj ? true : false;
       return (newTownHall);
     } else if (newTownHall.lat) {
       console.log('getting time zone');

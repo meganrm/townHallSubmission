@@ -181,8 +181,8 @@
                     </div>
                     <div class="form-group col-md-12">
                       <label  for="yearMonthDay">Date</label>
-                      <input type="date" class="form-control datetime date " id="yearMonthDay" placeholder="Date">
-                      <span id="yearMonthDay-error" class="help-block error-message hidden">Please enter a date</span>
+                      <input type="date" class="form-control datetime date " id="yearMonthDay" placeholder="MM/DD/YYYY">
+                      <span id="yearMonthDay-error" class="help-block error-message hidden">Please enter a valid date</span>
                     </div>
                     <div class="form-group hidden repeating">
                       <label  for="repeatingString">Repeating Event</label>
@@ -190,12 +190,12 @@
                     </div>
                     <div class="form-group col-md-6">
                       <label for="Time">Start Time (HH:MM AM/PM)</label>
-                      <input type="time" class="form-control datetime " id="timeStart24" placeholder="Start Time">
-                      <span id="timeStart24-error" class="help-block error-message hidden">Please enter a time</span>
+                      <input type="time" class="form-control datetime " id="timeStart24" placeholder="HH:MM AM/PM">
+                      <span id="timeStart24-error" class="help-block error-message hidden">Please enter a valid time</span>
                     </div>
                     <div class="form-group col-md-6">
                       <label for="endTime">End Time (HH:MM AM/PM)</label>
-                      <input type="time" class="form-control datetime " id="timeEnd24" placeholder="End Time">
+                      <input type="time" class="form-control datetime " id="timeEnd24" placeholder="HH:MM AM/PM">
                     </div>
                   </section>
                   <section class="extra-data event-details">
@@ -228,6 +228,7 @@
       </div>
 
     <!-- Vendor Files -->
+    <script src="/node_modules/moment/moment.js"></script>
     <script src="/node_modules/jquery/dist/jquery.min.js"></script>
     <script src="/vendor/scripts/bootstrap.min.js"></script>
     <script src="/vendor/scripts/tether.js"></script>
