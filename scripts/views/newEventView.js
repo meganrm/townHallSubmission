@@ -440,7 +440,7 @@
           newEventView.resetData();
           console.log('wrote to database: ', writtenTH);
         }).catch(function(error){
-          $('general-error').text(error).removeClass('hidden');
+          $('general-error').text('Please email meganrm@townhallproject.com this error:', error).removeClass('hidden');
         });
         TownHall.allTownHallsFB[returnedTH.eventId] = returnedTH;
         console.log('writing to database: ', returnedTH);
@@ -484,7 +484,11 @@
 
   newEventView.updateUserEvents = function () {
     firebase.database().ref('users/' + firebase.auth().currentUser.uid + '/currentEvents/' + TownHall.currentKey).set(TownHall.currentKey);
-    firebase.database().ref('users/' + firebase.auth().currentUser.uid + '/mocs/' + TownHall.currentEvent.govtrack_id).set(Date.now());
+    firebase.database().ref('users/' + firebase.auth().currentUser.uid + '/mocs/' + TownHall.currentEvent.govtrack_id).update(
+      {
+        lastUpdated: Date.now(),
+        govtrack_id : TownHall.currentEvent.govtrack_id
+      });
   };
 
   newEventView.resetData = function () {
