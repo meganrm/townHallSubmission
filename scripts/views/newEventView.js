@@ -423,7 +423,7 @@
         $memberformgroup.removeClass('has-error').addClass('has-success');
       }).catch(function(errorMessage){
         $('#member-form-group').addClass('has-error');
-        $('.new-event-form #member-help-block').html(errorMessage);
+        $('.new-event-form #member-help-block').html('You can still submit this event, but the lookup failed. Please email meganrm@townhallproject.com this message: ', errorMessage);
       });
     }
   };
