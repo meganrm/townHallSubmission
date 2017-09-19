@@ -495,8 +495,10 @@
     newEventView.updateMOCEvents();
     newEventView.updateUserEvents();
     $('.has-success').removeClass('has-success');
+    $('.edited').removeClass('edited');
     $('.event-details').removeClass('hidden');
-    $('general-error').addClass('hidden');
+    $('.general-error').addClass('hidden');
+    $('.has-error').removeClass('has-error');
     $('#list-of-current-pending').addClass('hidden');
     $('#submit-success').removeClass('hidden').addClass('has-success');
     document.getElementById('new-event-form-element').reset();
