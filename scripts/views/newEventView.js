@@ -43,30 +43,30 @@
     }
   };
 
-  newEventView.formChanged = function () {
-    var $input = $(this);
-    var $form = $input.parents('form');
-    var $listgroup = $(this).parents('.list-group-item');
-    if (this.id === 'address') {
-      $form.find('#geocode-button').removeClass('disabled');
-      $form.find('#geocode-button').addClass('btn-blue');
-      $form.find('#locationCheck').val('');
-    }
-    $input.addClass('edited');
-    $form.find('#update-button').addClass('btn-blue');
-    $form.find('.timestamp').val(new Date());
-    newEventView.updatedView($form, $listgroup);
-  };
+  // newEventView.formChanged = function () {
+  //   var $input = $(this);
+  //   var $form = $input.parents('form');
+  //   var $listgroup = $(this).parents('.list-group-item');
+  //   if (this.id === 'address') {
+  //     $form.find('#geocode-button').removeClass('disabled');
+  //     $form.find('#geocode-button').addClass('btn-blue');
+  //     $form.find('#locationCheck').val('');
+  //   }
+  //   $input.addClass('edited');
+  //   $form.find('#update-button').addClass('btn-blue');
+  //   $form.find('.timestamp').val(new Date());
+  //   newEventView.updatedView($form, $listgroup);
+  // };
 
-  newEventView.dateChanged = function () {
-    var $input = $(this);
-    var $form = $input.parents('form');
-    var $listgroup = $(this).parents('.list-group-item');
-    $input.addClass('edited');
-    $form.find('#update-button').addClass('btn-blue');
-    $form.find('.timestamp').val(new Date());
-    newEventView.updatedView($form, $listgroup);
-  };
+  // newEventView.dateChanged = function () {
+  //   var $input = $(this);
+  //   var $form = $input.parents('form');
+  //   var $listgroup = $(this).parents('.list-group-item');
+  //   $input.addClass('edited');
+  //   $form.find('#update-button').addClass('btn-blue');
+  //   $form.find('.timestamp').val(new Date());
+  //   newEventView.updatedView($form, $listgroup);
+  // };
 
   newEventView.dateString = function (event) {
     event.preventDefault();
@@ -80,6 +80,12 @@
       $dateInput.hide();
       $checkbox.text('Click to enter repeating event description');
     }
+  };
+
+  newEventView.generalCheckbox = function (event) {
+    event.preventDefault();
+    let id = this.id
+    TownHall.currentEvent[this.id] = this.checked;
   };
 
   newEventView.geoCodeOnState = function () {
@@ -413,6 +419,9 @@
         } else if (mocdata.type === 'rep') {
           District.val(mocdata.state + '-' + mocdata.district).addClass('edited').parent().addClass('has-success');
         }
+        TownHall.currentEvent.district = mocdata.district;
+        TownHall.currentEvent.stateName = mocdata.stateName;
+
         var fullname = mocdata.displayName;
         $memberInput.val(fullname);
         TownHall.currentEvent.govtrack_id = mocdata.govtrack_id;
@@ -551,6 +560,7 @@
   $('.new-event-form').on('change', '#meetingType', newEventView.meetingTypeChanged);
   $('.new-event-form').on('change', '.form-control', newEventView.newformChanged);
   $('.new-event-form').on('change', '.date-string', newEventView.dateString);
+  $('.new-event-form').on('change', '.general-checkbox', newEventView.generalCheckbox);
   $('.new-event-form').on('change', '#address', newEventView.addressChanged);
   $('.new-event-form').on('submit', 'form', newEventView.submitNewEvent);
 
