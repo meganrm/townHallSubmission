@@ -420,7 +420,7 @@
           TownHall.currentEvent.stateName = mocdata.stateName;
         }
         if (mocdata.type === 'sen') {
-          TownHall.currentEvent.district = "Senate";
+          TownHall.currentEvent.district = null;
         } else if (mocdata.type === 'rep') {
           var zeropadding = "00";
           var updatedDistrict = zeropadding.slice(0, zeropadding.length - mocdata.district.length) + mocdata.district;
