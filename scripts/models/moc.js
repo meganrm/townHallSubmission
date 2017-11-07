@@ -16,8 +16,9 @@
       memberKey = member.split(' ')[1].toLowerCase() + '_' + member.split(' ')[0].toLowerCase();
     }
     var memberid = Moc.allMocsObjs[memberKey].id;
+    console.log(Moc.lookupPath, memberid);
     return new Promise(function(resolve, reject){
-      firebase.database().ref('mocData/' + memberid).once('value').then(function (snapshot) {
+      firebase.database().ref(Moc.lookupPath + memberid).once('value').then(function (snapshot) {
         if (snapshot.exists()) {
           resolve(snapshot.val());
         } else {

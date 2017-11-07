@@ -61,6 +61,13 @@
             <ul id="current-pending" class="list-group events-table">
             </ul><!--end table-->
           </div>
+          <div class="nav nav-pills nav-stacked" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+            <li role="presentation" class="active"><a id="v-pills-home-tab" href="/" role="tab" aria-controls="v-pills-home" aria-selected="true">Federal Events</a></li>
+            <li role="presentation"><a  id="v-pills-arizona-tab" href="/state/AZ" role="tab" aria-controls="v-pills-profile" aria-selected="false">Arizona</a></li>
+            <li role="presentation"><a  id="v-pills-virgina-tab" href="/state/VA" role="tab" aria-controls="v-pills-messages" aria-selected="false">Virginia</a></li>
+            <li role="presentation"><a  id="v-pills-northcarolina-tab" href="/state/NC" role="tab" aria-controls="v-pills-settings" aria-selected="false">North Carolina</a></li>
+            <li role="presentation"><a  id="v-pills-colorado-tab" href="/state/CO" role="tab" aria-controls="v-pills-settings" aria-selected="false">Colorado</a></li>
+          </div>
         </section>
       </div>
       <div class="col-sm-8">
@@ -82,11 +89,12 @@
                       <label  for="State"class="sr-only">Home State</label>
                       <input type="text" class="form-control input-underline" id="State" placeholder="Home State" value="">
                     </div>
-                    <div class="form-group col-md-12">
-                      <label  for="District" class="sr-only">District</label>
+                    <div class="form-group col-md-12 district-group" id="federal-district-group">
+                      <label  for="District" class="sr-only">Federal District</label>
                       <input type="text" class="form-control input-underline" id="District" placeholder="District" value="">
                       <span id="helpBlock" class="help-block">For Senate, write "Senate"; For At-Large, write MT-00; Other examples: OH-08, TX-33, NY-22</span>
                     </div>
+
                     <div class="form-group party col-md-12">
                       <label class="sr-only " for="Party">Party</label>
                       <div class="input-group">

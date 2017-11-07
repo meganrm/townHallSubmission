@@ -10,7 +10,7 @@
   TownHall.currentKey;
   TownHall.currentEvent = new TownHall();
 
-  newEventView.render = function (allnames) {
+  newEventView.render = function (allnames, type) {
     console.log('rendering');
     typeaheadConfig = {
       fitToElement: true,
@@ -24,36 +24,10 @@
     if ($('#new-event-form-element').hasClass('hidden')) {
       $('#new-event-form-element').removeClass('hidden').hide().fadeIn();
     }
-  };
-
-  newEventView.init = function(){
-  };
-
-  newEventView.humanTime = function (time) {
-    if (time.indexOf('AM') > 0 | time.indexOf('PM') > 0){
-      return time;
-    } else {
-      var timeSplit = time.split(':');
-      var hours;
-      var minutes;
-      var meridian;
-      hours = timeSplit[0];
-      minutes = timeSplit[1];
-      if (hours > 12) {
-        meridian = 'PM';
-        hours -= 12;
-      } else if (hours < 12) {
-        meridian = 'AM';
-        if (hours === 0) {
-          hours = 12;
-        }
-      } else {
-        meridian = 'PM';
-      }
-      return hours + ':' + minutes + ' ' + meridian;
+    if (type === 'state') {
+      $('#federal-district-group').addClass('hidden')
     }
   };
-
 
   newEventView.dateString = function (event) {
     event.preventDefault();
@@ -71,7 +45,6 @@
 
   newEventView.generalCheckbox = function (event) {
     event.preventDefault();
-    let id = this.id;
     TownHall.currentEvent[this.id] = this.checked;
   };
 
@@ -240,15 +213,6 @@
     return hourmin + ':' + '00';
   };
 
-  newEventView.formatTime = function(time) {
-    console.log('format time', time);
-    if (time.indexOf('AM') > 0 | time.indexOf('PM') > 0){
-      return newEventView.toTwentyFour(time);
-    } else {
-      return time + ':00';
-    }
-  };
-
   newEventView.validateDateTime = function($curValue, format, id) {
     if (!moment($curValue, format).isValid()) {
       $('#' + id + '-error').removeClass('hidden');
@@ -368,6 +332,48 @@
       });
     }
   };
+  newEventView.updateFieldsFromMember = function($form, $memberInput, $errorMessage, $memberformgroup, mocdata) {
+    var State = $form.find('#State');
+    var Party = $form.find('#Party');
+    if (mocdata.type === 'sen') {
+      var District = $form.find('.district-group').find('input');
+      District.val('Senate').parent().addClass('has-success');
+      TownHall.currentEvent.District = District.val();
+    } else if (mocdata.type === 'rep') {
+      var District = $form.find('.district-group').find('input');
+      District.val(mocdata.state + '-' + mocdata.district).parent().addClass('has-success');
+      TownHall.currentEvent.District = District.val();
+    }
+    $memberInput.val(mocdata.displayName);
+    Party.val(mocdata.party).parent().addClass('has-success');
+    State.val(mocdata.stateName).parent().addClass('has-success');
+    newEventView.updatedNewTownHallObject($form);
+    $errorMessage.html('');
+    $memberformgroup.removeClass('has-error').addClass('has-success');
+  }
+
+  newEventView.getEventDataFromMember = function(mocdata) {
+    TownHall.currentEvent.govtrack_id = mocdata.govtrack_id || null;
+    TownHall.currentEvent.thp_id = mocdata.thp_id || null;
+    TownHall.currentEvent.displayName = mocdata.displayName;
+    TownHall.currentEvent.district = mocdata.district;
+    TownHall.currentEvent.stateName = mocdata.stateName;
+    TownHall.currentEvent.party = mocdata.party;
+    TownHall.currentEvent.state = mocdata.state;
+
+    if (mocdata.type === 'sen') {
+      TownHall.currentEvent.district = null;
+      TownHall.currentEvent.Party = mocdata.party; //get rid of for v1
+      TownHall.currentEvent.State = mocdata.stateName; //get rid of for v1
+
+    } else if (mocdata.type === 'rep') {
+      var zeropadding = '00';
+      var updatedDistrict = zeropadding.slice(0, zeropadding.length - mocdata.district.length) + mocdata.district;
+      TownHall.currentEvent.district = updatedDistrict;
+      TownHall.currentEvent.Party = mocdata.party;
+      TownHall.currentEvent.State = mocdata.stateName;
+    }
+  }
 
   newEventView.memberChanged = function () {
     var $memberInput = $(this);
@@ -381,27 +387,13 @@
     if (newEventView.validateMember(member, $errorMessage, $memberformgroup)) {
       TownHall.currentKey = firebase.database().ref('townHallIds').push().key;
       TownHall.currentEvent.eventId = TownHall.currentKey;
-      var District = $form.find('#District');
-      var State = $form.find('#State');
-      var Party = $form.find('#Party');
       Moc.getMember(member).then(function(mocdata){
-        if (mocdata.type === 'sen') {
-          District.val('Senate').addClass('edited').parent().addClass('has-success');
-        } else if (mocdata.type === 'rep') {
-          District.val(mocdata.state + '-' + mocdata.district).addClass('edited').parent().addClass('has-success');
-        }
-        TownHall.currentEvent.district = mocdata.district;
-        TownHall.currentEvent.stateName = mocdata.stateName;
 
-        var fullname = mocdata.displayName;
-        $memberInput.val(fullname);
-        TownHall.currentEvent.govtrack_id = mocdata.govtrack_id;
-        Party.val(mocdata.party).addClass('edited').parent().addClass('has-success');
-        State.val(statesAb[mocdata.state]).addClass('edited').parent().addClass('has-success');
-        newEventView.updatedNewTownHallObject($form);
-        $errorMessage.html('');
-        $memberformgroup.removeClass('has-error').addClass('has-success');
+        newEventView.getEventDataFromMember(mocdata);
+        newEventView.updateFieldsFromMember($form, $memberInput, $errorMessage, $memberformgroup, mocdata);
+
       }).catch(function(errorMessage){
+        console.log(errorMessage);
         $('#member-form-group').addClass('has-error');
         $('.new-event-form #member-help-block').html('You can still submit this event, but the lookup failed. Please email meganrm@townhallproject.com this message: ', errorMessage);
       });

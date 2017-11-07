@@ -4,8 +4,7 @@ page('/',
 );
 
 page('/state/:state',
-newEventController.loadByState,
+  newEventController.loadByState,
   newEventController.index)
-
 
 page();
