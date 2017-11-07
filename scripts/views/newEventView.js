@@ -10,12 +10,23 @@
   TownHall.currentKey;
   TownHall.currentEvent = new TownHall();
 
-  // METHODS FOR BOTH
-
-  newEventView.render = function () {
+  newEventView.render = function (allnames) {
+    console.log('rendering');
+    typeaheadConfig = {
+      fitToElement: true,
+      delay: 200,
+      highlighter: function(item) { return item; }, // Kill ugly highlight
+      filter: function(selection) {
+        $('#Member').val(selection);
+      }
+    };
+    $('#Member').typeahead($.extend({source: allnames}, typeaheadConfig));
     if ($('#new-event-form-element').hasClass('hidden')) {
       $('#new-event-form-element').removeClass('hidden').hide().fadeIn();
     }
+  };
+
+  newEventView.init = function(){
   };
 
   newEventView.humanTime = function (time) {
@@ -43,30 +54,6 @@
     }
   };
 
-  // newEventView.formChanged = function () {
-  //   var $input = $(this);
-  //   var $form = $input.parents('form');
-  //   var $listgroup = $(this).parents('.list-group-item');
-  //   if (this.id === 'address') {
-  //     $form.find('#geocode-button').removeClass('disabled');
-  //     $form.find('#geocode-button').addClass('btn-blue');
-  //     $form.find('#locationCheck').val('');
-  //   }
-  //   $input.addClass('edited');
-  //   $form.find('#update-button').addClass('btn-blue');
-  //   $form.find('.timestamp').val(new Date());
-  //   newEventView.updatedView($form, $listgroup);
-  // };
-
-  // newEventView.dateChanged = function () {
-  //   var $input = $(this);
-  //   var $form = $input.parents('form');
-  //   var $listgroup = $(this).parents('.list-group-item');
-  //   $input.addClass('edited');
-  //   $form.find('#update-button').addClass('btn-blue');
-  //   $form.find('.timestamp').val(new Date());
-  //   newEventView.updatedView($form, $listgroup);
-  // };
 
   newEventView.dateString = function (event) {
     event.preventDefault();
@@ -84,7 +71,7 @@
 
   newEventView.generalCheckbox = function (event) {
     event.preventDefault();
-    let id = this.id
+    let id = this.id;
     TownHall.currentEvent[this.id] = this.checked;
   };
 
@@ -335,22 +322,6 @@
     $('#Member').val(selection);
   };
 
-  function setupTypeaheads(input) {
-    var typeaheadConfig = {
-      fitToElement: true,
-      delay: 200,
-      highlighter: function(item) { return item; }, // Kill ugly highlight
-      filter: function(selection) {
-        $(input).val(selection);
-      }
-    };
-    Moc.loadAll().then(function(allnames){
-      Moc.allNames = allnames;
-      $(input).typeahead($.extend({source: allnames}, typeaheadConfig));
-      newEventView.render();
-    });
-  }
-  setupTypeaheads('#Member');
 
   newEventView.validateMember = function (member, $errorMessage, $memberformgroup) {
     console.log(member);
