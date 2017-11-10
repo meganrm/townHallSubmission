@@ -47,10 +47,10 @@
     });
   };
 
-  TownHall.prototype.updateUserSubmission = function (key) {
+  TownHall.prototype.updateUserSubmission = function (key, path) {
     var newEvent = this;
     return new Promise(function (resolve, reject) {
-      firebase.database().ref('/UserSubmission/' + key).update(newEvent).catch(function(error){
+      firebase.database().ref(path + key).update(newEvent).catch(function(error){
         reject (error);
       });
       resolve(newEvent);

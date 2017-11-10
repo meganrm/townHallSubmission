@@ -7,7 +7,11 @@ module.exports = {
     "globals": {
       "firebase": true,
       "TownHall": true,
-      "Moc": true
+      "Moc": true,
+      "Handlebars": true,
+      "moment": true,
+      "Promise": true
+
     },
     "rules": {
         "indent": [

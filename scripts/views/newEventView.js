@@ -11,8 +11,7 @@
   TownHall.currentEvent = new TownHall();
 
   newEventView.render = function (allnames, type) {
-    console.log('rendering');
-    typeaheadConfig = {
+    var typeaheadConfig = {
       fitToElement: true,
       delay: 200,
       highlighter: function(item) { return item; }, // Kill ugly highlight
@@ -20,12 +19,24 @@
         $('#Member').val(selection);
       }
     };
+    $('#Member').typeahead('destroy');
     $('#Member').typeahead($.extend({source: allnames}, typeaheadConfig));
     if ($('#new-event-form-element').hasClass('hidden')) {
       $('#new-event-form-element').removeClass('hidden').hide().fadeIn();
     }
     if (type === 'state') {
-      $('#federal-district-group').addClass('hidden')
+      $('#federal-district-group').addClass('hidden');
+    } else {
+      $('#federal-district-group').removeClass('hidden');
+    }
+  };
+
+  newEventView.switchTab = function (state) {
+    $('.state-switcher').removeClass('active');
+    if (state) {
+      $('.state-switcher.' + state).addClass('active');
+    } else {
+      $('.state-switcher.federal').addClass('active');
     }
   };
 
@@ -147,7 +158,8 @@
       $('.general-inputs').removeClass('hidden');
       $('.adopter-data').removeClass('hidden');
       TownHall.currentEvent.iconFlag = 'activism';
-      setupTypeaheads('#districtAdopter');
+      //TODO: set this up
+      // setupTypeaheads('#districtAdopter');
       break;
     case 'No Events':
       $('.event-details').addClass('hidden');
@@ -350,7 +362,7 @@
     newEventView.updatedNewTownHallObject($form);
     $errorMessage.html('');
     $memberformgroup.removeClass('has-error').addClass('has-success');
-  }
+  };
 
   newEventView.getEventDataFromMember = function(mocdata) {
     TownHall.currentEvent.govtrack_id = mocdata.govtrack_id || null;
@@ -373,7 +385,7 @@
       TownHall.currentEvent.Party = mocdata.party;
       TownHall.currentEvent.State = mocdata.stateName;
     }
-  }
+  };
 
   newEventView.memberChanged = function () {
     var $memberInput = $(this);
@@ -408,7 +420,7 @@
     } else if (newTownHall.lat) {
       console.log('getting time zone');
       newTownHall.validateZone().then(function (returnedTH) {
-        returnedTH.updateUserSubmission(returnedTH.eventId).then(function (writtenTH) {
+        returnedTH.updateUserSubmission(returnedTH.eventId, TownHall.savePath).then(function (writtenTH) {
           newEventView.resetData();
           console.log('wrote to database: ', writtenTH);
         }).catch(function(error){
@@ -500,7 +512,7 @@
       newTownHall.userID = firebase.auth().currentUser.uid;
       newTownHall = newEventView.validateDateNew(id, newTownHall);
       if (newTownHall) {
-        newTownHall.updateUserSubmission(newTownHall.eventId).then(function (dataWritten) {
+        newTownHall.updateUserSubmission(newTownHall.eventId, TownHall.savePath).then(function (dataWritten) {
           TownHall.allTownHallsFB[dataWritten.eventId] = dataWritten;
           newEventView.resetData();
           console.log('wrote to database: ', newTownHall);
@@ -513,6 +525,11 @@
       console.log('missing fields');
     }
   };
+
+  // $('.nav-pills').on('click', '.state-switcher', function(){
+  //   $('.state-switcher').removeClass('active');
+  //   $(this).addClass('active');
+  // });
 
   // event listeners for new form
   $('.new-event-form').on('change', '#Member', newEventView.memberChanged);

@@ -14,11 +14,10 @@
     ctx.congressScope = 'state';
     ctx.lookupPath = 'state_legislators_id/' + ctx.params.state + '/';
     Moc.lookupPath = 'state_legislators_data/' + ctx.params.state + '/';
-    TownHall.savePath = 'state_legislators_user_submission/' + ctx.params.state + '/'
-
+    TownHall.savePath = 'state_legislators_user_submission/' + ctx.params.state + '/';
     Moc.loadAll(ctx.lookupPath).then(function(allnames){
       ctx.mocs = allnames;
-      newEventController.index(ctx)
+      newEventController.index(ctx);
       next();
     });
   };
@@ -27,7 +26,7 @@
     ctx.congressScope = 'federal';
     ctx.lookupPath = 'mocID/';
     Moc.lookupPath = 'mocData/';
-    TownHall.savePath = 'UserSubmission/'
+    TownHall.savePath = 'UserSubmission/';
     if (Moc.allNames.length > 0) {
       ctx.mocs = Moc.allFederal;
       next();
@@ -36,12 +35,17 @@
         console.log('got names');
         Moc.allFederal = allnames;
         ctx.mocs = Moc.allFederal;
-        // newEventController.index(ctx)
         return next();
       }).catch(function(err){
         console.log(err);
       });
     }
+  };
+
+  newEventController.switchTab = function(ctx, next) {
+    console.log(ctx.params.state);
+    newEventView.switchTab(ctx.params.state);
+    next();
   };
 
   module.newEventController = newEventController;
