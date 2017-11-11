@@ -46,7 +46,7 @@
   <body>
   <div class="container">
     <div class="row">
-      <div class="col-sm-4">
+      <div class="col-sm-3">
         <button type="button" name="button" id="scroll-to-top" class="btn btn-white" style="visibility:hidden;"><i class="fa fa-chevron-up fa-4x" aria-hidden="true"></i></button>
         <section class="session-data">
           <h4>Welcome</h4>
@@ -61,23 +61,27 @@
             <ul id="current-pending" class="list-group events-table">
             </ul><!--end table-->
           </div>
-          <div class="nav nav-pills nav-stacked" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-            <li role="presentation" class="active state-switcher federal"><a id="v-pills-home-tab" href="/" role="tab" aria-controls="v-pills-home" aria-selected="true">Federal Events</a></li>
-            <li role="presentation" class="state-switcher AZ"><a  id="v-pills-arizona-tab" href="/state/AZ" role="tab" aria-controls="v-pills-profile" aria-selected="false">Arizona</a></li>
-            <li role="presentation" class="state-switcher VA"><a  id="v-pills-virgina-tab" href="/state/VA" role="tab" aria-controls="v-pills-messages" aria-selected="false">Virginia</a></li>
-            <li role="presentation" class="state-switcher NC"><a  id="v-pills-northcarolina-tab" href="/state/NC" role="tab" aria-controls="v-pills-settings" aria-selected="false">North Carolina</a></li>
-            <li role="presentation" class="state-switcher CO"><a  id="v-pills-colorado-tab" href="/state/CO" role="tab" aria-controls="v-pills-settings" aria-selected="false">Colorado</a></li>
+          <div class="">
+            <div class="nav nav-pills nav-stacked" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+              <li><h4>Enter events for Congress</h4></li>
+              <li role="presentation" class="active state-switcher federal"><a id="v-pills-home-tab" href="/" role="tab" aria-controls="v-pills-home" aria-selected="true">Federal</a></li>
+              <li><h4>Enter events for state legislators</h4></li>
+              <li role="presentation" class="state-switcher AZ"><a  id="v-pills-arizona-tab" href="/state/AZ" role="tab" aria-controls="v-pills-profile" aria-selected="false">Arizona</a></li>
+              <li role="presentation" class="state-switcher VA"><a  id="v-pills-virgina-tab" href="/state/VA" role="tab" aria-controls="v-pills-messages" aria-selected="false">Virginia</a></li>
+              <li role="presentation" class="state-switcher NC"><a  id="v-pills-northcarolina-tab" href="/state/NC" role="tab" aria-controls="v-pills-settings" aria-selected="false">North Carolina</a></li>
+              <li role="presentation" class="state-switcher CO"><a  id="v-pills-colorado-tab" href="/state/CO" role="tab" aria-controls="v-pills-settings" aria-selected="false">Colorado</a></li>
+            </div>
           </div>
         </section>
       </div>
-      <div class="col-sm-8">
+      <div class="col-sm-8 col-md-offset-1">
           <div class="page" id="new-page">
             <section class="row">
               <div class="new-event-form col-md-9">
                 <h3 class="text-success">Enter a new town hall event</h3>
                 <form class="hidden" id="new-event-form-element">
                   <section class="member-info text-info">
-                    <h4>Member of Congress Information<br>
+                    <h4 id="member-title">Member of Congress Information<br>
                       <small>Enter their name and we will auto-fill the information</small>
                     </h4>
                     <div class="form-group col-md-12" id="member-form-group">

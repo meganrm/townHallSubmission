@@ -4,7 +4,7 @@
 
   newEventController.index = function(ctx) {
     if(ctx.mocs.length) {
-      newEventView.render(ctx.mocs, ctx.congressScope);
+      newEventView.render(ctx.mocs, ctx.congressScope, ctx.params.state);
     } else{
       page('/');
     }
@@ -32,7 +32,6 @@
       next();
     } else {
       return Moc.loadAll(ctx.lookupPath).then(function(allnames){
-        console.log('got names');
         Moc.allFederal = allnames;
         ctx.mocs = Moc.allFederal;
         return next();
@@ -43,7 +42,6 @@
   };
 
   newEventController.switchTab = function(ctx, next) {
-    console.log(ctx.params.state);
     newEventView.switchTab(ctx.params.state);
     next();
   };

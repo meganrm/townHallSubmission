@@ -10,7 +10,7 @@
   TownHall.currentKey;
   TownHall.currentEvent = new TownHall();
 
-  newEventView.render = function (allnames, type) {
+  newEventView.render = function (allnames, type, state) {
     var typeaheadConfig = {
       fitToElement: true,
       delay: 200,
@@ -19,6 +19,7 @@
         $('#Member').val(selection);
       }
     };
+    newEventView.changeTitle(state);
     $('#Member').typeahead('destroy');
     $('#Member').typeahead($.extend({source: allnames}, typeaheadConfig));
     if ($('#new-event-form-element').hasClass('hidden')) {
@@ -38,6 +39,14 @@
     } else {
       $('.state-switcher.federal').addClass('active');
     }
+  };
+
+  newEventView.changeTitle = function (state) {
+    var text = 'Member of Congress Information';
+    if (state) {
+      text = 'Member of ' + state + ' state legislature information';
+    }
+    $('#member-title').text(text);
   };
 
   newEventView.dateString = function (event) {
@@ -525,11 +534,6 @@
       console.log('missing fields');
     }
   };
-
-  // $('.nav-pills').on('click', '.state-switcher', function(){
-  //   $('.state-switcher').removeClass('active');
-  //   $(this).addClass('active');
-  // });
 
   // event listeners for new form
   $('.new-event-form').on('change', '#Member', newEventView.memberChanged);

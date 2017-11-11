@@ -42,7 +42,7 @@
       updates['/townHallIds/' + key] = metaData;
       resolve(newEvent);
       return firebase.database().ref().update(updates).catch(function (error) {
-        reject('could not update', newEvent);
+        reject('could not update', newEvent, error);
       });
     });
   };
