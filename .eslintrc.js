@@ -10,7 +10,8 @@ module.exports = {
       "Moc": true,
       "Handlebars": true,
       "moment": true,
-      "Promise": true
+      "Promise": true,
+      "page": true
 
     },
     "rules": {

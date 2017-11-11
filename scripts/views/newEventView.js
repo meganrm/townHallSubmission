@@ -2,7 +2,7 @@
 (function (module) {
 // For handling user submitted events.
 // Not being used yet.
-/*global firebase TownHall Moc Handlebars regEx statesAb:true*/
+/*global firebase TownHall Moc Handlebars regEx:true*/
 
   var provider = new firebase.auth.GoogleAuthProvider();
 
@@ -356,12 +356,11 @@
   newEventView.updateFieldsFromMember = function($form, $memberInput, $errorMessage, $memberformgroup, mocdata) {
     var State = $form.find('#State');
     var Party = $form.find('#Party');
+    var District = $form.find('.district-group').find('input');
     if (mocdata.type === 'sen') {
-      var District = $form.find('.district-group').find('input');
       District.val('Senate').parent().addClass('has-success');
       TownHall.currentEvent.District = District.val();
     } else if (mocdata.type === 'rep') {
-      var District = $form.find('.district-group').find('input');
       District.val(mocdata.state + '-' + mocdata.district).parent().addClass('has-success');
       TownHall.currentEvent.District = District.val();
     }

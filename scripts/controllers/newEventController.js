@@ -1,7 +1,6 @@
 (function(module) {
   var newEventController = {};
 
-
   newEventController.index = function(ctx) {
     if(ctx.mocs.length) {
       newEventView.render(ctx.mocs, ctx.congressScope, ctx.params.state);
