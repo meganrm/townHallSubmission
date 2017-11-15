@@ -204,10 +204,6 @@
       TownHall.currentEvent.iconFlag = 'activism';
       $('.general-inputs').removeClass('hidden');
       break;
-    case 'Hearing':
-      $('.general-inputs').removeClass('hidden');
-      TownHall.currentEvent.iconFlag = '';
-      break;
     default:
       $('.general-inputs').removeClass('hidden');
     }
