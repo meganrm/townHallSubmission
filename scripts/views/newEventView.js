@@ -205,8 +205,8 @@
       TownHall.currentEvent.iconFlag = 'in-person';
       $('.general-inputs').removeClass('hidden');
       break;
-    case 'Campaign Town Hall':
-      TownHall.currentEvent.iconFlag = 'in-person';
+    case 'Candidate Town Hall':
+      TownHall.currentEvent.iconFlag = 'campaign';
       $('.general-inputs').removeClass('hidden');
       break;
     case 'Hearing':
