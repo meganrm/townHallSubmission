@@ -84,7 +84,6 @@
 
   newEventView.generalCheckbox = function (event) {
     event.preventDefault();
-    let id = this.id
     TownHall.currentEvent[this.id] = this.checked;
   };
 
@@ -204,6 +203,18 @@
       break;
     case 'Town Hall':
       TownHall.currentEvent.iconFlag = 'in-person';
+      $('.general-inputs').removeClass('hidden');
+      break;
+    case 'Campaign Town Hall':
+      TownHall.currentEvent.iconFlag = 'in-person';
+      $('.general-inputs').removeClass('hidden');
+      break;
+    case 'Hearing':
+      TownHall.currentEvent.iconFlag = null;
+      $('.general-inputs').removeClass('hidden');
+      break;
+    case 'DC Event':
+      TownHall.currentEvent.iconFlag = null;
       $('.general-inputs').removeClass('hidden');
       break;
     case 'Empty Chair Town Hall':
@@ -419,8 +430,21 @@
         } else if (mocdata.type === 'rep') {
           District.val(mocdata.state + '-' + mocdata.district).addClass('edited').parent().addClass('has-success');
         }
-        TownHall.currentEvent.district = mocdata.district;
-        TownHall.currentEvent.stateName = mocdata.stateName;
+
+        TownHall.currentEvent.party = mocdata.party;
+        TownHall.currentEvent.state = mocdata.state;
+        if (mocdata.stateName) {
+          TownHall.currentEvent.stateName = mocdata.stateName;
+        }
+        if (mocdata.type === 'sen') {
+          TownHall.currentEvent.district = null;
+        } else if (mocdata.type === 'rep') {
+          var zeropadding = '00';
+          var updatedDistrict = zeropadding.slice(0, zeropadding.length - mocdata.district.length) + mocdata.district;
+          TownHall.currentEvent.district = updatedDistrict;
+        } else {
+          console.log('Cannot get district, no \'rep\' or \'sen\' value verified');
+        }
 
         var fullname = mocdata.displayName;
         $memberInput.val(fullname);
@@ -595,8 +619,7 @@
     $submitted.removeClass('hidden').hide().fadeIn();
     var $submittedTotal = $('#submitted-total');
     $submittedTotal.html('0');
-    firebase.database().ref('users/' + firebase.auth().currentUser.uid + '/currentEvents/').on('child_added', function getSnapShot(snapshot) {
-      var ele = TownHall.allTownHallsFB[snapshot.val()];
+    firebase.database().ref('users/' + firebase.auth().currentUser.uid + '/currentEvents/').on('child_added', function getSnapShot() {
       var total = parseInt($submittedTotal.html());
       $submittedTotal.html(total + 1);
     });
@@ -618,11 +641,11 @@
   // Sign in fuction for firebase
   newEventView.signIn = function signIn() {
     firebase.auth().signInWithRedirect(provider);
-    firebase.auth().getRedirectResult().then(function (result) {
+    firebase.auth().getRedirectResult().then(function () {
       // This gives you a Google Access Token. You can use it to access the Google API.
-      var token = result.credential.accessToken;
+      // var token = result.credential.accessToken;
       // The signed-in user info.
-      var user = result.user;
+      // var user = result.user;
     }).catch(function (error) {
       // Handle Errors here.
       var errorCode = error.code;
