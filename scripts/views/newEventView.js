@@ -45,30 +45,30 @@
     }
   };
 
-  newEventView.formChanged = function () {
-    var $input = $(this);
-    var $form = $input.parents('form');
-    var $listgroup = $(this).parents('.list-group-item');
-    if (this.id === 'address') {
-      $form.find('#geocode-button').removeClass('disabled');
-      $form.find('#geocode-button').addClass('btn-blue');
-      $form.find('#locationCheck').val('');
-    }
-    $input.addClass('edited');
-    $form.find('#update-button').addClass('btn-blue');
-    $form.find('.timestamp').val(new Date());
-    newEventView.updatedView($form, $listgroup);
-  };
+  // newEventView.formChanged = function () {
+  //   var $input = $(this);
+  //   var $form = $input.parents('form');
+  //   var $listgroup = $(this).parents('.list-group-item');
+  //   if (this.id === 'address') {
+  //     $form.find('#geocode-button').removeClass('disabled');
+  //     $form.find('#geocode-button').addClass('btn-blue');
+  //     $form.find('#locationCheck').val('');
+  //   }
+  //   $input.addClass('edited');
+  //   $form.find('#update-button').addClass('btn-blue');
+  //   $form.find('.timestamp').val(new Date());
+  //   newEventView.updatedView($form, $listgroup);
+  // };
 
-  newEventView.dateChanged = function () {
-    var $input = $(this);
-    var $form = $input.parents('form');
-    var $listgroup = $(this).parents('.list-group-item');
-    $input.addClass('edited');
-    $form.find('#update-button').addClass('btn-blue');
-    $form.find('.timestamp').val(new Date());
-    newEventView.updatedView($form, $listgroup);
-  };
+  // newEventView.dateChanged = function () {
+  //   var $input = $(this);
+  //   var $form = $input.parents('form');
+  //   var $listgroup = $(this).parents('.list-group-item');
+  //   $input.addClass('edited');
+  //   $form.find('#update-button').addClass('btn-blue');
+  //   $form.find('.timestamp').val(new Date());
+  //   newEventView.updatedView($form, $listgroup);
+  // };
 
   newEventView.dateString = function (event) {
     event.preventDefault();
@@ -82,6 +82,11 @@
       $dateInput.hide();
       $checkbox.text('Click to enter repeating event description');
     }
+  };
+
+  newEventView.generalCheckbox = function (event) {
+    event.preventDefault();
+    TownHall.currentEvent[this.id] = this.checked;
   };
 
   newEventView.geoCodeOnState = function () {
@@ -217,6 +222,18 @@
       break;
     case 'Town Hall':
       TownHall.currentEvent.iconFlag = 'in-person';
+      $('.general-inputs').removeClass('hidden');
+      break;
+    case 'Candidate Town Hall':
+      TownHall.currentEvent.iconFlag = 'campaign';
+      $('.general-inputs').removeClass('hidden');
+      break;
+    case 'Hearing':
+      TownHall.currentEvent.iconFlag = null;
+      $('.general-inputs').removeClass('hidden');
+      break;
+    case 'DC Event':
+      TownHall.currentEvent.iconFlag = null;
       $('.general-inputs').removeClass('hidden');
       break;
     case 'Empty Chair Town Hall':
@@ -441,13 +458,12 @@
         if (mocdata.type === 'sen') {
           TownHall.currentEvent.district = null;
         } else if (mocdata.type === 'rep') {
-          var zeropadding = "00";
+          var zeropadding = '00';
           var updatedDistrict = zeropadding.slice(0, zeropadding.length - mocdata.district.length) + mocdata.district;
           TownHall.currentEvent.district = updatedDistrict;
         } else {
           console.log('Cannot get district, no \'rep\' or \'sen\' value verified');
         }
-
 
         var fullname = mocdata.displayName;
         $memberInput.val(fullname);
@@ -587,6 +603,7 @@
   $('.new-event-form').on('change', '#meetingType', newEventView.meetingTypeChanged);
   $('.new-event-form').on('change', '.form-control', newEventView.newformChanged);
   $('.new-event-form').on('change', '.date-string', newEventView.dateString);
+  $('.new-event-form').on('change', '.general-checkbox', newEventView.generalCheckbox);
   $('.new-event-form').on('change', '#address', newEventView.addressChanged);
   $('.new-event-form').on('submit', 'form', newEventView.submitNewEvent);
 
@@ -621,8 +638,7 @@
     $submitted.removeClass('hidden').hide().fadeIn();
     var $submittedTotal = $('#submitted-total');
     $submittedTotal.html('0');
-    firebase.database().ref('users/' + firebase.auth().currentUser.uid + '/currentEvents/').on('child_added', function getSnapShot(snapshot) {
-      var ele = TownHall.allTownHallsFB[snapshot.val()];
+    firebase.database().ref('users/' + firebase.auth().currentUser.uid + '/currentEvents/').on('child_added', function getSnapShot() {
       var total = parseInt($submittedTotal.html());
       $submittedTotal.html(total + 1);
     });
@@ -644,11 +660,11 @@
   // Sign in fuction for firebase
   newEventView.signIn = function signIn() {
     firebase.auth().signInWithRedirect(provider);
-    firebase.auth().getRedirectResult().then(function (result) {
+    firebase.auth().getRedirectResult().then(function () {
       // This gives you a Google Access Token. You can use it to access the Google API.
-      var token = result.credential.accessToken;
+      // var token = result.credential.accessToken;
       // The signed-in user info.
-      var user = result.user;
+      // var user = result.user;
     }).catch(function (error) {
       // Handle Errors here.
       var errorCode = error.code;
