@@ -10,8 +10,6 @@
   TownHall.currentKey;
   TownHall.currentEvent = new TownHall();
 
-  let disclaimer = false;
-
   // METHODS FOR BOTH
 
   newEventView.render = function () {
@@ -155,7 +153,6 @@
   };
 
   let addDisclaimer = function() {
-    disclaimer = true;
     $("#Notes").val('Town Hall Project lists this event and any ' + 
                     'third-party link as public information and not ' + 
                     'as an endorsement of a participating candidate, campaign, or party.');
@@ -181,10 +178,7 @@
   newEventView.meetingTypeChanged = function (event) {
     event.preventDefault();
     var value = $(this).val();
-    if (disclaimer === true && value !== 'Campaign Town Hall' || 'Ticketed Event') {
-      disclaimer = false;
-      $("#Notes").val('');
-    }
+    $("#Notes").val('');
     $('.non-standard').addClass('hidden');
     $('#meetingType-error').addClass('hidden');
     $('#meetingType').parent().removeClass('has-error');
@@ -207,13 +201,8 @@
       $('.new-event-form').on('submit', newEventView.saveNoEvent);
       break;
     case 'Ticketed Event':
+      addDisclaimer();
       TownHall.currentEvent.iconFlag = 'in-person';
-      addDisclaimer();
-      $('.general-inputs').removeClass('hidden');
-      break;
-    case 'Campaign Town Hall':
-      TownHall.currentEvent.iconFlag = '';
-      addDisclaimer();
       $('.general-inputs').removeClass('hidden');
       break;
     case 'Office Hours':
@@ -224,7 +213,8 @@
       TownHall.currentEvent.iconFlag = 'in-person';
       $('.general-inputs').removeClass('hidden');
       break;
-    case 'Candidate Town Hall':
+    case 'Campaign Town Hall':
+      addDisclaimer();
       TownHall.currentEvent.iconFlag = 'campaign';
       $('.general-inputs').removeClass('hidden');
       break;
