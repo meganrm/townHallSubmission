@@ -10,12 +10,15 @@
 
   Moc.getMember = function (member) {
     var memberKey;
+    var firstname;
+    var middlename;
+    var lastname;
     var nameArray = member.replace(/\./g, '').split(' '); //can't store any endpoints with '.' in them.
     if (nameArray.length > 2) {
 // can be in format Michael H Wray, Yvonne Lewis Holley, L. Louise Lucas, Lynwood W. Lewis, Jr.
-      var firstname = nameArray[0].toLowerCase();
-      var middlename = nameArray[1].toLowerCase();
-      var lastname = nameArray[2].toLowerCase().replace(/\,/g, '');
+      firstname = nameArray[0].toLowerCase();
+      middlename = nameArray[1].toLowerCase();
+      lastname = nameArray[2].toLowerCase().replace(/\,/g, '');
       if (firstname.length === 1 || middlename.length === 1) {
         memberKey = lastname + '_' + firstname + '_' + middlename;
       } else {
@@ -23,8 +26,8 @@
         memberKey = middlename + lastname + '_' + firstname;
       }
     } else {
-      var firstname = nameArray[0].toLowerCase();
-      var lastname = nameArray[1].toLowerCase().replace(/\,/g, '');
+      firstname = nameArray[0].toLowerCase();
+      lastname = nameArray[1].toLowerCase().replace(/\,/g, '');
       memberKey = lastname + '_' + firstname;
     }
     console.log(memberKey, Moc.mocIdPath);

@@ -429,13 +429,13 @@
       console.log('getting time zone');
       newTownHall.validateZone().then(function (returnedTH) {
         returnedTH.updateUserSubmission(returnedTH.eventId, TownHall.savePath).then(function (writtenTH) {
+          TownHall.allTownHallsFB[returnedTH.eventId] = returnedTH;
           newEventView.resetData();
           console.log('wrote to database: ', writtenTH);
         }).catch(function(error){
           $('general-error').text('Please email meganrm@townhallproject.com this error:', error).removeClass('hidden');
         });
-        TownHall.allTownHallsFB[returnedTH.eventId] = returnedTH;
-        console.log('writing to database: ', returnedTH);
+
       }).catch(function (error) {
         $('general-error').text(error).removeClass('hidden');
         console.log('could not get timezone', error);
