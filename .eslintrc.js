@@ -11,8 +11,9 @@ module.exports = {
       "Handlebars": true,
       "moment": true,
       "Promise": true,
-      "page": true
-
+      "page": true,
+      "newEventController": true,
+      "newEventView": true,
     },
     "rules": {
         "indent": [

@@ -4,7 +4,7 @@ page('/',
   newEventController.index
 );
 
-page('/state/:state',
+page('/:state',
   newEventController.switchTab,
   newEventController.loadByState,
   newEventController.index);

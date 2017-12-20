@@ -520,10 +520,13 @@
       newTownHall.userID = firebase.auth().currentUser.uid;
       newTownHall = newEventView.validateDateNew(id, newTownHall);
       if (newTownHall) {
+        console.log(TownHall.savePath);
         newTownHall.updateUserSubmission(newTownHall.eventId, TownHall.savePath).then(function (dataWritten) {
           TownHall.allTownHallsFB[dataWritten.eventId] = dataWritten;
           newEventView.resetData();
-          console.log('wrote to database: ', newTownHall);
+          console.log('wrote to database: ', dataWritten);
+        }).catch(function(error){
+          console.log(error);
         });
       }
     } else {
@@ -578,8 +581,7 @@
     $submitted.removeClass('hidden').hide().fadeIn();
     var $submittedTotal = $('#submitted-total');
     $submittedTotal.html('0');
-    firebase.database().ref('users/' + firebase.auth().currentUser.uid + '/currentEvents/').on('child_added', function getSnapShot(snapshot) {
-      var ele = TownHall.allTownHallsFB[snapshot.val()];
+    firebase.database().ref('users/' + firebase.auth().currentUser.uid + '/currentEvents/').on('child_added', function getSnapShot() {
       var total = parseInt($submittedTotal.html());
       $submittedTotal.html(total + 1);
     });
@@ -601,11 +603,11 @@
   // Sign in fuction for firebase
   newEventView.signIn = function signIn() {
     firebase.auth().signInWithRedirect(provider);
-    firebase.auth().getRedirectResult().then(function (result) {
+    firebase.auth().getRedirectResult().then(function () {
       // This gives you a Google Access Token. You can use it to access the Google API.
-      var token = result.credential.accessToken;
+      // var token = result.credential.accessToken;
       // The signed-in user info.
-      var user = result.user;
+      // var user = result.user;
     }).catch(function (error) {
       // Handle Errors here.
       var errorCode = error.code;

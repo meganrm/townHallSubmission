@@ -2,7 +2,7 @@
   var newEventController = {};
 
   newEventController.index = function(ctx) {
-    if(ctx.mocs.length) {
+    if (ctx.mocs.length) {
       newEventView.render(ctx.mocs, ctx.congressScope, ctx.params.state);
     } else{
       page('/');
@@ -20,7 +20,7 @@
       next();
     });
   };
-
+  
   newEventController.loadFederal = function(ctx, next) {
     ctx.congressScope = 'federal';
     ctx.lookupPath = 'mocID/';
