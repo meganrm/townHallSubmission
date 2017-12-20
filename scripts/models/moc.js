@@ -10,17 +10,32 @@
 
   Moc.getMember = function (member) {
     var memberKey;
-    if (member.split(' ').length === 3) {
-      memberKey = member.split(' ')[1].toLowerCase() + member.split(' ')[2].toLowerCase() + '_' + member.split(' ')[0].toLowerCase();
+    var nameArray = member.replace(/\./g, '').split(' '); //can't store any endpoints with '.' in them.
+    if (nameArray.length > 2) {
+// can be in format Michael H Wray, Yvonne Lewis Holley, L. Louise Lucas, Lynwood W. Lewis, Jr.
+      var firstname = nameArray[0].toLowerCase();
+      var middlename = nameArray[1].toLowerCase();
+      var lastname = nameArray[2].toLowerCase().replace(/\,/g, '');
+      if (firstname.length === 1 || middlename.length === 1) {
+        memberKey = lastname + '_' + firstname + '_' + middlename;
+      } else {
+//not ideal, but we had some members with two last names
+        memberKey = middlename + lastname + '_' + firstname;
+      }
     } else {
-      memberKey = member.split(' ')[1].toLowerCase() + '_' + member.split(' ')[0].toLowerCase();
+      var firstname = nameArray[0].toLowerCase();
+      var lastname = nameArray[1].toLowerCase().replace(/\,/g, '');
+      memberKey = lastname + '_' + firstname;
     }
-    var memberid = Moc.allMocsObjs[memberKey].id;
-    console.log(Moc.lookupPath, memberid);
+    console.log(memberKey, Moc.mocIdPath);
     return new Promise(function(resolve, reject){
-      firebase.database().ref(Moc.lookupPath + memberid).once('value').then(function (snapshot) {
+      firebase.database().ref(Moc.mocIdPath + memberKey).once('value').then(function (snapshot) {
         if (snapshot.exists()) {
-          resolve(snapshot.val());
+          firebase.database().ref(Moc.mocDataPath + snapshot.val().id).once('value').then(function(dataSnapshot){
+            if (dataSnapshot.exists()) {
+              resolve(dataSnapshot.val());
+            }
+          });
         } else {
           reject('That member is not in our database, please check the spelling, and only use first and last name.');
 

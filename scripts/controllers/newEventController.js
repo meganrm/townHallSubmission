@@ -11,26 +11,28 @@
 
   newEventController.loadByState = function(ctx, next) {
     ctx.congressScope = 'state';
-    ctx.lookupPath = 'state_legislators_id/' + ctx.params.state + '/';
-    Moc.lookupPath = 'state_legislators_data/' + ctx.params.state + '/';
+    ctx.mocNamesPath = 'state_legislators_id/' + ctx.params.state + '/';
+    Moc.mocIdPath = 'state_legislators_id/' + ctx.params.state + '/';
+    Moc.mocDataPath = 'state_legislators_data/' + ctx.params.state + '/';
     TownHall.savePath = 'state_legislators_user_submission/' + ctx.params.state + '/';
-    Moc.loadAll(ctx.lookupPath).then(function(allnames){
+    Moc.loadAll(ctx.mocNamesPath).then(function(allnames){
       ctx.mocs = allnames;
       newEventController.index(ctx);
       next();
     });
   };
-  
+
   newEventController.loadFederal = function(ctx, next) {
     ctx.congressScope = 'federal';
-    ctx.lookupPath = 'mocID/';
-    Moc.lookupPath = 'mocData/';
+    ctx.mocNamesPath = 'mocID/';
+    Moc.mocIdPath = 'mocID/';
+    Moc.mocDataPath = 'mocData/';
     TownHall.savePath = 'UserSubmission/';
     if (Moc.allNames.length > 0) {
       ctx.mocs = Moc.allFederal;
       next();
     } else {
-      return Moc.loadAll(ctx.lookupPath).then(function(allnames){
+      return Moc.loadAll(ctx.mocNamesPath).then(function(allnames){
         Moc.allFederal = allnames;
         ctx.mocs = Moc.allFederal;
         return next();
