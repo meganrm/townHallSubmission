@@ -152,6 +152,12 @@
     $form.find('#meetingType').change();
   };
 
+  let addDisclaimer = function() {
+    $("#Notes").val('Town Hall Project lists this event and any ' + 
+                    'third-party link as public information and not ' + 
+                    'as an endorsement of a participating candidate, campaign, or party.');
+  };
+
   newEventView.changeParty = function (event) {
     event.preventDefault();
     var $form = $(this).parents('form');
@@ -172,6 +178,7 @@
   newEventView.meetingTypeChanged = function (event) {
     event.preventDefault();
     var value = $(this).val();
+    $("#Notes").val('');
     $('.non-standard').addClass('hidden');
     $('#meetingType-error').addClass('hidden');
     $('#meetingType').parent().removeClass('has-error');
@@ -194,6 +201,7 @@
       $('.new-event-form').on('submit', newEventView.saveNoEvent);
       break;
     case 'Ticketed Event':
+      addDisclaimer();
       TownHall.currentEvent.iconFlag = 'in-person';
       $('.general-inputs').removeClass('hidden');
       break;
@@ -205,7 +213,8 @@
       TownHall.currentEvent.iconFlag = 'in-person';
       $('.general-inputs').removeClass('hidden');
       break;
-    case 'Candidate Town Hall':
+    case 'Campaign Town Hall':
+      addDisclaimer();
       TownHall.currentEvent.iconFlag = 'campaign';
       $('.general-inputs').removeClass('hidden');
       break;
