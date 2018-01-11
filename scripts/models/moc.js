@@ -1,64 +1,68 @@
 (function (module) {
-    function Moc(opts) {
-        for (var keys in opts) {
-            this[keys] = opts[keys];
-        }
+  function Moc(opts) {
+    for (var keys in opts) {
+      this[keys] = opts[keys];
+    }
+  }
+
+  Moc.allMocsObjs = {};
+  Moc.allNames = [];
+
+  Moc.getMember = function (member) {
+    var memberKey;
+    if (member.split(' ').length === 3) {
+      memberKey = member.split(' ')[1].toLowerCase() + member.split(' ')[2].toLowerCase() + '_' + member.split(' ')[0].toLowerCase();
+    } else {
+      memberKey = member.split(' ')[1].toLowerCase() + '_' + member.split(' ')[0].toLowerCase();
     }
 
-    Moc.allMocsObjs = {};
-    Moc.allNames = [];
-
-    Moc.getMember = function (member) {
-      var memberKey;
-      if (member.split(' ').length === 3) {
-          memberKey = member.split(' ')[1].toLowerCase() + member.split(' ')[2].toLowerCase() + '_' + member.split(' ')[0].toLowerCase();
-      } else {
-          memberKey = member.split(' ')[1].toLowerCase() + '_' + member.split(' ')[0].toLowerCase();
+    return new Promise(function(resolve, reject){
+      var memberid = Moc.allMocsObjs[memberKey] ? Moc.allMocsObjs[memberKey].id : null;
+      if (!memberid) {
+        reject('That member is not in our database, please check the spelling, and only use first and last name.');
       }
-      var memberid = Moc.allMocsObjs[memberKey].id;
-      return new Promise(function(resolve, reject){
-        firebase.database().ref('mocData/' + memberid).once('value').then(function (snapshot) {
-            if (snapshot.exists()) {
-              resolve(snapshot.val())
-            } else {
-              reject('That member is not in our database, please check the spelling, and only use first and last name.')
+      firebase.database().ref('mocData/' + memberid).once('value').then(function (snapshot) {
+        if (snapshot.exists()) {
+          resolve(snapshot.val());
+        } else {
+          reject('That member is not in our database, please check the spelling, and only use first and last name.');
 
+        }
+      });
+    });
+  };
+
+  Moc.loadAll = function(){
+    var allNames = [];
+    return new Promise(function (resolve, reject) {
+      firebase.database().ref('mocID/').once('value').then(function(snapshot){
+        snapshot.forEach(function(member){
+          var memberobj = new Moc(member.val());
+          Moc.allMocsObjs[member.key] = memberobj;
+          var name = memberobj.nameEntered;
+          if (!name) {
+            console.log(member.key);
+          } else {
+            if (allNames.indexOf(name) === -1){
+              allNames.push(name);
             }
-        })
-      })
-    }
-
-    Moc.loadAll = function(){
-        var allNames = [];
-        return new Promise(function (resolve, reject) {
-            firebase.database().ref('mocID/').once('value').then(function(snapshot){
-                snapshot.forEach(function(member){
-                    var memberobj = new Moc(member.val());
-                    Moc.allMocsObjs[member.key] = memberobj;
-                    var name = memberobj.nameEntered;
-                    if (!name) {
-                        console.log(member.key);
-                    } else {
-                        if (allNames.indexOf(name) === -1){
-                            allNames.push(name);
-                        }
-                    }
-                });
-                resolve(allNames);
-            });
+          }
         });
-    };
+        resolve(allNames);
+      });
+    });
+  };
 
-    Moc.prototype.updateFB = function () {
-        var mocObj = this;
-        return new Promise(function (resolve, reject) {
-            firebase.database().ref('/mocData/' + mocObj.govtrack_id).update(mocObj).then(function(){
-                resolve(mocObj);
-            }).catch(function (error) {
-                reject('could not update', mocObj);
-            });
-        });
-    };
+  Moc.prototype.updateFB = function () {
+    var mocObj = this;
+    return new Promise(function (resolve, reject) {
+      firebase.database().ref('/mocData/' + mocObj.govtrack_id).update(mocObj).then(function(){
+        resolve(mocObj);
+      }).catch(function (error) {
+        reject('could not update', mocObj);
+      });
+    });
+  };
 
-    module.Moc = Moc;
+  module.Moc = Moc;
 })(window);
