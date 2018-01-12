@@ -428,10 +428,9 @@
     } else if (newTownHall.lat) {
       console.log('getting time zone');
       newTownHall.validateZone().then(function (returnedTH) {
-        returnedTH.updateUserSubmission(returnedTH.eventId, TownHall.savePath).then(function (writtenTH) {
+        returnedTH.updateUserSubmission(returnedTH.eventId, TownHall.savePath).then(function () {
           TownHall.allTownHallsFB[returnedTH.eventId] = returnedTH;
           newEventView.resetData();
-          console.log('wrote to database: ', writtenTH);
         }).catch(function(error){
           $('general-error').text('Please email meganrm@townhallproject.com this error:', error).removeClass('hidden');
         });
@@ -468,24 +467,49 @@
   };
 
   newEventView.updateMOCEvents = function () {
-    if (TownHall.currentEvent.govtrack_id) {
-      firebase.database().ref('mocData/' + TownHall.currentEvent.govtrack_id + '/lastUpdated/').set(Date.now());
-      firebase.database().ref('mocData/' + TownHall.currentEvent.govtrack_id + '/lastUpdatedBy/').set(firebase.auth().currentUser.displayName);
+    var path = Moc.mocDataPath;
+    var id = TownHall.currentEvent.govtrack_id ? TownHall.currentEvent.govtrack_id: TownHall.currentEvent.thp_id;
+    var updates = {
+      lastUpdated: Date.now(),
+      lastUpdatedBy: firebase.auth().currentUser.displayName
+    };
+
+    if (TownHall.currentEvent.govtrack_id || TownHall.currentEvent.thp_id) {
+      return firebase.database().ref(path + id).update(updates);
     }
   };
 
   newEventView.updateUserEvents = function () {
-    firebase.database().ref('users/' + firebase.auth().currentUser.uid + '/currentEvents/' + TownHall.currentKey).set(TownHall.currentKey);
-    firebase.database().ref('users/' + firebase.auth().currentUser.uid + '/mocs/' + TownHall.currentEvent.govtrack_id).update(
-      {
-        lastUpdated: Date.now(),
-        govtrack_id : TownHall.currentEvent.govtrack_id
-      });
+    var path = 'users/' + firebase.auth().currentUser.uid;
+    var updates = {};
+    var currentEvent = {};
+    var mocData =     {
+      lastUpdated: Date.now(),
+      govtrack_id : TownHall.currentEvent.govtrack_id,
+      thp_id: TownHall.currentEvent.thp_id
+    };
+    var id = TownHall.currentEvent.govtrack_id ? TownHall.currentEvent.govtrack_id: TownHall.currentEvent.thp_id;
+    currentEvent[TownHall.currentKey] = TownHall.currentKey;
+    updates[path + '/currentEvents/'] = currentEvent;
+    updates[path + '/mocs/' + id] = mocData;
+    return firebase.database().ref().update(updates);
   };
 
   newEventView.resetData = function () {
-    newEventView.updateMOCEvents();
-    newEventView.updateUserEvents();
+    newEventView.updateMOCEvents()
+    .then(function(){
+      console.log('updated moc');
+    })
+    .catch(function(error){
+      console.log(error);
+    });
+    newEventView.updateUserEvents()
+    .then(function(){
+      console.log('updated user');
+    })
+    .catch(function(error){
+      console.log(error);
+    });
     $('.has-success').removeClass('has-success');
     $('.edited').removeClass('edited');
     $('.event-details').removeClass('hidden');

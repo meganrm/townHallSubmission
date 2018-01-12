@@ -73,7 +73,7 @@
     return new Promise(function (resolve, reject) {
       firebase.database().ref('/mocData/' + mocObj.govtrack_id).update(mocObj).then(function(){
         resolve(mocObj);
-      }).catch(function (error) {
+      }).catch(function () {
         reject('could not update', mocObj);
       });
     });
