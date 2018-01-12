@@ -501,14 +501,14 @@
       console.log('updated moc');
     })
     .catch(function(error){
-      console.log(error);
+      console.log('error updating moc', error);
     });
     newEventView.updateUserEvents()
     .then(function(){
       console.log('updated user');
     })
     .catch(function(error){
-      console.log(error);
+      console.log('error updating user', error);
     });
     $('.has-success').removeClass('has-success');
     $('.edited').removeClass('edited');
