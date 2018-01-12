@@ -527,9 +527,8 @@
     delete TownHall.currentKey;
     TownHall.currentEvent = new TownHall();
     //reset imputs
+    $('.general-inputs').removeClass('hidden').show();
     $('.non-standard').addClass('hidden');
-    var defaultLocationTemplate = Handlebars.getTemplate('generalinputs');
-    $('.location-data').html(defaultLocationTemplate(TownHall.currentEvent));
   };
 
   newEventView.submitNewEvent = function (event) {
