@@ -153,8 +153,8 @@
   };
 
   let addDisclaimer = function() {
-    $("#Notes").val('Town Hall Project lists this event and any ' + 
-                    'third-party link as public information and not ' + 
+    $('#Notes').val('Town Hall Project lists this event and any ' +
+                    'third-party link as public information and not ' +
                     'as an endorsement of a participating candidate, campaign, or party.');
   };
 
@@ -178,7 +178,7 @@
   newEventView.meetingTypeChanged = function (event) {
     event.preventDefault();
     var value = $(this).val();
-    $("#Notes").val('');
+    $('#Notes').val('');
     $('.non-standard').addClass('hidden');
     $('#meetingType-error').addClass('hidden');
     $('#meetingType').parent().removeClass('has-error');
@@ -554,9 +554,8 @@
     delete TownHall.currentKey;
     TownHall.currentEvent = new TownHall();
     //reset imputs
+    $('.general-inputs').removeClass('hidden').show();
     $('.non-standard').addClass('hidden');
-    var defaultLocationTemplate = Handlebars.getTemplate('generalinputs');
-    $('.location-data').html(defaultLocationTemplate(TownHall.currentEvent));
   };
 
   newEventView.submitNewEvent = function (event) {
