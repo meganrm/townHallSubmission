@@ -55,12 +55,6 @@
           <p id="submit-success" class="hidden text-success">Thank you for submitting an event!</p>
           <ul id="submitted" class="list-group events-table">
           </ul><!--end table-->
-          <div class="hidden" id="list-of-current-pending">
-            <h4>This event looks similar to others previously submitted. Please double check this list before submitting.</h4>
-            <p>Here are the other events currently pending approval for this member of congress. Please first check that the event you are about to enter isn't already on the list. Thanks!</p>
-            <ul id="current-pending" class="list-group events-table">
-            </ul><!--end table-->
-          </div>
           <div class="">
             <div class="nav nav-pills nav-stacked" id="v-pills-tab" role="tablist" aria-orientation="vertical">
               <li><h4>Enter events for Congress</h4></li>
@@ -89,14 +83,19 @@
                       <input type="text" class="form-control input-underline" id="Member" placeholder="Full name" value="" autocomplete="off">
                       <span id="member-help-block" class="help-block">Only first name and last name, not titles</span>
                     </div>
+                    <div class="hidden" id="advanced-moc-options">
+                      <button type="button" class="btn btn-blue" data-toggle="modal" data-target="#moc-advanced-modal">
+                        Enter custom data
+                      </button>
+                    </div>
                     <div class="form-group col-md-12">
                       <label  for="State"class="sr-only">Home State</label>
                       <input type="text" class="form-control input-underline" id="State" placeholder="Home State" value="">
                     </div>
                     <div class="form-group col-md-12 district-group" id="federal-district-group">
                       <label  for="District" class="sr-only">Federal District</label>
-                      <input type="text" class="form-control input-underline" id="District" placeholder="District" value="">
-                      <span id="helpBlock" class="help-block">For Senate, write "Senate"; For At-Large, write MT-00; Other examples: OH-08, TX-33, NY-22</span>
+                      <input type="text" class="form-control input-underline" id="District" placeholder="District" value="" readonly>
+                      <span id="helpBlock" class="help-block">How the district will be displayed</span>
                     </div>
 
                     <div class="form-group party col-md-12">
@@ -113,6 +112,49 @@
                         </div><!-- /btn-group -->
                       </div><!-- /input-group -->
                     </div><!-- /form-group -->
+
+                    <div class="modal" tabindex="-1" role="dialog" id="moc-advanced-modal">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h4 class="modal-title">Add person not in our database</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body">
+
+                            <div class="form-group col-md-12">
+                              <label  for="state"class="sr-only">State (abbrivation)</label>
+                              <input type="text" class="form-control input-underline" id="state" placeholder="State (abbrivation)" value="">
+                            </div>
+                            <div class="form-group col-md-12 district-group" id="federal-district-group">
+                              <label  for="district" class="sr-only">District</label>
+                              <input type="text" class="form-control input-underline" id="district" placeholder="District" value="">
+                              <span id="helpBlock" class="help-block">Zero padded number, ex '09', leave blank for sentate</span>
+                            </div>
+                            <div class="form-group party col-md-12">
+                              <label class="sr-only " for="party">Party</label>
+                              <div class="input-group">
+                                <input type="text" class="form-control" aria-label="..." id="party" value="" placeholder="Party" readonly>
+                                <div class="input-group-btn">
+                                  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <span class="caret"></span></button>
+                                  <ul class="dropdown-menu dropdown-menu-right">
+                                    <li><a data-value="Democratic" href="#">Democratic</a></li>
+                                    <li><a data-value="Republican" href="#">Republican</a></li>
+                                    <li><a data-value="Independent" href="#">Independent</a></li>
+                                  </ul>
+                                </div><!-- /btn-group -->
+                              </div><!-- /input-group -->
+                            </div><!-- /form-group -->
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-primary">Save changes</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </section>
 
                   <section class="meeting infomation">

@@ -49,16 +49,7 @@
 
   TownHall.prototype.updateUserSubmission = function (key, path) {
     var newEvent = this;
-    return new Promise(function (resolve, reject) {
-      console.log(path, key);
-      return firebase.database().ref(path + key).update(newEvent)
-      .then(function(written){
-        resolve(written);
-      })
-      .catch(function(error){
-        reject (error);
-      });
-    });
+    return firebase.database().ref(path + key).update(newEvent);
   };
 
   // DATA PROCESSING BEFORE WRITE
@@ -155,6 +146,7 @@
 
   TownHall.prototype.getLatandLog = function (address, type) {
     var newTownHall = this;
+    console.log(address, type);
     return new Promise(function (resolve, reject) {
       $.ajax({
         url: 'https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyB868a1cMyPOQyzKoUrzbw894xeoUhx9MM',

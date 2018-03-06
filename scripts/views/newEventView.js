@@ -69,7 +69,7 @@
   };
 
   newEventView.geoCodeOnState = function () {
-    var state = TownHall.currentEvent.State;
+    var state = TownHall.currentEvent.stateName;
     var $form = $('form');
     var newTownHall = new TownHall();
     newTownHall.getLatandLog(state, 'state').then(function (geotownHall) {
@@ -350,6 +350,9 @@
         } else if (mocdata.type === 'rep') {
           TownHall.currentEvent.districtAdopterDistrict = mocdata.state + '-' + mocdata.district;
         }
+      })
+      .catch(function(){
+        $('#advanced-moc-options').removeClass('hidden');
       });
     }
   };
@@ -390,8 +393,8 @@
       var zeropadding = '00';
       var updatedDistrict = zeropadding.slice(0, zeropadding.length - mocdata.district.length) + mocdata.district;
       TownHall.currentEvent.district = updatedDistrict;
-      TownHall.currentEvent.Party = mocdata.party;
-      TownHall.currentEvent.State = mocdata.stateName;
+      TownHall.currentEvent.Party = mocdata.party;//get rid of for v1
+      TownHall.currentEvent.State = mocdata.stateName;//get rid of for v1
     }
   };
 
@@ -415,7 +418,8 @@
       }).catch(function(errorMessage){
         console.log(errorMessage);
         $('#member-form-group').addClass('has-error');
-        $('.new-event-form #member-help-block').html('You can still submit this event, but the lookup failed. Please email meganrm@townhallproject.com this message: ', errorMessage);
+        $('#advanced-moc-options').removeClass('hidden');
+        $('.new-event-form #member-help-block').html('That person isn\'t in our database, please manually enter their info');
       });
     }
   };
@@ -424,7 +428,7 @@
     var newTownHall = TownHall.currentEvent;
     if (newTownHall.meetingType.slice(0, 4) === 'Tele') {
       newTownHall.dateObj = new Date(newTownHall.Date.replace(/-/g, '/') + ' ' + newTownHall.Time).getTime();
-      return (newTownHall);
+      return newTownHall;
     } else if (newTownHall.lat) {
       console.log('getting time zone');
       newTownHall.validateZone().then(function (returnedTH) {
@@ -432,9 +436,8 @@
           TownHall.allTownHallsFB[returnedTH.eventId] = returnedTH;
           newEventView.resetData();
         }).catch(function(error){
-          $('general-error').text('Please email meganrm@townhallproject.com this error:', error).removeClass('hidden');
+          $('general-error').text('Please open your console (View>Developer>JavaScript console)and email meganrm@townhallproject.com a screenshot:', error).removeClass('hidden');
         });
-
       }).catch(function (error) {
         $('general-error').text(error).removeClass('hidden');
         console.log('could not get timezone', error);
@@ -442,7 +445,7 @@
     } else {
       newTownHall.dateObj = new Date(newTownHall.Date.replace(/-/g, '/') + ' ' + newTownHall.Time).getTime();
       newTownHall.dateValid = newTownHall.dateObj ? true : false;
-      return (newTownHall);
+      return newTownHall;
     }
   };
 
@@ -544,11 +547,12 @@
       newTownHall = newEventView.validateDateNew(id, newTownHall);
       if (newTownHall) {
         console.log(TownHall.savePath);
-        newTownHall.updateUserSubmission(newTownHall.eventId, TownHall.savePath).then(function (dataWritten) {
-          TownHall.allTownHallsFB[dataWritten.eventId] = dataWritten;
+        newTownHall.updateUserSubmission(newTownHall.eventId, TownHall.savePath).then(function () {
+          TownHall.allTownHallsFB[newTownHall.eventId] = newTownHall;
           newEventView.resetData();
-          console.log('wrote to database: ', dataWritten);
+          console.log('wrote to database: ', newTownHall);
         }).catch(function(error){
+          $('general-error').text('Please open your console (View>Developer>JavaScript console)and email meganrm@townhallproject.com a screenshot:', error).removeClass('hidden');
           console.log(error);
         });
       }
