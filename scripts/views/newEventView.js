@@ -133,12 +133,18 @@
     $form.find('#meetingType').change();
   };
 
+  let addDisclaimer = function() {
+    $('#Notes').val('Town Hall Project lists this event and any ' +
+                    'third-party link as public information and not ' +
+                    'as an endorsement of a participating candidate, campaign, or party.');
+  };
+
   newEventView.changeParty = function (event) {
     event.preventDefault();
     var $form = $(this).parents('form');
     var value = $(this).attr('data-value');
-    $form.find('#Party').val(value);
-    $form.find('#Party').change();
+    $form.find('#party').val(value);
+    $form.find('#party').change();
   };
 
   newEventView.saveNoEvent = function (event) {
@@ -153,6 +159,7 @@
   newEventView.meetingTypeChanged = function (event) {
     event.preventDefault();
     var value = $(this).val();
+    $('#Notes').val('');
     $('.non-standard').addClass('hidden');
     $('#meetingType-error').addClass('hidden');
     $('#meetingType').parent().removeClass('has-error');
@@ -176,6 +183,7 @@
       $('.new-event-form').on('submit', newEventView.saveNoEvent);
       break;
     case 'Ticketed Event':
+      addDisclaimer();
       TownHall.currentEvent.iconFlag = 'in-person';
       $('.general-inputs').removeClass('hidden');
       break;
@@ -185,6 +193,19 @@
       break;
     case 'Town Hall':
       TownHall.currentEvent.iconFlag = 'in-person';
+      $('.general-inputs').removeClass('hidden');
+      break;
+    case 'Campaign Town Hall':
+      addDisclaimer();
+      TownHall.currentEvent.iconFlag = 'campaign';
+      $('.general-inputs').removeClass('hidden');
+      break;
+    case 'Hearing':
+      TownHall.currentEvent.iconFlag = null;
+      $('.general-inputs').removeClass('hidden');
+      break;
+    case 'DC Event':
+      TownHall.currentEvent.iconFlag = null;
       $('.general-inputs').removeClass('hidden');
       break;
     case 'Empty Chair Town Hall':
@@ -356,20 +377,19 @@
       });
     }
   };
+
   newEventView.updateFieldsFromMember = function($form, $memberInput, $errorMessage, $memberformgroup, mocdata) {
-    var State = $form.find('#State');
-    var Party = $form.find('#Party');
-    var District = $form.find('.district-group').find('input');
+    var stateName = $form.find('#stateName');
+    var party = $form.find('#party');
+    var displayDistrict = $form.find('.district-group').find('input');
     if (mocdata.type === 'sen') {
-      District.val('Senate').parent().addClass('has-success');
-      TownHall.currentEvent.District = District.val();
+      displayDistrict.val('Senate').parent().addClass('has-success');
     } else if (mocdata.type === 'rep') {
-      District.val(mocdata.state + '-' + mocdata.district).parent().addClass('has-success');
-      TownHall.currentEvent.District = District.val();
+      displayDistrict.val(mocdata.state + '-' + mocdata.district).parent().addClass('has-success');
     }
     $memberInput.val(mocdata.displayName);
-    Party.val(mocdata.party).parent().addClass('has-success');
-    State.val(mocdata.stateName).parent().addClass('has-success');
+    party.val(mocdata.party).parent().addClass('has-success');
+    stateName.val(mocdata.stateName).parent().addClass('has-success');
     newEventView.updatedNewTownHallObject($form);
     $errorMessage.html('');
     $memberformgroup.removeClass('has-error').addClass('has-success');
@@ -386,15 +406,11 @@
 
     if (mocdata.type === 'sen') {
       TownHall.currentEvent.district = null;
-      TownHall.currentEvent.Party = mocdata.party; //get rid of for v1
-      TownHall.currentEvent.State = mocdata.stateName; //get rid of for v1
 
     } else if (mocdata.type === 'rep') {
       var zeropadding = '00';
       var updatedDistrict = zeropadding.slice(0, zeropadding.length - mocdata.district.length) + mocdata.district;
       TownHall.currentEvent.district = updatedDistrict;
-      TownHall.currentEvent.Party = mocdata.party;//get rid of for v1
-      TownHall.currentEvent.State = mocdata.stateName;//get rid of for v1
     }
   };
 
@@ -420,6 +436,7 @@
         $('#member-form-group').addClass('has-error');
         $('#advanced-moc-options').removeClass('hidden');
         $('.new-event-form #member-help-block').html('That person isn\'t in our database, please manually enter their info');
+
       });
     }
   };
