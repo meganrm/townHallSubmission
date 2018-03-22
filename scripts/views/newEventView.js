@@ -168,6 +168,9 @@
     var value = $(this).attr('data-value');
     $form.find('#chamber').val(value);
     $form.find('#chamber').change().addClass('has-success');
+    if (value === 'upper' && !TownHall.currentEvent.district) {
+      $form.find('#District').val('Senate');
+    }
   };
 
   newEventView.saveNoEvent = function (event) {
