@@ -55,12 +55,6 @@
           <p id="submit-success" class="hidden text-success">Thank you for submitting an event!</p>
           <ul id="submitted" class="list-group events-table">
           </ul><!--end table-->
-          <div class="hidden" id="list-of-current-pending">
-            <h4>This event looks similar to others previously submitted. Please double check this list before submitting.</h4>
-            <p>Here are the other events currently pending approval for this member of congress. Please first check that the event you are about to enter isn't already on the list. Thanks!</p>
-            <ul id="current-pending" class="list-group events-table">
-            </ul><!--end table-->
-          </div>
           <div class="">
             <div class="nav nav-pills nav-stacked" id="v-pills-tab" role="tablist" aria-orientation="vertical">
               <li><h4>Enter events for Congress</h4></li>
@@ -89,20 +83,53 @@
                       <input type="text" class="form-control input-underline" id="Member" placeholder="Full name" value="" autocomplete="off">
                       <span id="member-help-block" class="help-block">Only first name and last name, not titles</span>
                     </div>
-                    <div class="form-group col-md-12">
-                      <label  for="State"class="sr-only">Home State</label>
-                      <input type="text" class="form-control input-underline" id="State" placeholder="Home State" value="">
+                    <div class="hidden" id="advanced-moc-options">
+                      <div class="form-group col-sm-6">
+                        <label  for="state"class="sr-only">State (abbrivation)</label>
+                        <input type="text" class="form-control input-underline" id="state" placeholder="State (abbrivation)" value="">
+                      </div>
+                      <div class="form-group col-sm-6 district-group federal-district-group" id="federal-district-group">
+                        <label  for="district" class="sr-only">District</label>
+                        <input type="text" class="form-control input-underline" id="district" placeholder="District" value="">
+                        <span id="helpBlock" class="help-block">Zero padded number, ex '09', leave blank for senate</span>
+                      </div>
+                      <div class="form-group col-sm-6 district-group" id="state-district-group">
+                        <label  for="district" class="sr-only">District</label>
+                        <input type="text" class="form-control input-underline" id="district" placeholder="District" value="">
+                        <span id="helpBlock" class="help-block">ex HD-02</span>
+                      </div>
+                      <div class="form-group chamber col-md-12">
+                        <label class="" for="chamber">Chamber</label>
+                        <div class="input-group">
+                          <input type="text" class="form-control" aria-label="..." id="chamber" value="" placeholder="Chamber" readonly>
+                          <div class="input-group-btn">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <span class="caret"></span></button>
+                            <ul class="dropdown-menu dropdown-menu-right">
+                              <li><a data-value="upper" href="#">Upper (Senate)</a></li>
+                              <li><a data-value="lower" href="#">Lower (House)</a></li>
+                              <li><a data-value="statewide" href="#">Statewide (executive)</a></li>
+                            </ul>
+                          </div><!-- /btn-group -->
+                        </div><!-- /input-group -->
+                      </div><!-- /form-group -->
+                      <div class="col-md-12">
+                        <!-- <button class="btn btn-blue " type="button" name="button">(Optional) Save candidate</button> -->
+                      </div>
                     </div>
-                    <div class="form-group col-md-12 district-group" id="federal-district-group">
+                    <div class="form-group col-md-12">
+                      <label  for="stateName" class="sr-only" readonly>Home State</label>
+                      <input type="text" class="form-control input-underline" id="stateName" placeholder="Home State" value="">
+                    </div>
+                    <div class="form-group col-md-12 district-group federal-district-group" id="federal-district-group">
                       <label  for="District" class="sr-only">Federal District</label>
-                      <input type="text" class="form-control input-underline" id="District" placeholder="District" value="">
-                      <span id="helpBlock" class="help-block">For Senate, write "Senate"; For At-Large, write MT-00; Other examples: OH-08, TX-33, NY-22</span>
+                      <input type="text" class="form-control input-underline" id="District" placeholder="District" value="" readonly>
+                      <span id="helpBlock" class="help-block">How the district will be displayed</span>
                     </div>
 
                     <div class="form-group party col-md-12">
-                      <label class="sr-only " for="Party">Party</label>
+                      <label class="sr-only " for="party">Party</label>
                       <div class="input-group">
-                        <input type="text" class="form-control" aria-label="..." id="Party" value="" placeholder="Party" readonly>
+                        <input type="text" class="form-control" aria-label="..." id="party" value="" placeholder="Party" readonly>
                         <div class="input-group-btn">
                           <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <span class="caret"></span></button>
                           <ul class="dropdown-menu dropdown-menu-right">
@@ -113,6 +140,7 @@
                         </div><!-- /btn-group -->
                       </div><!-- /input-group -->
                     </div><!-- /form-group -->
+
                   </section>
 
                   <section class="meeting infomation">
@@ -131,9 +159,11 @@
                             <li><a data-value="Town Hall" href="#">Town Hall</a></li>
                             <li><a data-value="Tele-Town Hall" href="#">Tele-Town Hall</a></li>
                             <li><a data-value="Ticketed Event" href="#">Ticketed Event</a></li>
-                            <li><a data-value="Empty Chair Town Hall" href="#">Empty Chair Town Hall</a></li>
-                            <li><a data-value="DC Event" href="#">DC Event</a></li>
+                            <li><a data-value="Campaign Town Hall" href="#">Campaign Town Hall</a></li>
                             <li><a data-value="Adopt-A-District/State" href="#">Adopt-A-District/State</a></li>
+                            <li><a data-value="Empty Chair Town Hall" href="#">Empty Chair Town Hall</a></li>
+                            <li><a data-value="Hearing" href="#">Hearing</a></li>
+                            <li><a data-value="DC Event" href="#">DC Event</a></li>
                             <li><a data-value="Office Hours" href="#">Office Hours</a></li>
                             <li><a data-value="Other" href="#">Other</a></li>
                             <li><a class="text-secondary" data-value="No Events" href="#">No new events</a></li>
@@ -227,8 +257,12 @@
                     <div class="row">
                       <div class="col-md-8">
                         <div class="form-group col-md-12">
-                          <label for="Notes">Notes</label>
+                          <label for="Notes">Public Notes</label>
                           <textarea class="form-control" id="Notes" placeholder="Notes about event that cannot be entered anywhere else." rows=3></textarea>
+                        </div>
+                        <div class="form-group col-md-12">
+                          <label for="Internal-Notes">Internal Notes to THP Team</label>
+                          <textarea class="form-control" id="Internal-Notes" placeholder="Notes for Town Hall Project team." rows=3></textarea>
                         </div>
                       </div>
                     </div>

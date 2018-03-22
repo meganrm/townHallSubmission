@@ -43,6 +43,7 @@
   };
 
   newEventController.switchTab = function(ctx, next) {
+    newEventView.resetData();
     newEventView.switchTab(ctx.params.state);
     next();
   };

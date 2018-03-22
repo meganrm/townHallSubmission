@@ -49,7 +49,7 @@
 
   Moc.loadAll = function(path){
     var allNames = [];
-    return new Promise(function (resolve, reject) {
+    return new Promise(function (resolve) {
       firebase.database().ref(path).once('value').then(function(snapshot){
         snapshot.forEach(function(member){
           var memberobj = new Moc(member.val());

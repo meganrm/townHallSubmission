@@ -1,8 +1,7 @@
 
 (function (module) {
 // For handling user submitted events.
-// Not being used yet.
-/*global firebase TownHall Moc Handlebars regEx:true*/
+/*global firebase TownHall Moc Handlebars statesAb regEx:true*/
 
   var provider = new firebase.auth.GoogleAuthProvider();
 
@@ -26,9 +25,12 @@
       $('#new-event-form-element').removeClass('hidden').hide().fadeIn();
     }
     if (type === 'state') {
-      $('#federal-district-group').addClass('hidden');
+      console.log('state');
+      $('.federal-district-group').addClass('hidden');
+      $('#state-district-group').removeClass('hidden');
     } else {
-      $('#federal-district-group').removeClass('hidden');
+      $('.federal-district-group').removeClass('hidden');
+      $('#state-district-group').addClass('hidden');
     }
   };
 
@@ -69,7 +71,7 @@
   };
 
   newEventView.geoCodeOnState = function () {
-    var state = TownHall.currentEvent.State;
+    var state = TownHall.currentEvent.stateName;
     var $form = $('form');
     var newTownHall = new TownHall();
     newTownHall.getLatandLog(state, 'state').then(function (geotownHall) {
@@ -133,12 +135,39 @@
     $form.find('#meetingType').change();
   };
 
+  var addDisclaimer = function() {
+    $('#Notes').val('Town Hall Project lists this event and any ' +
+                    'third-party link as public information and not ' +
+                    'as an endorsement of a participating candidate, campaign, or party.');
+  };
+
   newEventView.changeParty = function (event) {
     event.preventDefault();
     var $form = $(this).parents('form');
     var value = $(this).attr('data-value');
-    $form.find('#Party').val(value);
-    $form.find('#Party').change();
+    $form.find('#party').val(value);
+    $form.find('#party').change();
+  };
+
+  newEventView.districtEntered = function (value, $form) {
+    var state = $form.find('#state').val();
+    if (value && Number(value)) {
+      $form.find('#chamber').val('lower');
+      $form.find('#District').val(state + '-' + Number(value));
+    } else if (value.split('-').length > 0){
+      $form.find('#District').val(state + ' ' + value);
+    } else {
+      $form.find('#chamber').val('upper');
+      $form.find('#District').val('Senate');
+    }
+  };
+
+  newEventView.changeChamber = function (event) {
+    event.preventDefault();
+    var $form = $(this).parents('form');
+    var value = $(this).attr('data-value');
+    $form.find('#chamber').val(value);
+    $form.find('#chamber').change().addClass('has-success');
   };
 
   newEventView.saveNoEvent = function (event) {
@@ -153,6 +182,7 @@
   newEventView.meetingTypeChanged = function (event) {
     event.preventDefault();
     var value = $(this).val();
+    $('#Notes').val('');
     $('.non-standard').addClass('hidden');
     $('#meetingType-error').addClass('hidden');
     $('#meetingType').parent().removeClass('has-error');
@@ -176,6 +206,7 @@
       $('.new-event-form').on('submit', newEventView.saveNoEvent);
       break;
     case 'Ticketed Event':
+      addDisclaimer();
       TownHall.currentEvent.iconFlag = 'in-person';
       $('.general-inputs').removeClass('hidden');
       break;
@@ -185,6 +216,19 @@
       break;
     case 'Town Hall':
       TownHall.currentEvent.iconFlag = 'in-person';
+      $('.general-inputs').removeClass('hidden');
+      break;
+    case 'Campaign Town Hall':
+      addDisclaimer();
+      TownHall.currentEvent.iconFlag = 'campaign';
+      $('.general-inputs').removeClass('hidden');
+      break;
+    case 'Hearing':
+      TownHall.currentEvent.iconFlag = null;
+      $('.general-inputs').removeClass('hidden');
+      break;
+    case 'DC Event':
+      TownHall.currentEvent.iconFlag = null;
       $('.general-inputs').removeClass('hidden');
       break;
     case 'Empty Chair Town Hall':
@@ -279,6 +323,10 @@
         newObj.dateString = moment($curValue, dateFormats).format('ddd, MMM D YYYY');
         newObj.Date = moment($curValue, dateFormats).format('ddd, MMM D YYYY');
         break;
+      case 'district':
+        newEventView.districtEntered($curValue, $form);
+        newObj[cur.id] = $curValue;
+        break;
       default:
         newObj[cur.id] = $curValue;
       }
@@ -350,23 +398,34 @@
         } else if (mocdata.type === 'rep') {
           TownHall.currentEvent.districtAdopterDistrict = mocdata.state + '-' + mocdata.district;
         }
+      })
+      .catch(function(){
+        $('#advanced-moc-options').removeClass('hidden');
       });
     }
   };
+
+  newEventView.lookUpStateName = function(event){
+    event.preventDefault();
+    var $form = $(this).parents('form');
+    var stateName = statesAb[$(this).val()];
+    var stateNameInput = $form.find('#stateName');
+    TownHall.currentEvent.stateName = stateName;
+    stateNameInput.val(stateName).addClass('has-success');
+  };
+
   newEventView.updateFieldsFromMember = function($form, $memberInput, $errorMessage, $memberformgroup, mocdata) {
-    var State = $form.find('#State');
-    var Party = $form.find('#Party');
-    var District = $form.find('.district-group').find('input');
+    var stateName = $form.find('#stateName');
+    var party = $form.find('#party');
+    var displayDistrict = $form.find('.district-group').find('input');
     if (mocdata.type === 'sen') {
-      District.val('Senate').parent().addClass('has-success');
-      TownHall.currentEvent.District = District.val();
+      displayDistrict.val('Senate').parent().addClass('has-success');
     } else if (mocdata.type === 'rep') {
-      District.val(mocdata.state + '-' + mocdata.district).parent().addClass('has-success');
-      TownHall.currentEvent.District = District.val();
+      displayDistrict.val(mocdata.state + '-' + mocdata.district).parent().addClass('has-success');
     }
     $memberInput.val(mocdata.displayName);
-    Party.val(mocdata.party).parent().addClass('has-success');
-    State.val(mocdata.stateName).parent().addClass('has-success');
+    party.val(mocdata.party).parent().addClass('has-success');
+    stateName.val(mocdata.stateName).parent().addClass('has-success');
     newEventView.updatedNewTownHallObject($form);
     $errorMessage.html('');
     $memberformgroup.removeClass('has-error').addClass('has-success');
@@ -383,15 +442,13 @@
 
     if (mocdata.type === 'sen') {
       TownHall.currentEvent.district = null;
-      TownHall.currentEvent.Party = mocdata.party; //get rid of for v1
-      TownHall.currentEvent.State = mocdata.stateName; //get rid of for v1
+      TownHall.currentEvent.chamber = 'upper';
 
     } else if (mocdata.type === 'rep') {
+      TownHall.currentEvent.chamber = 'lower';
       var zeropadding = '00';
       var updatedDistrict = zeropadding.slice(0, zeropadding.length - mocdata.district.length) + mocdata.district;
       TownHall.currentEvent.district = updatedDistrict;
-      TownHall.currentEvent.Party = mocdata.party;
-      TownHall.currentEvent.State = mocdata.stateName;
     }
   };
 
@@ -405,6 +462,7 @@
     var $errorMessage = $('.new-event-form #member-help-block');
     var $memberformgroup = $('#member-form-group');
     if (newEventView.validateMember(member, $errorMessage, $memberformgroup)) {
+      $('#advanced-moc-options').addClass('hidden');
       TownHall.currentKey = firebase.database().ref('townHallIds').push().key;
       TownHall.currentEvent.eventId = TownHall.currentKey;
       Moc.getMember(member).then(function(mocdata){
@@ -415,7 +473,8 @@
       }).catch(function(errorMessage){
         console.log(errorMessage);
         $('#member-form-group').addClass('has-error');
-        $('.new-event-form #member-help-block').html('You can still submit this event, but the lookup failed. Please email meganrm@townhallproject.com this message: ', errorMessage);
+        $('.new-event-form #member-help-block').html('That person isn\'t in our database, please manually enter their info');
+        $('#advanced-moc-options').removeClass('hidden');
       });
     }
   };
@@ -424,17 +483,18 @@
     var newTownHall = TownHall.currentEvent;
     if (newTownHall.meetingType.slice(0, 4) === 'Tele') {
       newTownHall.dateObj = new Date(newTownHall.Date.replace(/-/g, '/') + ' ' + newTownHall.Time).getTime();
-      return (newTownHall);
+      return newTownHall;
     } else if (newTownHall.lat) {
       console.log('getting time zone');
       newTownHall.validateZone().then(function (returnedTH) {
+        console.log(returnedTH);
         returnedTH.updateUserSubmission(returnedTH.eventId, TownHall.savePath).then(function () {
           TownHall.allTownHallsFB[returnedTH.eventId] = returnedTH;
+          newEventView.saveMetaData();
           newEventView.resetData();
         }).catch(function(error){
-          $('general-error').text('Please email meganrm@townhallproject.com this error:', error).removeClass('hidden');
+          $('general-error').text('Please open your console (View>Developer>JavaScript console)and email meganrm@townhallproject.com a screenshot:', error).removeClass('hidden');
         });
-
       }).catch(function (error) {
         $('general-error').text(error).removeClass('hidden');
         console.log('could not get timezone', error);
@@ -442,7 +502,7 @@
     } else {
       newTownHall.dateObj = new Date(newTownHall.Date.replace(/-/g, '/') + ' ' + newTownHall.Time).getTime();
       newTownHall.dateValid = newTownHall.dateObj ? true : false;
-      return (newTownHall);
+      return newTownHall;
     }
   };
 
@@ -469,6 +529,9 @@
   newEventView.updateMOCEvents = function () {
     var path = Moc.mocDataPath;
     var id = TownHall.currentEvent.govtrack_id ? TownHall.currentEvent.govtrack_id: TownHall.currentEvent.thp_id;
+    if (!id) {
+      return Promise.resolve();
+    }
     var updates = {
       lastUpdated: Date.now(),
       lastUpdatedBy: firebase.auth().currentUser.displayName
@@ -483,40 +546,41 @@
     var path = 'users/' + firebase.auth().currentUser.uid;
     var updates = {};
     var currentEvent = {};
-    var mocData =     {
+    var mocData = {
       lastUpdated: Date.now(),
-      govtrack_id : TownHall.currentEvent.govtrack_id,
-      thp_id: TownHall.currentEvent.thp_id
+      govtrack_id : TownHall.currentEvent.govtrack_id || null,
+      thp_id: TownHall.currentEvent.thp_id || null
     };
     var id = TownHall.currentEvent.govtrack_id ? TownHall.currentEvent.govtrack_id: TownHall.currentEvent.thp_id;
-    currentEvent[TownHall.currentKey] = TownHall.currentKey;
-    updates[path + '/currentEvents/'] = currentEvent;
+    id = id ? id: 'candidate';
+    currentEvent.eventId = TownHall.currentKey;
+    updates[path + '/currentEvents/' + TownHall.currentKey] = currentEvent;
     updates[path + '/mocs/' + id] = mocData;
     return firebase.database().ref().update(updates);
   };
 
+  newEventView.saveMetaData = function(){
+
+    Promise.all([newEventView.updateMOCEvents(), newEventView.updateUserEvents()])
+      .then(function(){
+        $('#submit-success').removeClass('hidden').addClass('has-success');
+        console.log('updated moc');
+        console.log('updated user');
+      })
+      .catch(function(error){
+        console.log('error updating user or moc', error);
+      });
+  };
+
   newEventView.resetData = function () {
-    newEventView.updateMOCEvents()
-    .then(function(){
-      console.log('updated moc');
-    })
-    .catch(function(error){
-      console.log('error updating moc', error);
-    });
-    newEventView.updateUserEvents()
-    .then(function(){
-      console.log('updated user');
-    })
-    .catch(function(error){
-      console.log('error updating user', error);
-    });
+    console.log('resetting');
+    $('#advanced-moc-options').addClass('hidden');
     $('.has-success').removeClass('has-success');
     $('.edited').removeClass('edited');
     $('.event-details').removeClass('hidden');
     $('.general-error').addClass('hidden');
     $('.has-error').removeClass('has-error');
     $('#list-of-current-pending').addClass('hidden');
-    $('#submit-success').removeClass('hidden').addClass('has-success');
     document.getElementById('new-event-form-element').reset();
     $('html, body').animate({ scrollTop: 0 }, 'slow');
     //reset if last was no event
@@ -544,11 +608,13 @@
       newTownHall = newEventView.validateDateNew(id, newTownHall);
       if (newTownHall) {
         console.log(TownHall.savePath);
-        newTownHall.updateUserSubmission(newTownHall.eventId, TownHall.savePath).then(function (dataWritten) {
-          TownHall.allTownHallsFB[dataWritten.eventId] = dataWritten;
+        newTownHall.updateUserSubmission(newTownHall.eventId, TownHall.savePath).then(function () {
+          TownHall.allTownHallsFB[newTownHall.eventId] = newTownHall;
+          newEventView.saveMetaData();
           newEventView.resetData();
-          console.log('wrote to database: ', dataWritten);
+          console.log('wrote to database: ', newTownHall);
         }).catch(function(error){
+          $('general-error').text('Please open your console (View>Developer>JavaScript console)and email meganrm@townhallproject.com a screenshot:', error).removeClass('hidden');
           console.log(error);
         });
       }
@@ -565,7 +631,9 @@
   $('.new-event-form').on('change', '#districtAdopter', newEventView.adopterMemberChanged);
   $('.new-event-form').on('click', '#geocode-button', newEventView.geoCode);
   $('.new-event-form').on('click', '.meeting a', newEventView.changeMeetingType);
-  $('.new-event-form').on('click', '.member-info a', newEventView.changeParty);
+  $('.new-event-form').on('click', '.party a', newEventView.changeParty);
+  $('.new-event-form').on('click', '.chamber a', newEventView.changeChamber);
+  $('.new-event-form').on('change', '#state', newEventView.lookUpStateName);
   $('.new-event-form').on('change', '#meetingType', newEventView.meetingTypeChanged);
   $('.new-event-form').on('change', '.form-control', newEventView.newformChanged);
   $('.new-event-form').on('change', '.date-string', newEventView.dateString);
