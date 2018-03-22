@@ -88,7 +88,7 @@
                         <label  for="state"class="sr-only">State (abbrivation)</label>
                         <input type="text" class="form-control input-underline" id="state" placeholder="State (abbrivation)" value="">
                       </div>
-                      <div class="form-group col-sm-6 district-group" id="federal-district-group">
+                      <div class="form-group col-sm-6 district-group federal-district-group" id="federal-district-group">
                         <label  for="district" class="sr-only">District</label>
                         <input type="text" class="form-control input-underline" id="district" placeholder="District" value="">
                         <span id="helpBlock" class="help-block">Zero padded number, ex '09', leave blank for senate</span>
@@ -107,19 +107,20 @@
                             <ul class="dropdown-menu dropdown-menu-right">
                               <li><a data-value="upper" href="#">Upper (Senate)</a></li>
                               <li><a data-value="lower" href="#">Lower (House)</a></li>
+                              <li><a data-value="statewide" href="#">Statewide (executive)</a></li>
                             </ul>
                           </div><!-- /btn-group -->
                         </div><!-- /input-group -->
                       </div><!-- /form-group -->
                       <div class="col-md-12">
-                        <button class="btn btn-blue " type="button" name="button">(Optional) Save candidate</button>
+                        <!-- <button class="btn btn-blue " type="button" name="button">(Optional) Save candidate</button> -->
                       </div>
                     </div>
                     <div class="form-group col-md-12">
                       <label  for="stateName" class="sr-only" readonly>Home State</label>
                       <input type="text" class="form-control input-underline" id="stateName" placeholder="Home State" value="">
                     </div>
-                    <div class="form-group col-md-12 district-group" id="federal-district-group">
+                    <div class="form-group col-md-12 district-group federal-district-group" id="federal-district-group">
                       <label  for="District" class="sr-only">Federal District</label>
                       <input type="text" class="form-control input-underline" id="District" placeholder="District" value="" readonly>
                       <span id="helpBlock" class="help-block">How the district will be displayed</span>
