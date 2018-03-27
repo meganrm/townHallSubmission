@@ -42,19 +42,14 @@
       updates['/townHallIds/' + key] = metaData;
       resolve(newEvent);
       return firebase.database().ref().update(updates).catch(function (error) {
-        reject('could not update', newEvent);
+        reject('could not update', newEvent, error);
       });
     });
   };
 
-  TownHall.prototype.updateUserSubmission = function (key) {
+  TownHall.prototype.updateUserSubmission = function (key, path) {
     var newEvent = this;
-    return new Promise(function (resolve, reject) {
-      firebase.database().ref('/UserSubmission/' + key).update(newEvent).catch(function(error){
-        reject (error);
-      });
-      resolve(newEvent);
-    });
+    return firebase.database().ref(path + key).update(newEvent);
   };
 
   // DATA PROCESSING BEFORE WRITE
@@ -70,7 +65,7 @@
     var loc = databaseTH.lat + ',' + databaseTH.lng;
     console.log(time, loc);
     return new Promise(function (resolve, reject) {
-      url = 'https://maps.googleapis.com/maps/api/timezone/json?location=' + loc + '&timestamp=' + time + '&key=AIzaSyB868a1cMyPOQyzKoUrzbw894xeoUhx9MM';
+      var url = 'https://maps.googleapis.com/maps/api/timezone/json?location=' + loc + '&timestamp=' + time + '&key=AIzaSyB868a1cMyPOQyzKoUrzbw894xeoUhx9MM';
       $.get(url, function (response) {
         if (!response.timeZoneName) {
           reject('no timezone results', id, response);
@@ -105,7 +100,7 @@
   };
 
   TownHall.prototype.findLinks = function () {
-    $reg_exUrl = /(https?:\/\/[^\s]+)/g;
+    var $reg_exUrl = /(https?:\/\/[^\s]+)/g;
    // make the urls hyper links
     if (this.Notes && this.Notes.length > 0) {
       var withAnchors = this.Notes.replace($reg_exUrl, '<a href="$1" target="_blank">Link</a>');
@@ -151,6 +146,7 @@
 
   TownHall.prototype.getLatandLog = function (address, type) {
     var newTownHall = this;
+    console.log(address, type);
     return new Promise(function (resolve, reject) {
       $.ajax({
         url: 'https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyB868a1cMyPOQyzKoUrzbw894xeoUhx9MM',
@@ -192,7 +188,7 @@
         newTownHall.address = snapshot.val().formatted_address;
         TownHall.allTownHalls.push(newTownHall);
       } else if (snapshot.child('lat').exists() === false) {
-        var errorTownHall = firebasedb.ref('/townHallsErrors/geocoding/' + newTownHall.eventId).once('value').then(function (snap) {
+        firebasedb.ref('/townHallsErrors/geocoding/' + newTownHall.eventId).once('value').then(function (snap) {
           if (snap.child('streetAddress').exists() === newTownHall.streetAddress) {
             console.log('known eror');
           } else {
@@ -225,7 +221,7 @@
     var ele = this;
     var oldTownHall = firebasedb.ref(path + '/' + ele.eventId);
     if (path === 'TownHalls') {
-      var oldTownHallID = firebasedb.ref('/townHallIds/' + ele.eventId + '/lastUpdated').set(Date.now());
+      firebasedb.ref('/townHallIds/' + ele.eventId + '/lastUpdated').set(Date.now());
     }
     return new Promise(function (resolve, reject) {
       var removed = oldTownHall.remove();

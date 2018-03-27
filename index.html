@@ -46,7 +46,7 @@
   <body>
   <div class="container">
     <div class="row">
-      <div class="col-sm-4">
+      <div class="col-sm-3">
         <button type="button" name="button" id="scroll-to-top" class="btn btn-white" style="visibility:hidden;"><i class="fa fa-chevron-up fa-4x" aria-hidden="true"></i></button>
         <section class="session-data">
           <h4>Welcome</h4>
@@ -55,42 +55,81 @@
           <p id="submit-success" class="hidden text-success">Thank you for submitting an event!</p>
           <ul id="submitted" class="list-group events-table">
           </ul><!--end table-->
-          <div class="hidden" id="list-of-current-pending">
-            <h4>This event looks similar to others previously submitted. Please double check this list before submitting.</h4>
-            <p>Here are the other events currently pending approval for this member of congress. Please first check that the event you are about to enter isn't already on the list. Thanks!</p>
-            <ul id="current-pending" class="list-group events-table">
-            </ul><!--end table-->
+          <div class="">
+            <div class="nav nav-pills nav-stacked" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+              <li><h4>Enter events for Congress</h4></li>
+              <li role="presentation" class="active state-switcher federal"><a id="v-pills-home-tab" href="/" role="tab" aria-controls="v-pills-home" aria-selected="true">Federal</a></li>
+              <li><h4>Enter events for state legislators</h4></li>
+              <li role="presentation" class="state-switcher AZ"><a  id="v-pills-arizona-tab" href="/AZ" role="tab" aria-controls="v-pills-profile" aria-selected="false">Arizona</a></li>
+              <li role="presentation" class="state-switcher VA"><a  id="v-pills-virgina-tab" href="/VA" role="tab" aria-controls="v-pills-messages" aria-selected="false">Virginia</a></li>
+              <li role="presentation" class="state-switcher NC"><a  id="v-pills-northcarolina-tab" href="/NC" role="tab" aria-controls="v-pills-settings" aria-selected="false">North Carolina</a></li>
+              <li role="presentation" class="state-switcher CO"><a  id="v-pills-colorado-tab" href="/CO" role="tab" aria-controls="v-pills-settings" aria-selected="false">Colorado</a></li>
+            </div>
           </div>
         </section>
       </div>
-      <div class="col-sm-8">
+      <div class="col-sm-8 col-md-offset-1">
           <div class="page" id="new-page">
             <section class="row">
               <div class="new-event-form col-md-9">
                 <h3 class="text-success">Enter a new town hall event</h3>
                 <form class="hidden" id="new-event-form-element">
                   <section class="member-info text-info">
-                    <h4>Member of Congress Information<br>
+                    <h4 id="member-title">Member of Congress Information<br>
                       <small>Enter their name and we will auto-fill the information</small>
                     </h4>
-                    <div class="form-group col-md-12" id="member-form-group">
+                    <div class="form-group col-md-12 col-sm-12" id="member-form-group">
                       <label class="sr-only" for="Member">Member</label>
                       <input type="text" class="form-control input-underline" id="Member" placeholder="Full name" value="" autocomplete="off">
                       <span id="member-help-block" class="help-block">Only first name and last name, not titles</span>
                     </div>
-                    <div class="form-group col-md-12">
-                      <label  for="State"class="sr-only">Home State</label>
-                      <input type="text" class="form-control input-underline" id="State" placeholder="Home State" value="">
+                    <div class="hidden" id="advanced-moc-options">
+                      <div class="form-group col-sm-6">
+                        <label  for="state"class="sr-only">State (abbrivation)</label>
+                        <input type="text" class="form-control input-underline" id="state" placeholder="State (abbrivation)" value="">
+                      </div>
+                      <div class="form-group col-sm-6 col-md-6 district-group federal-district-group" id="federal-district-group">
+                        <label  for="district" class="sr-only">District</label>
+                        <input type="text" class="form-control input-underline" id="district" placeholder="District" value="">
+                        <span id="helpBlock" class="help-block">Zero padded number, ex '09', leave blank for senate</span>
+                      </div>
+                      <div class="form-group col-sm-6 col-md-6 district-group" id="state-district-group">
+                        <label  for="district" class="sr-only">District</label>
+                        <input type="text" class="form-control input-underline" id="district" placeholder="District" value="">
+                        <span id="helpBlock" class="help-block">ex HD-02</span>
+                      </div>
+                      <div class="form-group chamber col-md-12 col-sm-12">
+                        <label class="" for="chamber">Chamber</label>
+                        <div class="input-group">
+                          <input type="text" class="form-control" aria-label="..." id="chamber" value="" placeholder="Chamber" readonly>
+                          <div class="input-group-btn">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <span class="caret"></span></button>
+                            <ul class="dropdown-menu dropdown-menu-right">
+                              <li><a data-value="upper" href="#">Upper (Senate)</a></li>
+                              <li><a data-value="lower" href="#">Lower (House)</a></li>
+                              <li><a data-value="statewide" href="#">Statewide (executive)</a></li>
+                            </ul>
+                          </div><!-- /btn-group -->
+                        </div><!-- /input-group -->
+                      </div><!-- /form-group -->
+                      <div class="col-md-12">
+                        <!-- <button class="btn btn-blue " type="button" name="button">(Optional) Save candidate</button> -->
+                      </div>
                     </div>
-                    <div class="form-group col-md-12">
-                      <label  for="District" class="sr-only">District</label>
-                      <input type="text" class="form-control input-underline" id="District" placeholder="District" value="">
-                      <span id="helpBlock" class="help-block">For Senate, write "Senate"; For At-Large, write MT-00; Other examples: OH-08, TX-33, NY-22</span>
+                    <div class="form-group col-md-12 col-sm-12">
+                      <label  for="stateName" class="sr-only" readonly>Home State</label>
+                      <input type="text" class="form-control input-underline" id="stateName" placeholder="Home State" value="">
                     </div>
-                    <div class="form-group party col-md-12">
-                      <label class="sr-only " for="Party">Party</label>
+                    <div class="form-group col-md-12 col-sm-12 district-group federal-district-group" id="federal-district-group">
+                      <label  for="District" class="sr-only">Federal District</label>
+                      <input type="text" class="form-control input-underline" id="District" placeholder="District" value="" readonly>
+                      <span id="helpBlock" class="help-block">How the district will be displayed</span>
+                    </div>
+
+                    <div class="form-group party col-sm-12">
+                      <label class="sr-only " for="party">Party</label>
                       <div class="input-group">
-                        <input type="text" class="form-control" aria-label="..." id="Party" value="" placeholder="Party" readonly>
+                        <input type="text" class="form-control" aria-label="..." id="party" value="" placeholder="Party" readonly>
                         <div class="input-group-btn">
                           <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <span class="caret"></span></button>
                           <ul class="dropdown-menu dropdown-menu-right">
@@ -101,15 +140,16 @@
                         </div><!-- /btn-group -->
                       </div><!-- /input-group -->
                     </div><!-- /form-group -->
+
                   </section>
 
                   <section class="meeting infomation">
                     <h4 class="text-info">Information about the Event</h4>
-                    <div class="form-group col-md-12">
+                    <div class="form-group col-sm-12">
                       <label class="sr-only" for="eventName">Event name</label>
                       <input type="text" class="form-control input-underline" id="eventName" value="" placeholder="Name of the event">
                     </div>
-                    <div class="form-group col-md-12">
+                    <div class="form-group col-sm-12">
                       <label class="sr-only" for="meetingType">Meeting Type</label>
                       <div class="input-group">
                         <input type="text" class="form-control" id="meetingType" value="" readonly placeholder="Meeting Type">
@@ -134,31 +174,31 @@
                     </div><!-- /form-group -->
                   </section>
                   <section class="adopter-data non-standard hidden">
-                    <div class="form-group col-md-12" id="adopter-member-form-group">
+                    <div class="form-group col-sm-12" id="adopter-member-form-group">
                       <label for="districtAdopter">MOC appearing at event (adopter)</label>
                       <input type="text" class="form-control input-underline" id="districtAdopter" placeholder="Full name" value="" autocomplete="off">
                       <span id="adopter-member-help-block" class="help-block">Only first name and last name, not titles</span>
                     </div>
                   </section>
                   <section class="location-data event-details">
-                    <div class="form-group col-md-12 general-inputs">
+                    <div class="form-group col-sm-12 general-inputs">
                       <label class="sr-only" for="Location">Location</label>
                       <input type="text" class="form-control input-underline" id="Location" placeholder="Name of location (eg. Gary Recreation Center)" value="">
                     </div>
-                    <div class="form-group col-md-12 general-inputs" id=location-form-group>
+                    <div class="form-group col-sm-12 general-inputs" id=location-form-group>
                         <input type="text" class="form-control" placeholder="Street address" id="address">
                         <span id="address-feedback" class="help-block">Enter a valid street address, if there isn't one, leave this blank</span>
                     </div><!-- /form-group -->
-                    <div class="form-group col-md-12 general-inputs">
+                    <div class="form-group col-sm-12 general-inputs">
                       <label class="sr-only" for="addressType">Address Type</label>
                       <input class="sr-only" type="text" class="" id="addressType" placeholder="Address type" value="street" readonly>
                     </div>
-                    <div class="form-group col-md-12 general-inputs">
+                    <div class="form-group col-sm-12 general-inputs">
                       <label class="sr-only" for="locationCheck">Location Check</label>
                       <input class="sr-only" type="text" class="text-success" id="locationCheck" placeholder="please geocode" readonly>
                     </div>
                     <div class="text-info non-standard tele-inputs hidden">
-                      <div class="form-group col-md-12">
+                      <div class="form-group col-sm-12">
                         <label class="" for="phoneNumber">Phone Number format: (555) 555-5555</label>
                         <input type="tel" class="form-control" id="phoneNumber" placeholder="Phone Number" value="">
                         <span id="phoneNumber-error" class="help-block error-message hidden">Please enter a valid phone number</span>
@@ -174,13 +214,13 @@
                     </div>
                   </section>
                   <section class="time-data event-details">
-                    <div class="checkbox col-md-12">
+                    <div class="checkbox col-sm-12">
                       <label>
                         <input type="checkbox" class="date-string">
                         <span class="checkbox-label">Click for repeating event (eg. 'First Wed')</span>
                       </label>
                     </div>
-                    <div class="form-group col-md-12">
+                    <div class="form-group col-sm-12">
                       <label  for="yearMonthDay">Date</label>
                       <input type="date" class="form-control datetime date " id="yearMonthDay" placeholder="MM/DD/YYYY">
                       <span id="yearMonthDay-error" class="help-block error-message hidden">Please enter a valid date</span>
@@ -189,38 +229,38 @@
                       <label  for="repeatingString">Repeating Event</label>
                       <input type="text" class="form-control input-underline " id="repeatingEvent" placeholder="Eg. First Tuesday of the month">
                     </div>
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-sm-6">
                       <label for="Time">Start Time (HH:MM AM/PM)</label>
                       <input type="time" class="form-control datetime " id="timeStart24" placeholder="HH:MM AM/PM">
                       <span id="timeStart24-error" class="help-block error-message hidden">Please enter a valid time</span>
                     </div>
-                    <div class="form-group col-md-6">
+                    <div class="form-group col-sm-6">
                       <label for="endTime">End Time (HH:MM AM/PM)</label>
                       <input type="time" class="form-control datetime " id="timeEnd24" placeholder="HH:MM AM/PM">
                     </div>
                   </section>
                   <section class="extra-data event-details">
-                    <div class="form-group col-md-12">
+                    <div class="form-group col-sm-12">
                       <label for="link">URL related to event (optional)</label>
                       <input type="url" class="form-control input-underline" id="link" placeholder="Link" value="">
                     </div>
-                    <div class="form-group col-md-12">
+                    <div class="form-group col-sm-12">
                       <label  for="linkName">Link display name (optional)</label>
                       <input type="text" class="form-control input-underline" id="linkName" placeholder="Link Name" value="">
                     </div>
-                    <div class="checkbox col-md-12">
+                    <div class="checkbox col-sm-12">
                       <label>
                         <input type="checkbox" class="general-checkbox" id="ada_accessible">
                         <span class="checkbox-label">ADA accessible?</span>
                       </label>
                     </div>
                     <div class="row">
-                      <div class="col-md-8">
-                        <div class="form-group col-md-12">
+                      <div class="col-sm-8">
+                        <div class="form-group col-sm-12">
                           <label for="Notes">Public Notes</label>
                           <textarea class="form-control" id="Notes" placeholder="Notes about event that cannot be entered anywhere else." rows=3></textarea>
                         </div>
-                        <div class="form-group col-md-12">
+                        <div class="form-group col-sm-12">
                           <label for="Internal-Notes">Internal Notes to THP Team</label>
                           <textarea class="form-control" id="Internal-Notes" placeholder="Notes for Town Hall Project team." rows=3></textarea>
                         </div>
@@ -242,6 +282,7 @@
     <script src="/node_modules/moment/moment.js"></script>
     <script src="/node_modules/jquery/dist/jquery.min.js"></script>
     <script src="/vendor/scripts/bootstrap.min.js"></script>
+    <script src="/vendor/scripts/page.js"></script>
     <script src="/vendor/scripts/tether.js"></script>
     <script src="/vendor/scripts/bootstrap3-typeahead.min.js"></script>
     <script src="/node_modules/handlebars/dist/handlebars.js"></script>
@@ -249,10 +290,14 @@
     <script src="templates.js"></script>
     <script src="https://www.gstatic.com/firebasejs/3.6.6/firebase.js"></script>
     <!-- Script Files -->
+    <script src="/scripts/data/states.js"></script>
+
     <script src="/scripts/models/event0.js"></script>
     <script src="/scripts/models/moc.js"></script>
-    <script src="/scripts/data/states.js"></script>
+
     <script src="/scripts/views/newEventView.js"></script>
 
+    <script src="/scripts/controllers/newEventController.js"></script>
+    <script src="/scripts/controllers/routes.js"></script>
   </body>
 </html>

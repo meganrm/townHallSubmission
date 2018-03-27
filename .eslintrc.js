@@ -7,7 +7,13 @@ module.exports = {
     "globals": {
       "firebase": true,
       "TownHall": true,
-      "Moc": true
+      "Moc": true,
+      "Handlebars": true,
+      "moment": true,
+      "Promise": true,
+      "page": true,
+      "newEventController": true,
+      "newEventView": true,
     },
     "rules": {
         "indent": [
@@ -26,7 +32,6 @@ module.exports = {
             "error",
             "always"
         ],
-        "no-console": "off",
-        "no-undef": "off"
+        "no-console": "off"
     }
 };

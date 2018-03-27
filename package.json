@@ -4,6 +4,7 @@
   "description": "submission site for new town hall events",
   "main": "server.js",
   "scripts": {
+    "lint": "eslint --fix .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
