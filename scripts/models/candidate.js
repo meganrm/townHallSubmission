@@ -1,0 +1,5 @@
+class candidate{
+    constructor(data){
+        
+    }
+}
