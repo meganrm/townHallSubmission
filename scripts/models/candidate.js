@@ -34,8 +34,8 @@ class Candidate{
             nameEntered: this.displayName,
         }
         var updates = {};
-        updates['/candidate_data/' + newPostKey] = this;
-        updates['/candidate_keys/' + memberKey] = lookupData;
+        updates[Moc.mocDataPath + newPostKey] = this;
+        updates[Moc.mocIdPath + memberKey] = lookupData;
         return firebase.database().ref().update(updates);
     }
 }

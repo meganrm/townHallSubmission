@@ -22,6 +22,19 @@
     });
   };
 
+  newEventController.loadStateCandidates = function (ctx, next) {
+    ctx.congressScope = 'state';
+    ctx.mocNamesPath = 'state_candidates_id/' + ctx.params.state + '/';
+    Moc.mocIdPath = 'state_candidates_id/' + ctx.params.state + '/';
+    Moc.mocDataPath = 'state_candidates_data/' + ctx.params.state + '/';
+    TownHall.savePath = 'state_legislators_user_submission/' + ctx.params.state + '/';
+    Moc.loadAll(ctx.mocNamesPath).then(function (allnames) {
+      ctx.mocs = allnames;
+      newEventController.index(ctx);
+      next();
+    });
+  };
+
   newEventController.loadFederal = function(ctx, next) {
     ctx.congressScope = 'federal';
     ctx.mocNamesPath = 'mocID/';

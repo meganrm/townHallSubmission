@@ -465,7 +465,6 @@
   };
 
   newEventView.resetData = function () {
-    console.log('resetting');
     $('.advanced-moc-options').addClass('hidden');
     $('.has-success').removeClass('has-success');
     $('.edited').removeClass('edited');
