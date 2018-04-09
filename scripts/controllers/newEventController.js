@@ -42,11 +42,43 @@
     }
   };
 
+  newEventController.loadFederalCandidates = function (ctx, next) {
+    ctx.congressScope = 'federal';
+    ctx.mocNamesPath = 'candidate_keys/';
+    Moc.mocIdPath = 'candidate_keys/';
+    Moc.mocDataPath = 'candidate_data/';
+    TownHall.savePath = 'UserSubmission/';
+    if (Moc.allNames.length > 0) {
+      ctx.mocs = Moc.allFederal;
+      next();
+    } else {
+      return Moc.loadAll(ctx.mocNamesPath).then(function (allnames) {
+        Moc.allFederal = allnames;
+        ctx.mocs = Moc.allFederal;
+        return next();
+      }).catch(function (err) {
+        console.log(err);
+      });
+    }
+  };
+
   newEventController.switchTab = function(ctx, next) {
     newEventView.resetData();
     newEventView.switchTab(ctx.params.state);
     next();
   };
+
+  newEventController.selectCandidateMode = function(ctx, next){
+    $('.mode-switcher #current-moc').removeClass('active');
+    $('.mode-switcher #candidate').addClass('active');
+    next();
+  }
+
+  newEventController.resetModeButton = function (ctx, next) {
+    $('.mode-switcher #current-moc').addClass('active');
+    $('.mode-switcher #candidate').removeClass('active');
+    next();
+  }
 
   module.newEventController = newEventController;
 })(window);

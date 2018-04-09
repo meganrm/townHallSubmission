@@ -18,6 +18,7 @@
         $('#Member').val(selection);
       }
     };
+
     newEventView.changeTitle(state);
     $('#Member').typeahead('destroy');
     $('#Member').typeahead($.extend({source: allnames}, typeaheadConfig));
@@ -33,6 +34,16 @@
       $('#state-district-group').addClass('hidden');
     }
   };
+
+  newEventView.initalizeMemberform = function (e) {
+    var id = this.id;
+    var currentpath = window.location.pathname.split('/candidate')[0] ;
+    if (id === 'candidate') {
+      currentpath = currentpath === '/' ? currentpath : currentpath + '/';
+      return page(currentpath + 'candidate');
+    }
+    return page(currentpath);
+  }
 
   newEventView.switchTab = function (state) {
     $('.state-switcher').removeClass('active');
@@ -443,11 +454,11 @@
     TownHall.currentEvent.party = mocdata.party;
     TownHall.currentEvent.state = mocdata.state;
 
-    if (mocdata.type === 'sen') {
+    if (mocdata.type === 'sen' || mocdata.chamber === 'upper') {
       TownHall.currentEvent.district = null;
       TownHall.currentEvent.chamber = 'upper';
 
-    } else if (mocdata.type === 'rep') {
+    } else if (mocdata.type === 'rep' || mocdata.chamber === 'lower') {
       TownHall.currentEvent.chamber = 'lower';
       var zeropadding = '00';
       var updatedDistrict = zeropadding.slice(0, zeropadding.length - mocdata.district.length) + mocdata.district;
@@ -643,7 +654,7 @@
   $('.new-event-form').on('change', '.general-checkbox', newEventView.generalCheckbox);
   $('.new-event-form').on('change', '#address', newEventView.addressChanged);
   $('.new-event-form').on('submit', 'form', newEventView.submitNewEvent);
-
+  $('.new-event-form').on('click', '.mode-switcher .btn', newEventView.initalizeMemberform)
   $('#scroll-to-top').on('click', function () {
     $('html, body').animate({ scrollTop: 0 }, 'slow');
   });
