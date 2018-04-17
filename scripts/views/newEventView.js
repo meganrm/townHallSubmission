@@ -175,10 +175,8 @@
 
   newEventView.saveNoEvent = function (event) {
     event.preventDefault();
-    var updateMOC = new Moc();
-    updateMOC.lastUpdated = Date.now();
-    updateMOC.govtrack_id = TownHall.currentEvent.govtrack_id;
     newEventView.updateMOCEvents();
+    newEventView.updateUserEvents();
     newEventView.resetData();
   };
 
