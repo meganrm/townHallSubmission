@@ -1,0 +1,88 @@
+<h4>Additional member of Congress information
+    <br>
+    <small>Enter their name and we will auto-fill the information</small>
+</h4>
+<div class="form-group col-md-12 col-sm-12" id="member-form-group-{{index}}">
+    <label class="sr-only" for="Member">Member</label>
+    <input type="text" class="form-control input-underline member-input-field" id="multi-member-{{index}}" placeholder="Full name" value="" autocomplete="off">
+    <span id="member-help-block" class="member-help-block-{{index}} help-block">Only first name and last name, not titles</span>
+</div>
+<div class="hidden multi-member" id="advanced-moc-options">
+    <div class="form-group col-sm-6">
+        <label for="state" class="sr-only">State (abbrivation)</label>
+        <input type="text" class="form-control input-underline" id="multi-state-{{index}}" placeholder="State (abbrivation)" value="">
+    </div>
+    <div class="form-group col-sm-6 col-md-6 district-group federal-district-group" id="federal-district-group">
+        <label for="district" class="sr-only">District</label>
+        <input type="text" class="form-control input-underline" id="multi-district-{{index}}" placeholder="District" value="">
+        <span id="helpBlock" class="help-block">Zero padded number, ex '09', leave blank for senate</span>
+    </div>
+    <div class="form-group col-sm-6 col-md-6 district-group" id="state-district-group">
+        <label for="district" class="sr-only">District</label>
+        <input type="text" class="form-control input-underline" id="multi-district-{{index}}" placeholder="District" value="">
+        <span id="helpBlock" class="help-block">ex HD-02</span>
+    </div>
+    <div class="form-group chamber col-md-12 col-sm-12">
+        <label class="" for="chamber">Chamber</label>
+        <div class="input-group">
+            <input type="text" class="form-control" aria-label="..." id="multi-chamber-{{index}}" value="" placeholder="Chamber" readonly>
+            <div class="input-group-btn">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-right">
+                    <li>
+                        <a data-value="upper" href="#">Upper (Senate)</a>
+                    </li>
+                    <li>
+                        <a data-value="lower" href="#">Lower (House)</a>
+                    </li>
+                    <li>
+                        <a data-value="statewide" href="#">Statewide (executive)</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /btn-group -->
+        </div>
+        <!-- /input-group -->
+    </div>
+    <!-- /form-group -->
+    <div class="col-md-12">
+        <!-- <button class="btn btn-blue " type="button" name="button">(Optional) Save candidate</button> -->
+    </div>
+</div>
+<div class="form-group col-md-12 col-sm-12">
+    <label for="stateName" class="sr-only" readonly>Home State</label>
+    <input type="text" class="form-control input-underline" id="multi-stateName-{{index}}" placeholder="Home State" value="">
+</div>
+<div class="form-group col-md-12 col-sm-12 mulit-district-group-{{index}} federal-district-group" id="federal-district-group">
+    <label for="District" class="sr-only">Federal District</label>
+    <input type="text" class="form-control input-underline" id="District" placeholder="District" value="" readonly>
+    <span id="helpBlock" class="help-block">How the district will be displayed</span>
+</div>
+
+<div class="form-group party col-sm-12">
+    <label class="sr-only " for="party">Party</label>
+    <div class="input-group">
+        <input type="text" class="form-control" aria-label="..." id="multi-party-{{index}}" value="" placeholder="Party" readonly>
+        <div class="input-group-btn">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-right">
+                <li>
+                    <a data-value="Democratic" href="#">Democratic</a>
+                </li>
+                <li>
+                    <a data-value="Republican" href="#">Republican</a>
+                </li>
+                <li>
+                    <a data-value="Independent" href="#">Independent</a>
+                </li>
+            </ul>
+        </div>
+        <!-- /btn-group -->
+    </div>
+    <!-- /input-group -->
+</div>
+<!-- /form-group -->

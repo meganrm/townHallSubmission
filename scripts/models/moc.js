@@ -60,6 +60,7 @@
           } else {
             if (allNames.indexOf(name) === -1){
               allNames.push(name);
+              Moc.allNames.push(name);
             }
           }
         });
