@@ -56,7 +56,8 @@
             return;
         };
         var compiledTemplate = Handlebars.getTemplate('memberinputs');
-        $('.member-info').append(compiledTemplate({ index: index }))
+        var newHtml = compiledTemplate({ index: index })
+        $('.member-info').append(newHtml)
         addTypahead(`#multi-member-${index}`);
     }
 

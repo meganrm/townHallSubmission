@@ -9,6 +9,4 @@ page('/:state',
   newEventController.loadByState,
   newEventController.index);
 
-page('/templates/*', () => {});
-
 page();
