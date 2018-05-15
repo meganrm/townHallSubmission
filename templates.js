@@ -16,6 +16,6 @@ Handlebars.getTemplate = function(name) {
         return Handlebars.templates[name];
       });
   } else {
-    Promise.resolve(Handlebars.templates[name]);
+    return Promise.resolve(Handlebars.templates[name]);
   }
 };
