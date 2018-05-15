@@ -12,7 +12,7 @@ app.get('/', function(request, response) {
 
 app.get('/templates/:template', function (req, res) {
   console.log(req.params.template );
-  res.sendFile('templates/' + req.params.template);
+  res.sendFile('template/' + req.params.template, { root: __dirname });
 });
 
 app.listen(port, function() {
