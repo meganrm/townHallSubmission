@@ -11,7 +11,8 @@ app.get('/', function(request, response) {
 });
 
 app.get('/templates/:template', function (req, res) {
-  req.sendFile('/tempates/' + req.params.name, { root: '.' });
+  console.log(req.params.name );
+  req.sendFile('tempates/' + req.params.name, { root: __dirname });
 });
 
 app.listen(port, function() {
