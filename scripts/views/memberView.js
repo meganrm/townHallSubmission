@@ -44,7 +44,8 @@
         firstMember.add();
     }
 
-    memberHandler.addFields = function () {
+    memberHandler.addFields = function (evnt) {
+        evnt.preventDefault();
         var index = memberHandler.members.length
         if (index === 0){
             memberHandler.initalizeMultiMember()
