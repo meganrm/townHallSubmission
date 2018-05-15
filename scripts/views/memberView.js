@@ -55,10 +55,15 @@
         if (index === 0) {
             return;
         };
-        var compiledTemplate = Handlebars.getTemplate('memberinputs');
-        var newHtml = compiledTemplate({ index: index })
-        $('.member-info').append(newHtml)
-        addTypahead(`#multi-member-${index}`);
+        Handlebars.getTemplate('memberinputs')
+        .then((temp) => {
+            var newHtml = temp({ index: index })
+            $('.member-info').append(newHtml)
+            addTypahead(`#multi-member-${index}`);
+        })
+            .catch(err=>{
+            console.log(err)
+        })
     }
 
     memberHandler.getEventDataFromMember = function (mocdata, index) {

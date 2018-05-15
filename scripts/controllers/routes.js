@@ -9,8 +9,4 @@ page('/:state',
   newEventController.loadByState,
   newEventController.index);
 
-page('/templates/*', function(){
-  console.log('got here')
-});
-
 page();
