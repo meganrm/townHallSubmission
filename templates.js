@@ -5,7 +5,7 @@ Handlebars.getTemplate = function(name) {
         if (response.ok) {
           return response.text();
         } else {
-          return Promise.reject('something went wrong!')
+          return Promise.reject('something went wrong!');
         }
       })
       .then(data=>{
@@ -14,8 +14,8 @@ Handlebars.getTemplate = function(name) {
         }
         Handlebars.templates[name] = Handlebars.compile(data);
         return Handlebars.templates[name];
-      })
-    } else {
-      Promise.resolve(Handlebars.templates[name])
-    }
+      });
+  } else {
+    Promise.resolve(Handlebars.templates[name]);
+  }
 };
