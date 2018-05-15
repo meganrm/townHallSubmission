@@ -55,9 +55,9 @@
         if (index === 0) {
             return;
         };
-        var compiledTemplate = Handlebars.getTemplate('memberinputs');
-        $('.member-info').append(compiledTemplate({ index: index }))
-        addTypahead(`#multi-member-${index}`);
+        // var compiledTemplate = Handlebars.getTemplate('memberinputs');
+        // $('.member-info').append(compiledTemplate({ index: index }))
+        // addTypahead(`#multi-member-${index}`);
     }
 
     memberHandler.getEventDataFromMember = function (mocdata, index) {
