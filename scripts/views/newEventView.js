@@ -340,6 +340,9 @@
   newEventView.newformChanged = function () {
     var $input = $(this);
     var $form = $input.parents('form');
+    if (this.id.split('-')[0] === 'multi'){
+      return;
+    }
     if (this.id === 'address') {
       $form.find('#geocode-button').removeClass('disabled');
       $form.find('#geocode-button').addClass('btn-blue');
@@ -430,6 +433,7 @@
     newEventView.updatedNewTownHallObject($form);
     $errorMessage.html('');
     $memberformgroup.removeClass('has-error').addClass('has-success');
+    $('#add-member').attr('disabled', false);
   };
 
   newEventView.getEventDataFromMember = function(mocdata) {
@@ -575,6 +579,7 @@
 
   newEventView.resetData = function () {
     console.log('resetting');
+    $('#add-member').attr('disabled', true);
     $('#advanced-moc-options').addClass('hidden');
     $('.has-success').removeClass('has-success');
     $('.edited').removeClass('edited');
@@ -591,6 +596,7 @@
     //reset globals
     delete TownHall.currentKey;
     TownHall.currentEvent = new TownHall();
+    memberHandler.members = [];
     //reset imputs
     $('.general-inputs').removeClass('hidden').show();
     $('.non-standard').addClass('hidden');

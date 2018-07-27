@@ -474,16 +474,15 @@ form .input-underline{
 }
 
 .btn-primary{
-  border: white solid 2px;
+  border: @brand-primary solid 2px;
   background-color: @brand-primary;
   margin-bottom: 10px;
   color: white;
 }
 
 .btn-primary:hover{
-  border: white solid 2px;
-  background-color:white;
-  color: @brand-primary;
+  border: lighten(@brand-primary, 10%) solid 2px;
+  background-color: lighten(@brand-primary, 10%);
 }
 
 #donate-button{

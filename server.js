@@ -5,9 +5,14 @@ var express = require('express'),
 
 app.use(express.static('./'));
 
-app.get('*', function(request, response) {
+app.get('/', function(request, response) {
   console.log('New request:', request.url);
   response.sendFile('index.html', { root: '.' });
+});
+
+app.get('/templates/:template', function (req, res) {
+  console.log(req.params.template, req.url );
+  res.sendFile('templates/' + req.params.template, { root: __dirname });
 });
 
 app.listen(port, function() {
