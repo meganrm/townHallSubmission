@@ -75,6 +75,10 @@
                 <h3 class="text-success">Enter a new town hall event</h3>
                 <form class="hidden" id="new-event-form-element">
                   <section class="member-info text-info">
+                    <div class="btn-group mode-switcher" role="group" aria-label="...">
+                      <button type="button" class="btn btn-default active" id="current-moc">Sitting Moc</button>
+                      <button type="button" class="btn btn-default" id="candidate">Candidate</button>
+                    </div>
                     <h4 id="member-title">Member of Congress Information<br>
                       <small>Enter their name and we will auto-fill the information</small>
                     </h4>
@@ -83,7 +87,7 @@
                       <input type="text" class="form-control input-underline" id="Member" placeholder="Full name" value="" autocomplete="off">
                       <span id="member-help-block" class="help-block">Only first name and last name, not titles</span>
                     </div>
-                    <div class="hidden" id="advanced-moc-options">
+                    <div class="hidden advanced-moc-options" id="">
                       <div class="form-group col-sm-6">
                         <label  for="state"class="sr-only">State (abbrivation)</label>
                         <input type="text" class="form-control input-underline" id="state" placeholder="State (abbrivation)" value="">
@@ -112,9 +116,6 @@
                           </div><!-- /btn-group -->
                         </div><!-- /input-group -->
                       </div><!-- /form-group -->
-                      <div class="col-md-12">
-                        <!-- <button class="btn btn-blue " type="button" name="button">(Optional) Save candidate</button> -->
-                      </div>
                     </div>
                     <div class="form-group col-md-12 col-sm-12">
                       <label  for="stateName" class="sr-only" readonly>Home State</label>
@@ -125,7 +126,7 @@
                       <input type="text" class="form-control input-underline" id="District" placeholder="District" value="" readonly>
                       <span id="helpBlock" class="help-block">How the district will be displayed</span>
                     </div>
-
+                    
                     <div class="form-group party col-sm-12">
                       <label class="sr-only " for="party">Party</label>
                       <div class="input-group">
@@ -140,7 +141,10 @@
                         </div><!-- /btn-group -->
                       </div><!-- /input-group -->
                     </div><!-- /form-group -->
-
+                    
+                    <!-- <div class="form-group col-md-12 save-candidate"> -->
+                      <!-- <button class="btn btn-blue advanced-moc-options save-candidate" type="button" name="button">(Optional) Save candidate</button> -->
+                    <!-- </div> -->
                   </section>
 
                   <section class="meeting infomation">
@@ -294,8 +298,10 @@
 
     <script src="/scripts/models/event0.js"></script>
     <script src="/scripts/models/moc.js"></script>
+    <script src="/scripts/models/candidate.js"></script>
 
     <script src="/scripts/views/newEventView.js"></script>
+    <script src="/scripts/views/memberUpdatingView.js"></script>
 
     <script src="/scripts/controllers/newEventController.js"></script>
     <script src="/scripts/controllers/routes.js"></script>
