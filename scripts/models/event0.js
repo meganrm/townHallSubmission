@@ -9,14 +9,7 @@
   TownHall.allTownHalls = [];
   TownHall.allTownHallsFB = {};
   TownHall.currentContext = [];
-  TownHall.filteredResults = [];
-  TownHall.filterIds = {
-    meetingType: '',
-    Party: '',
-    State: ''
-  };
   TownHall.isCurrentContext = false;
-  TownHall.isMap = false;
 
   // FIREBASE METHODS
   // Initialize Firebase

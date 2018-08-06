@@ -85,13 +85,13 @@
     $('.mode-switcher #current-moc').removeClass('active');
     $('.mode-switcher #candidate').addClass('active');
     next();
-  }
+  };
 
   newEventController.resetModeButton = function (ctx, next) {
     $('.mode-switcher #current-moc').addClass('active');
     $('.mode-switcher #candidate').removeClass('active');
     next();
-  }
+  };
 
   module.newEventController = newEventController;
 })(window);

@@ -530,7 +530,6 @@
   $('.new-event-form').on('change', '.general-checkbox', newEventView.generalCheckbox);
   $('.new-event-form').on('change', '#address', newEventView.addressChanged);
   $('.new-event-form').on('submit', 'form', newEventView.submitNewEvent);
-  $('.save-candidate').on('click', newEventView.saveCandidate);
   $('#scroll-to-top').on('click', function () {
     $('html, body').animate({ scrollTop: 0 }, 'slow');
   });
