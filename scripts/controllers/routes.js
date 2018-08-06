@@ -17,6 +17,7 @@ page('/:state/candidate',
   newEventController.selectCandidateMode,
   newEventController.loadByState,
   newEventController.index
+  
 );
 
 page('/:state',

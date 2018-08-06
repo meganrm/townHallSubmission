@@ -4,6 +4,7 @@
   newEventController.index = function(ctx) {
     if (ctx.mocs.length) {
       newEventView.render(ctx.mocs, ctx.congressScope, ctx.params.state);
+      newEventView.changeTitle(ctx.params.state, ctx.mode);
     } else{
       page('/');
     }
@@ -84,12 +85,14 @@
   newEventController.selectCandidateMode = function(ctx, next){
     $('.mode-switcher #current-moc').removeClass('active');
     $('.mode-switcher #candidate').addClass('active');
+    ctx.mode = 'candidate';
     next();
   };
 
   newEventController.resetModeButton = function (ctx, next) {
     $('.mode-switcher #current-moc').addClass('active');
     $('.mode-switcher #candidate').removeClass('active');
+    ctx.mode = 'moc';
     next();
   };
 
