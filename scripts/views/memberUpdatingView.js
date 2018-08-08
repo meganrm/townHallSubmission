@@ -2,7 +2,7 @@
 
   var memberUpdating = {};
 
-  memberUpdating.initalizeMemberform = function (e) {
+  memberUpdating.initalizeMemberform = function () {
     var id = this.id;
     var currentpath = window.location.pathname.split('/candidate')[0];
     if (id === 'candidate') {
@@ -59,10 +59,10 @@
   memberUpdating.updateFieldsFromMember = function ($form, $memberInput, $errorMessage, $memberformgroup, mocdata) {
     var stateName = $form.find('#stateName');
     var party = $form.find('#party');
-    var displayDistrict = $form.find('.district-group').find('input');
+    var displayDistrict = $form.find('#displayDistrict');
     if (mocdata.type === 'sen' || mocdata.chamber === 'upper') {
       displayDistrict.val('Senate').parent().addClass('has-success');
-    } else if (mocdata.type === 'rep' || mocdata.chamber === 'upper') {
+    } else if (mocdata.district) {
       displayDistrict.val(mocdata.state + '-' + mocdata.district).parent().addClass('has-success');
     }
     $memberInput.val(mocdata.displayName);
