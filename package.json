@@ -6,6 +6,7 @@
   "scripts": {
     "lint": "eslint --fix .",
     "build": "webpack --config webpack.prod.js",
+    "start": "node server.js",
     "prebuild": "rm -rf build/bundle.*",
     "heroku-postbuild": "webpack --config webpack.prod.js",
     "watch": "webpack-dev-server --inline --hot --public --config webpack.config.js",
