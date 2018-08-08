@@ -16,7 +16,7 @@ const plugins = [
   }),
 
   new HTMLPlugin({
-    template: `${__dirname}/src/index.html`,
+    template: `${__dirname}/index.html`,
   }),
   // new ExtractPlugin('bundle.[hash].css'),
   new CopyWebpackPlugin([
