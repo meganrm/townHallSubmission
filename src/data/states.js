@@ -1,4 +1,4 @@
-var statesAb = {
+const statesAb = {
   AL: 'Alabama',
   AK: 'Alaska',
   AS: 'American Samoa',
@@ -57,5 +57,5 @@ var statesAb = {
   WA: 'Washington',
   WV: 'West Virginia',
   WI: 'Wisconsin',
-  WY: 'Wyoming'
+  WY: 'Wyoming',
 };

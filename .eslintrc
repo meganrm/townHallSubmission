@@ -1,8 +1,7 @@
 {
   "globals": {
     "document": true,
-    "PropTypes": true,
-    "mapboxgl": true
+    "PropTypes": true
   },
  "env": {
     "es6": true,
@@ -12,8 +11,8 @@
   },
   "rules": {
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
-    "react/prefer-stateless-function": [0, { "ignorePureComponents": <ignorePureComponents> }],
     "max-len":"off",
+    "indent": ["error", 4],
     "no-param-reassign":"off",
     "sort-keys": [
       "warn",
@@ -26,6 +25,9 @@
     "no-console": [0]
   },
   "extends": "airbnb",
+  "parserOptions": {
+    "sourceType": "module"
+  },
   "plugins": [
       "react",
       "react-native",

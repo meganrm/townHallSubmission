@@ -1,472 +1,451 @@
+import 'bootstrap3';
+import '../../vendor/scripts/bootstrap3-typeahead.min';
+import moment from 'moment';
 
-(function (module) {
+import { firebasedb, firebaseauth } from '../util/setupFirebase';
+import TownHall from '../models/town-hall';
+import Moc from '../models/moc';
+
+/* globals $ */
 // For handling user submitted events.
-/*global firebase TownHall Moc Handlebars statesAb regEx:true*/
 
-  var provider = new firebase.auth.GoogleAuthProvider();
+const newEventView = {};
+TownHall.currentEvent = new TownHall();
 
-  var newEventView = {};
-  TownHall.currentKey;
-  TownHall.currentEvent = new TownHall();
-
-  newEventView.render = function (allnames, type) {
-    var typeaheadConfig = {
-      fitToElement: true,
-      delay: 200,
-      highlighter: function(item) { return item; }, // Kill ugly highlight
-      filter: function(selection) {
-        $('#Member').val(selection);
-      }
+newEventView.render = (allnames, type) => {
+    const typeaheadConfig = {
+        delay: 200,
+        filter(selection) {
+            $('#Member').val(selection);
+        },
+        fitToElement: true,
+        highlighter(item) {
+            return item;
+        }, // Kill ugly highlight
     };
 
     $('#Member').typeahead('destroy');
-    $('#Member').typeahead($.extend({source: allnames}, typeaheadConfig));
+    $('#Member').typeahead($.extend({
+        source: allnames,
+    }, typeaheadConfig));
     if ($('#new-event-form-element').hasClass('hidden')) {
-      $('#new-event-form-element').removeClass('hidden').hide().fadeIn();
+        $('#new-event-form-element').removeClass('hidden').hide().fadeIn();
     }
     if (type === 'state') {
-      console.log('state');
-      $('.federal-district-group').addClass('hidden');
-      $('#state-district-group').removeClass('hidden');
+        console.log('state');
+        $('.federal-district-group').addClass('hidden');
+        $('#state-district-group').removeClass('hidden');
     } else {
-      $('.federal-district-group').removeClass('hidden');
-      $('#state-district-group').addClass('hidden');
+        $('.federal-district-group').removeClass('hidden');
+        $('#state-district-group').addClass('hidden');
     }
-  };
+};
 
-  newEventView.switchTab = function (state) {
+newEventView.switchTab = (state) => {
     $('.state-switcher').removeClass('active');
     if (state) {
-      $('.state-switcher.' + state).addClass('active');
+        $(`.state-switcher.${state}`).addClass('active');
     } else {
-      $('.state-switcher.federal').addClass('active');
+        $('.state-switcher.federal').addClass('active');
     }
-  };
+};
 
-  newEventView.changeTitle = function (state, mode) {
-    var intro = mode === 'candidate' ? 'Candidate for ' : 'Member of ';
-    
-    var text = intro +  'Congress Information ';
+newEventView.changeTitle = (state, mode) => {
+    const intro = mode === 'candidate' ? 'Candidate for ' : 'Member of ';
+
+    let text = `${intro}Congress Information `;
     if (state) {
-      text = intro + state + ' state legislature information';
+        text = `${intro + state} state legislature information`;
     }
     $('#member-title').text(text);
-  };
+};
 
-  newEventView.dateString = function (event) {
+newEventView.dateString = function dateString(event) {
     event.preventDefault();
-    var $input = $(this);
-    var $form = $input.parents('form');
-    var $dateInput = $form.find('.repeating');
-    var $checkbox = $form.find('.checkbox-label');
+    const $input = $(this);
+    const $form = $input.parents('form');
+    const $dateInput = $form.find('.repeating');
+    const $checkbox = $form.find('.checkbox-label');
     if (this.checked) {
-      $dateInput.show().removeClass('hidden');
+        $dateInput.show().removeClass('hidden');
     } else {
-      $dateInput.hide();
-      $checkbox.text('Click to enter repeating event description');
+        $dateInput.hide();
+        $checkbox.text('Click to enter repeating event description');
     }
-  };
+};
 
-  newEventView.generalCheckbox = function (event) {
+newEventView.generalCheckbox = function generalCheckbox(event) {
     event.preventDefault();
     TownHall.currentEvent[this.id] = this.checked;
-  };
+};
 
-  newEventView.geoCodeOnState = function () {
-    var state = TownHall.currentEvent.stateName;
-    var $form = $('form');
-    var newTownHall = new TownHall();
-    newTownHall.getLatandLog(state, 'state').then(function (geotownHall) {
-      console.log('geocoding!', geotownHall);
-      TownHall.currentEvent.address = geotownHall.address;
-      TownHall.currentEvent.lat = geotownHall.lat;
-      TownHall.currentEvent.lng = geotownHall.lng;
-      $form.find('#locationCheck').val('Location is valid');
-    }).catch(function () {
-      var $feedback = $form.find('#location-form-group');
-      $feedback.addClass('has-error');
-      $form.find('#locationCheck').val('Geocoding failed').addClass('has-error');
+newEventView.geoCodeOnState = function geoCodeOnState() {
+    const state = TownHall.currentEvent.stateName;
+    const $form = $('form');
+    const newTownHall = new TownHall();
+    newTownHall.getLatandLog(state, 'state').then((geotownHall) => {
+        console.log('geocoding!', geotownHall);
+        TownHall.currentEvent.address = geotownHall.address;
+        TownHall.currentEvent.lat = geotownHall.lat;
+        TownHall.currentEvent.lng = geotownHall.lng;
+        $form.find('#locationCheck').val('Location is valid');
+    }).catch(() => {
+        const $feedback = $form.find('#location-form-group');
+        $feedback.addClass('has-error');
+        $form.find('#locationCheck').val('Geocoding failed').addClass('has-error');
     });
-  };
+};
 
-  newEventView.geoCode = function ($input) {
-    var $form = $($input).parents('form');
-    var address = $form.find('#address').val();
-    var newTownHall = new TownHall();
-    var type = $form.find('#addressType').val();
+newEventView.geoCode = function geoCode($input) {
+    const $form = $($input).parents('form');
+    const address = $form.find('#address').val();
+    const newTownHall = new TownHall();
+    const type = $form.find('#addressType').val();
     if (TownHall.currentEvent.lat && TownHall.currentEvent.lng) {
-      delete TownHall.currentEvent.lat;
-      delete TownHall.currentEvent.lng;
+        delete TownHall.currentEvent.lat;
+        delete TownHall.currentEvent.lng;
     }
-    newTownHall.getLatandLog(address, type).then(function (geotownHall) {
-      console.log('geocoding!', geotownHall);
-      var $feedback = $form.find('#location-form-group');
-      $feedback.removeClass('has-error');
-      $feedback.addClass('has-success');
-      $form.find('#address').val(geotownHall.address);
-      TownHall.currentEvent.lat = geotownHall.lat;
-      TownHall.currentEvent.lng = geotownHall.lng;
-      TownHall.currentEvent.address = geotownHall.address;
-      $form.find('#locationCheck').val('Location is valid');
-      /* eslint-env es6*/
-      /* eslint quotes: ["error", "single", { "allowTemplateLiterals": true }]*/
-      $form.find('#address-feedback').html('Location is valid, make sure the address is correct:<br>' + geotownHall.address);
-    }).catch(function () {
-      var $feedback = $form.find('#location-form-group');
-      $feedback.addClass('has-error');
-      $form.find('#locationCheck').val('Geocoding failed').addClass('has-error');
+    newTownHall.getLatandLog(address, type).then((geotownHall) => {
+        console.log('geocoding!', geotownHall);
+        const $feedback = $form.find('#location-form-group');
+        $feedback.removeClass('has-error');
+        $feedback.addClass('has-success');
+        $form.find('#address').val(geotownHall.address);
+        TownHall.currentEvent.lat = geotownHall.lat;
+        TownHall.currentEvent.lng = geotownHall.lng;
+        TownHall.currentEvent.address = geotownHall.address;
+        $form.find('#locationCheck').val('Location is valid');
+        /* eslint-env es6 */
+        /* eslint quotes: ["error", "single", { "allowTemplateLiterals": true }] */
+        $form.find('#address-feedback').html(`Location is valid, make sure the address is correct:<br>${geotownHall.address}`);
+    }).catch(() => {
+        const $feedback = $form.find('#location-form-group');
+        $feedback.addClass('has-error');
+        $form.find('#locationCheck').val('Geocoding failed').addClass('has-error');
     });
-  };
+};
 
-  newEventView.addressChanged = function () {
-    var $input = $(this);
-    var $form = $input.parents('form');
+newEventView.addressChanged = function addressChanged() {
+    const $input = $(this);
+    const $form = $input.parents('form');
     if (this.id === 'address') {
-      $form.find('#locationCheck').val('');
-      newEventView.geoCode($input);
-      $form.find('#location-form-group').removeClass('has-success');
-      $form.find('#address-feedback').html('Enter a valid street address, if there isn\'t one, leave this blank');
+        $form.find('#locationCheck').val('');
+        newEventView.geoCode($input);
+        $form.find('#location-form-group').removeClass('has-success');
+        $form.find('#address-feedback').html('Enter a valid street address, if there isn\'t one, leave this blank');
     }
-  };
+};
 
-  newEventView.changeMeetingType = function (event) {
+newEventView.changeMeetingType = function changeMeetingType(event) {
     event.preventDefault();
-    var $form = $(this).parents('form');
-    var value = $(this).attr('data-value');
+    const $form = $(this).parents('form');
+    const value = $(this).attr('data-value');
     $form.find('#meetingType').val(value);
     $form.find('#meetingType').change();
-  };
+};
 
-  var addDisclaimer = function() {
-    $('#Notes').val('Town Hall Project lists this event and any ' +
-                    'third-party link as public information and not ' +
-                    'as an endorsement of a participating candidate, campaign, or party.');
-  };
+const addDisclaimer = function addDisclaimer() {
+    $('#Notes').val('Town Hall Project lists this event and any '
+    + 'third-party link as public information and not '
+    + 'as an endorsement of a participating candidate, campaign, or party.');
+};
 
-  newEventView.changeParty = function (event) {
+newEventView.changeParty = function changeParty(event) {
     event.preventDefault();
-    var $form = $(this).parents('form');
-    var value = $(this).attr('data-value');
+    const $form = $(this).parents('form');
+    const value = $(this).attr('data-value');
     $form.find('#party').val(value);
     $form.find('#party').change();
-  };
+};
 
-  newEventView.districtEntered = function (value, $form) {
-    var state = $form.find('#state').val();
+newEventView.districtEntered = function districtEntered(value, $form) {
+    const state = $form.find('#state').val();
     if (value && Number(value)) {
-      $form.find('#District').val(state + '-' + Number(value));
-    } else if (value.split('-').length > 0){
-      $form.find('#District').val(state + ' ' + value);
+        $form.find('#District').val(`${state}-${Number(value)}`);
+    } else if (value.split('-').length > 0) {
+        $form.find('#District').val(`${state} ${value}`);
     } else {
-      $form.find('#District').val('Senate');
+        $form.find('#District').val('Senate');
     }
-  };
+};
 
-  newEventView.changeChamber = function (event) {
+newEventView.changeChamber = function changeChamber(event) {
     event.preventDefault();
-    var $form = $(this).parents('form');
-    var value = $(this).attr('data-value');
+    const $form = $(this).parents('form');
+    const value = $(this).attr('data-value');
     $form.find('#chamber').val(value);
     $form.find('#chamber').change().addClass('has-success');
     if (value === 'upper' && !TownHall.currentEvent.district) {
-      $form.find('#District').val('Senate');
+        $form.find('#District').val('Senate');
     }
-  };
+};
 
-  newEventView.saveNoEvent = function (event) {
+newEventView.saveNoEvent = function saveNoEvent(event) {
     event.preventDefault();
-    var updateMOC = new Moc();
+    const updateMOC = new Moc();
     updateMOC.lastUpdated = Date.now();
     updateMOC.govtrack_id = TownHall.currentEvent.govtrack_id;
     newEventView.updateMOCEvents();
     newEventView.updateUserEvents();
     newEventView.resetData();
-  };
+};
 
-  newEventView.meetingTypeChanged = function (event) {
+newEventView.meetingTypeChanged = function meetingTypeChanged(event) {
     event.preventDefault();
-    var value = $(this).val();
+    const value = $(this).val();
     $('#Notes').val('');
     $('.non-standard').addClass('hidden');
     $('#meetingType-error').addClass('hidden');
     $('#meetingType').parent().removeClass('has-error');
     switch (value) {
     case 'Tele-Town Hall':
-      $('.general-inputs').addClass('hidden');
-      $('.tele-inputs').removeClass('hidden');
-      TownHall.currentEvent.iconFlag = 'tele';
-      newEventView.geoCodeOnState();
-      break;
+        $('.general-inputs').addClass('hidden');
+        $('.tele-inputs').removeClass('hidden');
+        TownHall.currentEvent.iconFlag = 'tele';
+        newEventView.geoCodeOnState();
+        break;
     case 'Adopt-A-District/State':
-      $('.general-inputs').removeClass('hidden');
-      $('.adopter-data').removeClass('hidden');
-      TownHall.currentEvent.iconFlag = 'activism';
-      //TODO: set this up
-      // setupTypeaheads('#districtAdopter');
-      break;
+        $('.general-inputs').removeClass('hidden');
+        $('.adopter-data').removeClass('hidden');
+        TownHall.currentEvent.iconFlag = 'activism';
+        // TODO: set this up
+        // setupTypeaheads('#districtAdopter');
+        break;
     case 'No Events':
-      $('.event-details').addClass('hidden');
-      $('.new-event-form').unbind('submit');
-      $('.new-event-form').on('submit', newEventView.saveNoEvent);
-      break;
+        $('.event-details').addClass('hidden');
+        $('.new-event-form').unbind('submit');
+        $('.new-event-form').on('submit', newEventView.saveNoEvent);
+        break;
     case 'Ticketed Event':
-      addDisclaimer();
-      TownHall.currentEvent.iconFlag = 'in-person';
-      $('.general-inputs').removeClass('hidden');
-      break;
+        addDisclaimer();
+        TownHall.currentEvent.iconFlag = 'in-person';
+        $('.general-inputs').removeClass('hidden');
+        break;
     case 'Office Hours':
-      TownHall.currentEvent.iconFlag = 'staff';
-      $('.general-inputs').removeClass('hidden');
-      break;
+        TownHall.currentEvent.iconFlag = 'staff';
+        $('.general-inputs').removeClass('hidden');
+        break;
     case 'Town Hall':
-      TownHall.currentEvent.iconFlag = 'in-person';
-      $('.general-inputs').removeClass('hidden');
-      break;
+        TownHall.currentEvent.iconFlag = 'in-person';
+        $('.general-inputs').removeClass('hidden');
+        break;
     case 'Campaign Town Hall':
-      addDisclaimer();
-      TownHall.currentEvent.iconFlag = 'campaign';
-      $('.general-inputs').removeClass('hidden');
-      break;
+        addDisclaimer();
+        TownHall.currentEvent.iconFlag = 'campaign';
+        $('.general-inputs').removeClass('hidden');
+        break;
     case 'Hearing':
-      TownHall.currentEvent.iconFlag = null;
-      $('.general-inputs').removeClass('hidden');
-      break;
+        TownHall.currentEvent.iconFlag = null;
+        $('.general-inputs').removeClass('hidden');
+        break;
     case 'DC Event':
-      TownHall.currentEvent.iconFlag = null;
-      $('.general-inputs').removeClass('hidden');
-      break;
+        TownHall.currentEvent.iconFlag = null;
+        $('.general-inputs').removeClass('hidden');
+        break;
     case 'Empty Chair Town Hall':
-      TownHall.currentEvent.iconFlag = 'activism';
-      $('.general-inputs').removeClass('hidden');
-      break;
+        TownHall.currentEvent.iconFlag = 'activism';
+        $('.general-inputs').removeClass('hidden');
+        break;
     default:
-      $('.general-inputs').removeClass('hidden');
+        $('.general-inputs').removeClass('hidden');
     }
-  };
+};
 
-  // New Event METHODS
-  newEventView.validatePhoneNumber = function(phonenumber){
-    var $phoneNumberError = $('#phoneNumber-error');
-    regEx = /^(1\s|1|)?((\(\d{3}\))|\d{3})(\-|\s)?(\d{3})(\-|\s)?(\d{4})$/;
-    var testNumber = regEx.test(phonenumber);
+// New Event METHODS
+newEventView.validatePhoneNumber = function validatePhoneNumber(phonenumber) {
+    const $phoneNumberError = $('#phoneNumber-error');
+    const regEx = /^(1\s|1|)?((\(\d{3}\))|\d{3})(\-|\s)?(\d{3})(\-|\s)?(\d{4})$/;
+    const testNumber = regEx.test(phonenumber);
     if (testNumber) {
-      $phoneNumberError.addClass('hidden');
-      $phoneNumberError.parent().removeClass('has-error');
-      $phoneNumberError.parent().addClass('has-success');
-      phonenumber = phonenumber.replace(/[^\d]/g, '');
-      if (phonenumber.length === 10) {
-        $('#phoneNumber').val(phonenumber.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3'));
-      }
-      return null;
-    } else {
-      $phoneNumberError.removeClass('hidden');
-      $phoneNumberError.parent().addClass('has-error');
-      $phoneNumberError.parent().removeClass('has-success');
+        $phoneNumberError.addClass('hidden');
+        $phoneNumberError.parent().removeClass('has-error');
+        $phoneNumberError.parent().addClass('has-success');
+        phonenumber = phonenumber.replace(/[^\d]/g, '');
+        if (phonenumber.length === 10) {
+            $('#phoneNumber').val(phonenumber.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3'));
+        }
+        return null;
     }
-  };
+    $phoneNumberError.removeClass('hidden');
+    $phoneNumberError.parent().addClass('has-error');
+    $phoneNumberError.parent().removeClass('has-success');
+};
 
-  // converts time to 24hour time
-  newEventView.toTwentyFour = function (time) {
-    var hourmin = time.split(' ')[0];
-    var ampm = time.split(' ')[1];
-    if (ampm === 'PM') {
-      var hour = hourmin.split(':')[0];
-      if (Number(hour) !== 12) {
-        hour = Number(hour) + 12;
-      }
-      hourmin = hour + ':' + hourmin.split(':')[1];
-    } else if (Number(hourmin.split(':')[0]) === 12) {
-      hour = '00';
-      hourmin = hour + ':' + hourmin.split(':')[1];
-    }
-    return hourmin + ':' + '00';
-  };
-
-  newEventView.validateDateTime = function($curValue, format, id) {
+newEventView.validateDateTime = function validateDateTime($curValue, format, id) {
     if (!moment($curValue, format).isValid()) {
-      $('#' + id + '-error').removeClass('hidden');
-      $('#' + id).parent().addClass('has-error');
-      return false;
-    } else {
-      $('#' + id + '-error').addClass('hidden');
-      $('#' + id).parent().removeClass('has-error');
-      return true;
+        $(`#${id}-error`).removeClass('hidden');
+        $(`#${id}`).parent().addClass('has-error');
+        return false;
     }
-  };
+    $(`#${id}-error`).addClass('hidden');
+    $(`#${id}`).parent().removeClass('has-error');
+    return true;
+};
 
-  newEventView.updatedNewTownHallObject = function updatedNewTownHallObject($form) {
-    var updated = $form.find('.edited').get();
-    var databaseTH = TownHall.currentEvent;
-    var updates = updated.reduce(function (newObj, cur) {
-      var $curValue = $(cur).val();
-      var timeFormats = ['hh:mm A', 'h:mm A'];
-      switch (cur.id) {
-      case 'timeStart24':
-        if (!newEventView.validateDateTime($curValue, timeFormats, 'timeStart24')){
-          return;
+newEventView.updatedNewTownHallObject = function updatedNewTownHallObject($form) {
+    const updated = $form.find('.edited').get();
+    const databaseTH = TownHall.currentEvent;
+    const updates = updated.reduce((newObj, cur) => {
+        const $curValue = $(cur).val();
+        const timeFormats = ['hh:mm A', 'h:mm A'];
+        const dateFormats = ['YYYY-MM-DD', 'MM/DD/YYYY', 'MM-DD-YYYY', 'MMMM D, YYYY'];
+        const tempEnd = moment($curValue, timeFormats).add(2, 'h');
+        switch (cur.id) {
+        case 'timeStart24':
+            if (!newEventView.validateDateTime($curValue, timeFormats, 'timeStart24')) {
+                return;
+            }
+            newObj.timeStart24 = moment($curValue, timeFormats).format('HH:mm:ss');
+            newObj.Time = moment($curValue, timeFormats).format('h:mm A');
+            newObj.timeEnd24 = moment(tempEnd).format('HH:mm:ss');
+            newObj.timeEnd = moment(tempEnd).format('h:mm A');
+            break;
+        case 'timeEnd24':
+            if (!newEventView.validateDateTime($curValue, timeFormats, 'timeEnd24')) {
+                return;
+            }
+            newObj.timeEnd24 = moment($curValue, timeFormats).format('HH:mm:ss');
+            newObj.timeEnd = moment($curValue, timeFormats).format('h:mm A');
+            break;
+        case 'yearMonthDay':
+            if (!newEventView.validateDateTime($curValue, dateFormats, 'yearMonthDay')) {
+                return;
+            }
+            newObj[cur.id] = moment($curValue, dateFormats).format('YYYY-MM-DD');
+            newObj.dateString = moment($curValue, dateFormats).format('ddd, MMM D YYYY');
+            newObj.Date = moment($curValue, dateFormats).format('ddd, MMM D YYYY');
+            break;
+        case 'district':
+            newEventView.districtEntered($curValue, $form);
+            newObj[cur.id] = $curValue;
+            break;
+        default:
+            newObj[cur.id] = $curValue;
         }
-        newObj.timeStart24 = moment($curValue, timeFormats).format('HH:mm:ss');
-        newObj.Time = moment($curValue, timeFormats).format('h:mm A');
-        var tempEnd = moment($curValue, timeFormats).add(2, 'h');
-        newObj.timeEnd24 = moment(tempEnd).format('HH:mm:ss');
-        newObj.timeEnd = moment(tempEnd).format('h:mm A');
-        break;
-      case 'timeEnd24':
-        if (!newEventView.validateDateTime($curValue, timeFormats, 'timeEnd24')){
-          return;
-        }
-        newObj.timeEnd24 = moment($curValue, timeFormats).format('HH:mm:ss');
-        newObj.timeEnd = moment($curValue, timeFormats).format('h:mm A');
-        break;
-      case 'yearMonthDay':
-        var dateFormats = ['YYYY-MM-DD', 'MM/DD/YYYY', 'MM-DD-YYYY', 'MMMM D, YYYY'];
-        if (!newEventView.validateDateTime($curValue, dateFormats, 'yearMonthDay')){
-          return;
-        }
-        newObj[cur.id] = moment($curValue, dateFormats).format('YYYY-MM-DD');
-        newObj.dateString = moment($curValue, dateFormats).format('ddd, MMM D YYYY');
-        newObj.Date = moment($curValue, dateFormats).format('ddd, MMM D YYYY');
-        break;
-      case 'district':
-        newEventView.districtEntered($curValue, $form);
-        newObj[cur.id] = $curValue;
-        break;
-      default:
-        newObj[cur.id] = $curValue;
-      }
-      return newObj;
+        return newObj;
     }, {});
     TownHall.currentEvent = Object.assign(databaseTH, updates);
     console.log(TownHall.currentEvent);
-  };
+};
 
-  newEventView.newformChanged = function () {
-    var $input = $(this);
-    var $form = $input.parents('form');
+newEventView.newformChanged = function newformChanged() {
+    const $input = $(this);
+    const $form = $input.parents('form');
     if (this.id === 'address') {
-      $form.find('#geocode-button').removeClass('disabled');
-      $form.find('#geocode-button').addClass('btn-blue');
-      $form.find('#locationCheck').val('');
+        $form.find('#geocode-button').removeClass('disabled');
+        $form.find('#geocode-button').addClass('btn-blue');
+        $form.find('#locationCheck').val('');
     } else if (this.id === 'phoneNumber') {
-      newEventView.validatePhoneNumber($input.val());
+        newEventView.validatePhoneNumber($input.val());
     }
     $input.addClass('edited');
     newEventView.updatedNewTownHallObject($form);
-  };
+};
 
-  newEventView.showSubmittedEvents = function (currentEvents, $list) {
-    var previewEventTemplate = Handlebars.getTemplate('pendingEvents');
-    $('#list-of-current-pending').removeClass('hidden').hide().fadeIn();
-    for (var key in currentEvents) {
-      var eventId = currentEvents[key];
-      var ele = TownHall.allTownHallsFB[eventId];
-      $list.append(previewEventTemplate(ele));
-    }
-  };
-
-  newEventView.lookUpStateName = function(event){
+newEventView.lookUpStateName = function (event) {
     event.preventDefault();
-    var $form = $(this).parents('form');
-    var stateName = statesAb[$(this).val()];
-    var stateNameInput = $form.find('#stateName');
+    const $form = $(this).parents('form');
+    const stateName = statesAb[$(this).val()];
+    const stateNameInput = $form.find('#stateName');
     TownHall.currentEvent.stateName = stateName;
     stateNameInput.val(stateName).addClass('has-success');
-  };
+};
 
-  newEventView.validateDateNew = function () {
-    var newTownHall = TownHall.currentEvent;
+newEventView.validateDateNew = function validateDateNew() {
+    const newTownHall = TownHall.currentEvent;
     if (newTownHall.meetingType.slice(0, 4) === 'Tele') {
-      newTownHall.dateObj = new Date(newTownHall.Date.replace(/-/g, '/') + ' ' + newTownHall.Time).getTime();
-      return newTownHall;
-    } else if (newTownHall.lat) {
-      console.log('getting time zone');
-      newTownHall.validateZone().then(function (returnedTH) {
-        console.log(returnedTH);
-        returnedTH.updateUserSubmission(returnedTH.eventId, TownHall.savePath).then(function () {
-          TownHall.allTownHallsFB[returnedTH.eventId] = returnedTH;
-          newEventView.saveMetaData();
-          newEventView.resetData();
-        }).catch(function(error){
-          $('general-error').text('Please open your console (View>Developer>JavaScript console)and email meganrm@townhallproject.com a screenshot:', error).removeClass('hidden');
-        });
-      }).catch(function (error) {
-        $('general-error').text(error).removeClass('hidden');
-        console.log('could not get timezone', error);
-      });
-    } else {
-      newTownHall.dateObj = new Date(newTownHall.Date.replace(/-/g, '/') + ' ' + newTownHall.Time).getTime();
-      newTownHall.dateValid = newTownHall.dateObj ? true : false;
-      return newTownHall;
+        newTownHall.dateObj = new Date(`${newTownHall.Date.replace(/-/g, '/')} ${newTownHall.Time}`).getTime();
+        return newTownHall;
     }
-  };
+    if (newTownHall.lat) {
+        console.log('getting time zone');
+        newTownHall.validateZone().then((returnedTH) => {
+            console.log(returnedTH);
+            returnedTH.updateUserSubmission(returnedTH.eventId, TownHall.savePath).then(() => {
+                TownHall.allTownHallsFB[returnedTH.eventId] = returnedTH;
+                newEventView.saveMetaData();
+                newEventView.resetData();
+            }).catch((error) => {
+                $('general-error').text('Please open your console (View>Developer>JavaScript console)and email meganrm@townhallproject.com a screenshot:', error).removeClass('hidden');
+            });
+        }).catch((error) => {
+            $('general-error').text(error).removeClass('hidden');
+            console.log('could not get timezone', error);
+        });
+    } else {
+        newTownHall.dateObj = new Date(`${newTownHall.Date.replace(/-/g, '/')} ${newTownHall.Time}`).getTime();
+        newTownHall.dateValid = !!newTownHall.dateObj;
+        return newTownHall;
+    }
+};
 
-  newEventView.checkForFields = function () {
-    var requiredFields = true;
+newEventView.checkForFields = function checkForFields() {
+    let requiredFields = true;
     if (!Object.prototype.hasOwnProperty.call(TownHall.currentEvent, 'meetingType')) {
-      $('#meetingType').parent().addClass('has-error');
-      $('#meetingType-error').removeClass('hidden');
-      requiredFields = false;
+        $('#meetingType').parent().addClass('has-error');
+        $('#meetingType-error').removeClass('hidden');
+        requiredFields = false;
     }
     if (!Object.prototype.hasOwnProperty.call(TownHall.currentEvent, 'yearMonthDay')) {
-      $('#yearMonthDay').parent().addClass('has-error');
-      $('#yearMonthDay-error').removeClass('hidden');
-      requiredFields = false;
+        $('#yearMonthDay').parent().addClass('has-error');
+        $('#yearMonthDay-error').removeClass('hidden');
+        requiredFields = false;
     }
     if (!Object.prototype.hasOwnProperty.call(TownHall.currentEvent, 'timeStart24') && TownHall.currentEvent.meetingType !== 'Tele-Town Hall') {
-      $('#timeStart24').parent().addClass('has-error');
-      $('#timeStart24-error').removeClass('hidden');
-      requiredFields = false;
+        $('#timeStart24').parent().addClass('has-error');
+        $('#timeStart24-error').removeClass('hidden');
+        requiredFields = false;
     }
     return requiredFields;
-  };
+};
 
-  newEventView.updateMOCEvents = function () {
-    var path = Moc.mocDataPath;
-    var id = TownHall.currentEvent.govtrack_id ? TownHall.currentEvent.govtrack_id: TownHall.currentEvent.thp_id;
+newEventView.updateMOCEvents = function updateMOCEvents() {
+    const path = Moc.mocDataPath;
+    const id = TownHall.currentEvent.govtrack_id ? TownHall.currentEvent.govtrack_id : TownHall.currentEvent.thp_id;
     if (!id) {
-      return Promise.resolve();
+        return Promise.resolve();
     }
-    var updates = {
-      lastUpdated: Date.now(),
-      lastUpdatedBy: firebase.auth().currentUser.displayName
+    const updates = {
+        lastUpdated: Date.now(),
+        lastUpdatedBy: firebaseauth.currentUser.displayName,
     };
 
     if (TownHall.currentEvent.govtrack_id || TownHall.currentEvent.thp_id) {
-      return firebase.database().ref(path + id).update(updates);
+        return firebasedb.ref(path + id).update(updates);
     }
-  };
+    return Promise.resolve();
+};
 
-  newEventView.updateUserEvents = function () {
-    var path = 'users/' + firebase.auth().currentUser.uid;
-    var updates = {};
-    var currentEvent = {};
-    var mocData = {
-      lastUpdated: Date.now(),
-      govtrack_id : TownHall.currentEvent.govtrack_id || null,
-      thp_id: TownHall.currentEvent.thp_id || null
+newEventView.updateUserEvents = function updateUserEvents() {
+    const path = `users/${firebaseauth.currentUser.uid}`;
+    const updates = {};
+    const currentEvent = {};
+    const mocData = {
+        lastUpdated: Date.now(),
+        govtrack_id: TownHall.currentEvent.govtrack_id || null,
+        thp_id: TownHall.currentEvent.thp_id || null,
     };
-    var id = TownHall.currentEvent.govtrack_id ? TownHall.currentEvent.govtrack_id: TownHall.currentEvent.thp_id;
-    id = id ? id: 'candidate';
+    let id = TownHall.currentEvent.govtrack_id ? TownHall.currentEvent.govtrack_id : TownHall.currentEvent.thp_id;
+    id = id || 'candidate';
     currentEvent.eventId = TownHall.currentKey;
-    updates[path + '/currentEvents/' + TownHall.currentKey] = currentEvent;
-    updates[path + '/mocs/' + id] = mocData;
-    return firebase.database().ref().update(updates);
-  };
+    updates[`${path}/currentEvents/${TownHall.currentKey}`] = currentEvent;
+    updates[`${path}/mocs/${id}`] = mocData;
+    return firebasedb.ref().update(updates);
+};
 
-  newEventView.saveMetaData = function(){
-
+newEventView.saveMetaData = function saveMetaData() {
     Promise.all([newEventView.updateMOCEvents(), newEventView.updateUserEvents()])
-      .then(function(){
-        $('#submit-success').removeClass('hidden').addClass('has-success');
-        console.log('updated moc');
-        console.log('updated user');
-      })
-      .catch(function(error){
-        console.log('error updating user or moc', error);
-      });
-  };
+        .then(() => {
+            $('#submit-success').removeClass('hidden').addClass('has-success');
+            console.log('updated moc');
+            console.log('updated user');
+        })
+        .catch((error) => {
+            console.log('error updating user or moc', error);
+        });
+};
 
-  newEventView.resetData = function () {
+newEventView.resetData = function resetData() {
     $('.advanced-moc-options').addClass('hidden');
     $('.has-success').removeClass('has-success');
     $('.edited').removeClass('edited');
@@ -475,126 +454,92 @@
     $('.has-error').removeClass('has-error');
     $('#list-of-current-pending').addClass('hidden');
     document.getElementById('new-event-form-element').reset();
-    $('html, body').animate({ scrollTop: 0 }, 'slow');
-    //reset if last was no event
+    $('html, body').animate({
+        scrollTop: 0,
+    }, 'slow');
+    // reset if last was no event
     $('.event-details').removeClass('hidden');
     $('.new-event-form').unbind('submit');
     $('.new-event-form').on('submit', 'form', newEventView.submitNewEvent);
-    //reset globals
+    // reset globals
     delete TownHall.currentKey;
     TownHall.currentEvent = new TownHall();
-    //reset imputs
+    // reset imputs
     $('.general-inputs').removeClass('hidden').show();
     $('.non-standard').addClass('hidden');
-  };
+};
 
-  newEventView.submitNewEvent = function (event) {
+newEventView.submitNewEvent = function submitNewEvent(event) {
     event.preventDefault();
-    var $form = $(this);
-    var id = TownHall.currentEvent.eventId;
+    const $form = $(this);
+    const id = TownHall.currentEvent.eventId;
     newEventView.updatedNewTownHallObject($form);
-    var newTownHall = TownHall.currentEvent;
+    let newTownHall = TownHall.currentEvent;
     if (newEventView.checkForFields()) {
-      newTownHall.lastUpdated = Date.now();
-      newTownHall.enteredBy = firebase.auth().currentUser.email;
-      newTownHall.userID = firebase.auth().currentUser.uid;
-      newTownHall = newEventView.validateDateNew(id, newTownHall);
-      if (newTownHall) {
-        console.log(TownHall.savePath);
-        newTownHall.updateUserSubmission(newTownHall.eventId, TownHall.savePath).then(function () {
-          TownHall.allTownHallsFB[newTownHall.eventId] = newTownHall;
-          newEventView.saveMetaData();
-          newEventView.resetData();
-          console.log('wrote to database: ', newTownHall);
-        }).catch(function(error){
-          $('general-error').text('Please open your console (View>Developer>JavaScript console)and email meganrm@townhallproject.com a screenshot:', error).removeClass('hidden');
-          console.log(error);
-        });
-      }
+        newTownHall.lastUpdated = Date.now();
+        newTownHall.enteredBy = firebaseauth.currentUser.email;
+        newTownHall.userID = firebaseauth.currentUser.uid;
+        newTownHall = newEventView.validateDateNew(id, newTownHall);
+        if (newTownHall) {
+            console.log(TownHall.savePath);
+            newTownHall.updateUserSubmission(newTownHall.eventId, TownHall.savePath).then(() => {
+                TownHall.allTownHallsFB[newTownHall.eventId] = newTownHall;
+                newEventView.saveMetaData();
+                newEventView.resetData();
+                console.log('wrote to database: ', newTownHall);
+            }).catch((error) => {
+                $('general-error').text('Please open your console (View>Developer>JavaScript console)and email meganrm@townhallproject.com a screenshot:', error).removeClass('hidden');
+                console.log(error);
+            });
+        }
     } else {
-      $('html, body').animate({
-        scrollTop: $('.has-error').offset().top
-      }, 'slow');
-      console.log('missing fields');
+        $('html, body').animate({
+            scrollTop: $('.has-error').offset().top,
+        }, 'slow');
+        console.log('missing fields');
     }
-  };
+};
 
-  // event listeners for new form
-  $('.new-event-form').on('click', '#geocode-button', newEventView.geoCode);
-  $('.new-event-form').on('click', '.meeting a', newEventView.changeMeetingType);
-  $('.new-event-form').on('click', '.party a', newEventView.changeParty);
-  $('.new-event-form').on('click', '.chamber a', newEventView.changeChamber);
-  $('.new-event-form').on('change', '#state', newEventView.lookUpStateName);
-  $('.new-event-form').on('change', '#meetingType', newEventView.meetingTypeChanged);
-  $('.new-event-form').on('change', '.form-control', newEventView.newformChanged);
-  $('.new-event-form').on('change', '.date-string', newEventView.dateString);
-  $('.new-event-form').on('change', '.general-checkbox', newEventView.generalCheckbox);
-  $('.new-event-form').on('change', '#address', newEventView.addressChanged);
-  $('.new-event-form').on('submit', 'form', newEventView.submitNewEvent);
-  $('#scroll-to-top').on('click', function () {
-    $('html, body').animate({ scrollTop: 0 }, 'slow');
-  });
+// event listeners for new form
+$('.new-event-form').on('click', '#geocode-button', newEventView.geoCode);
+$('.new-event-form').on('click', '.meeting a', newEventView.changeMeetingType);
+$('.new-event-form').on('click', '.party a', newEventView.changeParty);
+$('.new-event-form').on('click', '.chamber a', newEventView.changeChamber);
+$('.new-event-form').on('change', '#state', newEventView.lookUpStateName);
+$('.new-event-form').on('change', '#meetingType', newEventView.meetingTypeChanged);
+$('.new-event-form').on('change', '.form-control', newEventView.newformChanged);
+$('.new-event-form').on('change', '.date-string', newEventView.dateString);
+$('.new-event-form').on('change', '.general-checkbox', newEventView.generalCheckbox);
+$('.new-event-form').on('change', '#address', newEventView.addressChanged);
+$('.new-event-form').on('submit', 'form', newEventView.submitNewEvent);
+$('#scroll-to-top').on('click', () => {
+    $('html, body').animate({
+        scrollTop: 0,
+    }, 'slow');
+});
 
-  window.addEventListener('scroll', function () {
-    var y = window.scrollY;
+window.addEventListener('scroll', () => {
+    const y = window.scrollY;
     if (y >= 800) {
-      if ($('#scroll-to-top').css('visibility') !== 'visible') {
-        $('#scroll-to-top').css('visibility', 'visible').hide().fadeIn();
-      }
-    } else {
-      if ($('#scroll-to-top').css('visibility') === 'visible') {
+        if ($('#scroll-to-top').css('visibility') !== 'visible') {
+            $('#scroll-to-top').css('visibility', 'visible').hide().fadeIn();
+        }
+    } else if ($('#scroll-to-top').css('visibility') === 'visible') {
         $('#scroll-to-top').css('visibility', 'hidden').show().fadeOut('slow');
-      }
     }
-  });
+});
 
-  function writeUserData(userId, name, email) {
-    firebase.database().ref('users/' + userId).update({
-      username: name,
-      email: email
-    });
-  }
-
-  newEventView.showUserEvents = function () {
-    var $list = $('#submitted');
+newEventView.showUserEvents = function showUserEvents() {
+    const $list = $('#submitted');
     $list.removeClass('hidden').hide().fadeIn();
-    var $submitted = $('#submitted-meta-data');
+    const $submitted = $('#submitted-meta-data');
     $submitted.removeClass('hidden').hide().fadeIn();
-    var $submittedTotal = $('#submitted-total');
+    const $submittedTotal = $('#submitted-total');
     $submittedTotal.html('0');
-    firebase.database().ref('users/' + firebase.auth().currentUser.uid + '/currentEvents/').on('child_added', function getSnapShot() {
-      var total = parseInt($submittedTotal.html());
-      $submittedTotal.html(total + 1);
+    firebasedb.ref(`users/${firebaseauth.currentUser.uid}/currentEvents/`).on('child_added', () => {
+        const total = parseInt($submittedTotal.html());
+        $submittedTotal.html(total + 1);
     });
-  };
+};
 
-  firebase.auth().onAuthStateChanged(function (user) {
-    if (user) {
-    // User is signed in.
-      console.log(user.displayName, ' is signed in');
-      // eventHandler.readData();
-      newEventView.showUserEvents();
-      writeUserData(user.uid, user.displayName, user.email);
-    } else {
-      newEventView.signIn();
-      // No user is signed in.
-    }
-  });
-
-  // Sign in fuction for firebase
-  newEventView.signIn = function signIn() {
-    firebase.auth().signInWithRedirect(provider);
-    firebase.auth().getRedirectResult().then(function () {
-      // This gives you a Google Access Token. You can use it to access the Google API.
-      // var token = result.credential.accessToken;
-      // The signed-in user info.
-      // var user = result.user;
-    }).catch(function (error) {
-      // Handle Errors here.
-      var errorCode = error.code;
-      var errorMessage = error.message;
-      console.log(errorCode, errorMessage);
-    });
-  };
-  module.newEventView = newEventView;
-})(window);
+export default newEventView;
