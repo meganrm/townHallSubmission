@@ -1,3 +1,5 @@
+import page from '../../vendor/scripts/page';
+
 page('/',
   newEventController.switchTab,
   newEventController.resetModeButton,

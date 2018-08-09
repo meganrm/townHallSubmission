@@ -1,5 +1,5 @@
 require('dotenv').config();
-
+const webpack = require('webpack');
 // Dynamic Script and Style Tags
 const HTMLPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
@@ -8,6 +8,11 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const { EnvironmentPlugin } = require('webpack');
 
 const plugins = [
+  new webpack.ProvidePlugin({
+    jQuery: 'jquery',
+    $: 'jquery',
+    jquery: 'jquery'
+  }),
   new MiniCssExtractPlugin({
     // Options similar to the same options in webpackOptions.output
     // both options are optional
@@ -16,7 +21,7 @@ const plugins = [
   }),
 
   new HTMLPlugin({
-    template: `${__dirname}/index.html`,
+    template: `${__dirname}/src/index.html`,
   }),
   // new ExtractPlugin('bundle.[hash].css'),
   new CopyWebpackPlugin([
@@ -80,11 +85,23 @@ module.exports = {
             {
               loader: 'sass-loader',
               options: {
-                includePaths: [`${__dirname}/src/style`],
                 sourceMap: true,
               },
             },
           ],
+      },
+      {
+          test: /\.less$/,
+            use: [{
+                loader: "style-loader"
+              },
+              {
+                loader: "css-loader"
+              },
+              {
+                loader: "less-loader"
+              }
+            ]
       },
       {
         test: /\.(woff|woff2|ttf|eot|glyph|\.svg)$/,

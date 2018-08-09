@@ -1,4 +1,5 @@
 (function(module) {
+  
   var newEventController = {};
 
   newEventController.index = function(ctx) {
