@@ -7,10 +7,10 @@ const app = express();
 app.use(express.static(`${__dirname}/build`));
 
 app.get('*', (request, response) => {
-  console.log('New request:', request.url);
-  response.sendFile(path.resolve(__dirname, 'index.html'));
+    console.log('New request:', request.url);
+    response.sendFile(path.resolve(__dirname, 'index.html'));
 });
 
 app.listen(port, () => {
-  console.log(`Server started on port ${port}!`);
+    console.log(`Server started on port ${port}!`);
 });

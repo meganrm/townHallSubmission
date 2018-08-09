@@ -1,6 +1,7 @@
 import 'bootstrap3';
 import '../../vendor/scripts/bootstrap3-typeahead.min';
 import moment from 'moment';
+import statesAb from '../../data/states';
 
 import { firebasedb, firebaseauth } from '../util/setupFirebase';
 import TownHall from '../models/town-hall';
@@ -342,7 +343,7 @@ newEventView.newformChanged = function newformChanged() {
     newEventView.updatedNewTownHallObject($form);
 };
 
-newEventView.lookUpStateName = function (event) {
+newEventView.lookUpStateName = function lookUpStateName(event) {
     event.preventDefault();
     const $form = $(this).parents('form');
     const stateName = statesAb[$(this).val()];
