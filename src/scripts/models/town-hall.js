@@ -1,3 +1,4 @@
+import request from 'superagent';
 import { firebasedb } from '../util/setupFirebase';
 
 class TownHall {
@@ -14,15 +15,18 @@ class TownHall {
     updateFB(key) {
         const newEvent = this;
         const metaData = { eventId: key, lastUpdated: newEvent.lastUpdated };
-        const updates = {};
-        return new Promise(((resolve, reject) => {
-            firebasedb.ref(`/townHalls/${key}`).update(newEvent);
-            updates[`/townHallIds/${key}`] = metaData;
-            resolve(newEvent);
-            return firebasedb.ref().update(updates).catch((error) => {
-                reject('could not update', newEvent, error);
+
+        return firebasedb.ref(`/townHalls/${key}`)
+            .update(newEvent)
+            .then(() => firebasedb.ref(`/townHallIds/${key}`)
+                .update(metaData)
+                .catch((error) => {
+                    console.log('could not update', newEvent, error);
+                }))
+            .then(() => newEvent)
+            .catch((error) => {
+                console.log('could not update', newEvent, error);
             });
-        }));
     }
 
     updateUserSubmission(key, path) {
@@ -43,11 +47,13 @@ class TownHall {
         const time = Date.parse(`${newTownHall.Date} ${databaseTH.Time}`) / 1000;
         const loc = `${databaseTH.lat},${databaseTH.lng}`;
         console.log(time, loc);
-        return new Promise(((resolve, reject) => {
-            const url = `https://maps.googleapis.com/maps/api/timezone/json?location=${loc}&timestamp=${time}&key=AIzaSyB868a1cMyPOQyzKoUrzbw894xeoUhx9MM`;
-            $.get(url, (response) => {
+        const url = `https://maps.googleapis.com/maps/api/timezone/json?location=${loc}&timestamp=${time}&key=AIzaSyB868a1cMyPOQyzKoUrzbw894xeoUhx9MM`;
+        return request
+            .get(url)
+            .then((r) => {
+                const response = r.body;
                 if (!response.timeZoneName) {
-                    reject('no timezone results', id, response);
+                    Error('no timezone results', id, response);
                 } else {
                     newTownHall.zoneString = response.timeZoneId;
                     const timezoneAb = response.timeZoneName.split(' ');
@@ -70,12 +76,11 @@ class TownHall {
 
                     console.log(offset, `${newTownHall.Date.replace(/-/g, '/')} ${databaseTH.Time} ${utcoffset}`);
                     newTownHall.dateObj = new Date(`${newTownHall.Date.replace(/-/g, '/')} ${databaseTH.Time} ${utcoffset}`).getTime();
-                    resolve(newTownHall);
+                    return newTownHall;
                 }
-            }).fail((error) => {
+            }).catch((error) => {
                 console.log(error);
             });
-        }));
     }
 
     static cacheGeocode(addresskey, lat, lng, address, type) {
@@ -91,58 +96,23 @@ class TownHall {
     getLatandLog(address, type) {
         const newTownHall = this;
         console.log(address, type);
-        return new Promise(((resolve, reject) => {
-            $.ajax({
-                url: 'https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyB868a1cMyPOQyzKoUrzbw894xeoUhx9MM',
-                data: {
-                    address,
-                },
-                dataType: 'json',
-                success(r) {
-                    if (r.results[0]) {
-                        newTownHall.lat = r.results[0].geometry.location.lat;
-                        newTownHall.lng = r.results[0].geometry.location.lng;
-                        newTownHall.address = r.results[0].formatted_address.split(', USA')[0];
-                        const addresskey = address.replace(/\W/g, '');
-                        addresskey.trim();
-                        // firebasedb.ref('/townHallsErrors/geocoding/' + newTownHall.eventId).remove();
-                        TownHall.cacheGeocode(addresskey, newTownHall.lat, newTownHall.lng, newTownHall.address, type);
-                        resolve(newTownHall);
-                    } else {
-                        firebasedb.ref(`/townHallsErrors/geocoding/${newTownHall.eventId}`).set(newTownHall);
-                        reject('error geocoding', newTownHall);
-                    }
-                },
-                error(e) {
-                    console.log('we got an error', e);
-                },
-            });
-        }));
-    }
-
-    // checks firebase for address, if it's not there, calls google geocode
-    geoCodeFirebase(address) {
-        const newTownHall = this;
-        const addresskey = address.replace(/\W/g, '');
-        addresskey.trim();
-        firebasedb.ref(`geolocate/${addresskey}`).once('value').then((snapshot) => {
-            if (snapshot.child('lat').exists() === true) {
-                newTownHall.lat = snapshot.val().lat;
-                newTownHall.lng = snapshot.val().lng;
-                newTownHall.address = snapshot.val().formatted_address;
-                TownHall.allTownHalls.push(newTownHall);
-            } else if (snapshot.child('lat').exists() === false) {
-                firebasedb.ref(`/townHallsErrors/geocoding/${newTownHall.eventId}`).once('value').then((snap) => {
-                    if (snap.child('streetAddress').exists() === newTownHall.streetAddress) {
-                        console.log('known eror');
-                    } else {
-                        newTownHall.getLatandLog(address);
-                    }
-                });
-            }
-        })
-            .catch((error) => {
-                console.log(error);
+        return request
+            .get('https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyB868a1cMyPOQyzKoUrzbw894xeoUhx9MM')
+            .set('Accept', 'application/json')
+            .query({
+                address,
+            })
+            .then((r) => {
+                console.log(r.body.results[0]);
+                const { results } = r.body;
+                if (results) {
+                    newTownHall.lat = results[0].geometry.location.lat;
+                    newTownHall.lng = results[0].geometry.location.lng;
+                    newTownHall.address = results[0].formatted_address.split(', USA')[0];  
+                    console.log(newTownHall);
+                    return newTownHall;
+                }
+                return Promise.reject('error geocoding', newTownHall);
             });
     }
 }

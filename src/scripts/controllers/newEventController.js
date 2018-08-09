@@ -50,16 +50,15 @@ newEventController.loadFederal = function loadFederal(ctx, next) {
     TownHall.savePath = 'UserSubmission/';
     if (Moc.allNames.length > 0) {
         ctx.mocs = Moc.allFederal;
-        next();
-    } else {
-        return Moc.loadAll(ctx.mocNamesPath).then((allnames) => {
-            Moc.allFederal = allnames;
-            ctx.mocs = Moc.allFederal;
-            return next();
-        }).catch((err) => {
-            console.log(err);
-        });
+        return next();
     }
+    return Moc.loadAll(ctx.mocNamesPath).then((allnames) => {
+        Moc.allFederal = allnames;
+        ctx.mocs = Moc.allFederal;
+        return next();
+    }).catch((err) => {
+        console.log(err);
+    });
 };
 
 newEventController.loadFederalCandidates = function loadFederalCandidates(ctx, next) {
@@ -70,16 +69,15 @@ newEventController.loadFederalCandidates = function loadFederalCandidates(ctx, n
     TownHall.savePath = 'UserSubmission/';
     if (Moc.allNames.length > 0) {
         ctx.mocs = Moc.allFederal;
-        next();
-    } else {
-        return Moc.loadAll(ctx.mocNamesPath).then((allnames) => {
-            Moc.allFederal = allnames;
-            ctx.mocs = Moc.allFederal;
-            return next();
-        }).catch((err) => {
-            console.log(err);
-        });
+        return next();
     }
+    return Moc.loadAll(ctx.mocNamesPath).then((allnames) => {
+        Moc.allFederal = allnames;
+        ctx.mocs = Moc.allFederal;
+        return next();
+    }).catch((err) => {
+        console.log(err);
+    });
 };
 
 newEventController.switchTab = function switchTab(ctx, next) {
