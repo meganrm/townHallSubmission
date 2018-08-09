@@ -1,5 +1,5 @@
 import page from '../../vendor/scripts/page';
-
+import statesAb from '../../data/states';
 import { firebasedb } from '../util/setupFirebase';
 import TownHall from '../models/town-hall';
 import Candidate from '../models/candidate';

@@ -43,14 +43,15 @@ class Moc {
             .once('value')
             .then((snapshot) => {
                 if (snapshot.exists()) {
-                    firebasedb.ref(Moc.mocDataPath + snapshot.val().id).once('value').then((dataSnapshot) => {
-                        if (dataSnapshot.exists()) {
-                            return dataSnapshot.val();
-                        }
-                    });
-                } else {
-                    Error('That member is not in our database, please check the spelling, and only use first and last name.');
+                    return firebasedb.ref(Moc.mocDataPath + snapshot.val().id)
+                        .once('value')
+                        .then((dataSnapshot) => {
+                            if (dataSnapshot.exists()) {
+                                return dataSnapshot.val();
+                            }
+                        });
                 }
+                Error('That member is not in our database, please check the spelling, and only use first and last name.');
             });
     }
 
