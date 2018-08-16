@@ -137,27 +137,27 @@ newEventView.addressChanged = function addressChanged() {
     }
 };
 
-newEventView.changeMeetingType = function changeMeetingType(event) {
-    event.preventDefault();
-    const $form = $(this).parents('form');
-    const value = $(this).attr('data-value');
-    $form.find('#meetingType').val(value);
-    $form.find('#meetingType').change();
-};
+// newEventView.changeMeetingType = function changeMeetingType(event) {
+//     event.preventDefault();
+//     const $form = $(this).parents('form');
+//     const value = $(this).attr('data-value');
+//     $form.find('#meetingType').val(value);
+//     $form.find('#meetingType').change();
+// };
 
-const addDisclaimer = function addDisclaimer() {
-    $('#Notes').val('Town Hall Project lists this event and any '
-    + 'third-party link as public information and not '
-    + 'as an endorsement of a participating candidate, campaign, or party.');
-};
+// const addDisclaimer = function addDisclaimer() {
+//     $('#Notes').val('Town Hall Project lists this event and any '
+//     + 'third-party link as public information and not '
+//     + 'as an endorsement of a participating candidate, campaign, or party.');
+// };
 
-newEventView.changeParty = function changeParty(event) {
-    event.preventDefault();
-    const $form = $(this).parents('form');
-    const value = $(this).attr('data-value');
-    $form.find('#party').val(value);
-    $form.find('#party').change();
-};
+// newEventView.changeParty = function changeParty(event) {
+//     event.preventDefault();
+//     const $form = $(this).parents('form');
+//     const value = $(this).attr('data-value');
+//     $form.find('#party').val(value);
+//     $form.find('#party').change();
+// };
 
 newEventView.districtEntered = function districtEntered(value, $form) {
     const state = $form.find('#state').val();
@@ -170,16 +170,16 @@ newEventView.districtEntered = function districtEntered(value, $form) {
     }
 };
 
-newEventView.changeChamber = function changeChamber(event) {
-    event.preventDefault();
-    const $form = $(this).parents('form');
-    const value = $(this).attr('data-value');
-    $form.find('#chamber').val(value);
-    $form.find('#chamber').change().addClass('has-success');
-    if (value === 'upper' && !TownHall.currentEvent.district) {
-        $form.find('#District').val('Senate');
-    }
-};
+// newEventView.changeChamber = function changeChamber(event) {
+//     event.preventDefault();
+//     const $form = $(this).parents('form');
+//     const value = $(this).attr('data-value');
+//     $form.find('#chamber').val(value);
+//     $form.find('#chamber').change().addClass('has-success');
+//     if (value === 'upper' && !TownHall.currentEvent.district) {
+//         $form.find('#District').val('Senate');
+//     }
+// };
 
 newEventView.saveNoEvent = function saveNoEvent(event) {
     event.preventDefault();
@@ -235,18 +235,7 @@ newEventView.meetingTypeChanged = function meetingTypeChanged(event) {
         TownHall.currentEvent.iconFlag = 'campaign';
         $('.general-inputs').removeClass('hidden');
         break;
-    case 'Hearing':
-        TownHall.currentEvent.iconFlag = null;
-        $('.general-inputs').removeClass('hidden');
-        break;
-    case 'DC Event':
-        TownHall.currentEvent.iconFlag = null;
-        $('.general-inputs').removeClass('hidden');
-        break;
-    case 'Empty Chair Town Hall':
-        TownHall.currentEvent.iconFlag = 'activism';
-        $('.general-inputs').removeClass('hidden');
-        break;
+
     default:
         $('.general-inputs').removeClass('hidden');
     }
@@ -454,7 +443,7 @@ newEventView.resetData = function resetData() {
     $('.general-error').addClass('hidden');
     $('.has-error').removeClass('has-error');
     $('#list-of-current-pending').addClass('hidden');
-    document.getElementById('new-event-form-element').reset();
+    // document.getElementById('new-event-form-element').reset();
     $('html, body').animate({
         scrollTop: 0,
     }, 'slow');

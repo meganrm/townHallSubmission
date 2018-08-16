@@ -23,14 +23,21 @@
   },
   "homepage": "https://github.com/meganrm/townHallSubmission#readme",
   "dependencies": {
+    "antd": "^3.8.1",
     "bootstrap3": "^3.3.5",
     "express": "^4.15.2",
     "express-request-proxy": "^2.0.0",
     "handlebars": "^4.0.6",
     "jquery": "^3.3.1",
+    "lodash": "^4.17.10",
     "moment": "^2.18.1",
     "npm": "^6.3.0",
     "react": "^16.4.2",
+    "react-dom": "^16.4.2",
+    "react-redux": "^5.0.7",
+    "redux": "^4.0.0",
+    "redux-thunk": "^2.3.0",
+    "reselect": "^3.0.1",
     "superagent": "^3.8.3"
   },
   "devDependencies": {

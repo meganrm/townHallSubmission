@@ -1,3 +1,7 @@
+
+import React from 'react';
+import ReactDom from 'react-dom';
+import { Provider } from 'react-redux';
 import {
     firebase,
     firebasedb,
@@ -10,8 +14,12 @@ import './scripts/controllers/routes';
 
 import './vendor/styles/normalize.css';
 import './styles/customboot.less';
+import App from './containers/App';
+
+import configureStore from './store/configureStore';
 
 const provider = new firebase.auth.GoogleAuthProvider();
+const store = configureStore();
 
 function writeUserData(userId, name, email) {
     firebasedb.ref(`users/${userId}`).update({
@@ -19,6 +27,19 @@ function writeUserData(userId, name, email) {
         username: name,
     });
 }
+
+
+const jsx = (
+    <Provider store={store}>
+        <App />
+    </Provider>
+);
+
+const renderApp = () => {
+    ReactDom.render(jsx, document.getElementById('root'));
+};
+
+renderApp();
 
 const signIn = () => {
     firebaseauth.signInWithRedirect(provider);
