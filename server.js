@@ -1,15 +1,16 @@
-var express = require('express'),
-  // NOTE: require in our request proxy module
-  port = process.env.PORT || 3000,
-  app = express();
+const express = require('express');
+const path = require('path');
 
-app.use(express.static('./'));
+const port = process.env.PORT || 3000;
+const app = express();
 
-app.get('*', function(request, response) {
-  console.log('New request:', request.url);
-  response.sendFile('index.html', { root: '.' });
+app.use(express.static(`${__dirname}/build`));
+
+app.get('*', (request, response) => {
+    console.log('New request:', request.url);
+    response.sendFile(path.resolve(__dirname, 'index.html'));
 });
 
-app.listen(port, function() {
-  console.log('Server started on port ' + port + '!');
+app.listen(port, () => {
+    console.log(`Server started on port ${port}!`);
 });
