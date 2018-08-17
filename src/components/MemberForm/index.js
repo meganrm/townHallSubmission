@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+
 import {
   AutoComplete,
   Input,
@@ -103,6 +104,18 @@ class MemberLookup extends React.Component {
         </div>
       </div>
     );
+  }
+
+  renderAdopterForm(){
+    return(       
+    <section class="adopter-data non-standard hidden">
+            <div class="form-group col-sm-12" id="adopter-member-form-group">
+              <label for="districtAdopter">MOC appearing at event (adopter)</label>
+              <Input type="text" class="form-control input-underline" id="districtAdopter" placeholder="Full name" value="" autocomplete="off" />
+              <span id="adopter-member-help-block" class="help-block">Only first name and last name, not titles</span>
+            </div>
+          </section>
+    )
   }
 
   render() {

@@ -5,12 +5,12 @@ import people from '../members-candidates/reducers';
 import selections from '../selections/reducers';
 
 export default () => {
-    const store = createStore(
-        combineReducers({
-            people,
-            selections,
-        }),
-        applyMiddleware(thunk),
-    );
-    return store;
+  const store = createStore(
+    combineReducers({
+      people,
+      selections,
+    }),
+    applyMiddleware(thunk),
+  );
+  return store;
 };
