@@ -2,6 +2,9 @@ import { createSelector } from 'reselect';
 
 export const getSelectedUSState = state => state.selections.usState;
 export const getMode = state => state.selections.mode;
+export const getTempAddress = state => state.selections.address;
+export const getTempLat = state => state.selections.lat;
+export const getTempLng = state => state.selections.lng;
 
 export const getPeopleNameUrl = createSelector([getSelectedUSState, getMode], (usState, mode) => {
   if (mode === 'candidate') {

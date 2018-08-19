@@ -19,12 +19,13 @@ const selectionReducer = (state = initialState, { type, payload }) => {
       ...state,
       mode: payload,
     };
-
-  case 'SEARCH_ADDRESSES':
-      return {
-          ...state,
-          possibleAddresses: [...state.possibleAddresses, payload],
-      };
+  case 'SET_TEMP_ADDRESS':
+    return {
+      ...state,
+      lat: payload.lat,
+      lng: payload.lng,
+      address: payload.address,
+    };
   default:
     return state;
   }

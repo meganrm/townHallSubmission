@@ -12,14 +12,16 @@ import {
 } from '../../state/members-candidates/actions';
 
 import {
-  getAllNames, 
+  getAllNames,
   getAllPeople,
-
 } from '../../state/members-candidates/selectors';
 import {
-  getPeopleNameUrl, 
+  getPeopleNameUrl,
   getPeopleDataUrl,
   getSelectedUSState,
+  getTempAddress,
+  getTempLat,
+  getTempLng,
 } from '../../state/selections/selectors';
 
 import MemberForm from '../../components/MemberForm';
@@ -29,7 +31,7 @@ import 'antd/dist/antd.css';
 
 import { getTownHall } from '../../state/townhall/selectors';
 import { toggleMemberCandidate, lookUpAddress } from '../../state/selections/actions';
-import { getLatLng } from '../../state/townhall/actions';
+import { setLatLng } from '../../state/townhall/actions';
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -65,6 +67,10 @@ class MainForm extends React.Component {
       togglePersonMode,
       selectedUSState,
       geoCodeLocation,
+      setLatLng,
+      tempAddress,
+      tempLat,
+      tempLng,
     } = this.props;
     return (
       <div class="new-event-form col-md-9">
@@ -108,6 +114,10 @@ class MainForm extends React.Component {
           </section>
           <LocationForm 
             geoCodeLocation={geoCodeLocation}
+            tempAddress={tempAddress}
+            tempLat={tempLat}
+            tempLng={tempLng}
+            saveAddress={setLatLng}
           />
           <section class="time-data event-details">
             <div class="checkbox col-sm-12">
@@ -174,10 +184,13 @@ class MainForm extends React.Component {
 const mapStateToProps = state => ({
   allNames: getAllNames(state),
   allPeople: getAllPeople(state),
-  peopleNameUrl: getPeopleNameUrl(state),
-  peopleDataUrl: getPeopleDataUrl(state),
   currentTownHall: getTownHall(state),
+  peopleDataUrl: getPeopleDataUrl(state),
+  peopleNameUrl: getPeopleNameUrl(state),
   selectedUSState: getSelectedUSState(state),
+  tempAddress: getTempAddress(state),
+  tempLat: getTempLat(state),
+  tempLng: getTempLng(state),
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -185,6 +198,7 @@ const mapDispatchToProps = dispatch => ({
   startSetPeople: peopleNameUrl => dispatch(startSetPeople(peopleNameUrl)),
   togglePersonMode: mode => dispatch(toggleMemberCandidate(mode)),
   geoCodeLocation: address => dispatch(lookUpAddress(address)),
+  setLatLng: payload => dispatch(setLatLng(payload))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(MainForm);
