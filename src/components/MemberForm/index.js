@@ -9,6 +9,7 @@ import {
   Select,
 } from 'antd';
 import { find } from 'lodash';
+
 const { Option } = Select;
 const FormItem = Form.Item;
 
@@ -55,13 +56,13 @@ class MemberLookup extends React.Component {
     return (
       <div className="hidden advanced-moc-options" id="">
         <div className="form-group col-sm-6">
-          <label for="state" className="sr-only">
+          <label htmlFor="state" className="sr-only">
             State (abbrivation)
           </label>
-          <input type="text" className="form-control input-underline" id="state" placeholder="State (abbrivation)" value={currentTownHall.state || ""} />
+          <input type="text" className="form-control input-underline" id="state" placeholder="State (abbrivation)" value={currentTownHall.state || ''} />
         </div>
         <div className="form-group col-sm-6 col-md-6 district-group federal-district-group" id="federal-district-group">
-          <label for="district" className="sr-only">
+          <label htmlFor="district" className="sr-only">
             District
           </label>
           <input type="text" className="form-control input-underline" id="district" placeholder="District" value="" />
@@ -70,7 +71,7 @@ class MemberLookup extends React.Component {
           </span>
         </div>
         <div className="form-group col-sm-6 col-md-6 district-group" id="state-district-group">
-          <label  for="district" className="sr-only">
+          <label htmlFor="district" className="sr-only">
             District
           </label>
           <input type="text" className="form-control input-underline" id="district" placeholder="District" value="" />
@@ -79,24 +80,30 @@ class MemberLookup extends React.Component {
           </span>
         </div>
         <div className="form-group chamber col-md-12 col-sm-12">
-          <label className="" for="chamber">
+          <label className="" htmlFor="chamber">
             Chamber
           </label>
           <div className="input-group">
-            <input type="text" className="form-control" aria-label="..." id="chamber" value="" placeholder="Chamber" readonly />
+            <input type="text" className="form-control" aria-label="..." id="chamber" value="" placeholder="Chamber" readOnly />
             <div className="input-group-btn">
-              <button type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> 
-                <span className="caret"></span>
+              <button type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span className="caret" />
               </button>
               <Select className="dropdown-menu dropdown-menu-right">
                 <li>
-                  <a data-value="upper" href="#">Upper (Senate)</a>
+                  <a data-value="upper" href="#">
+Upper (Senate)
+</a>
                 </li>
                 <li>
-                  <a data-value="lower" href="#">Lower (House)</a>
+                  <a data-value="lower" href="#">
+Lower (House)
+</a>
                 </li>
                 <li>
-                  <a data-value="statewide" href="#">Statewide (executive)</a>
+                  <a data-value="statewide" href="#">
+Statewide (executive)
+</a>
                 </li>
               </Select>
             </div>
@@ -106,16 +113,20 @@ class MemberLookup extends React.Component {
     );
   }
 
-  renderAdopterForm(){
-    return(       
-    <section class="adopter-data non-standard hidden">
-            <div class="form-group col-sm-12" id="adopter-member-form-group">
-              <label for="districtAdopter">MOC appearing at event (adopter)</label>
-              <Input type="text" class="form-control input-underline" id="districtAdopter" placeholder="Full name" value="" autocomplete="off" />
-              <span id="adopter-member-help-block" class="help-block">Only first name and last name, not titles</span>
-            </div>
-          </section>
-    )
+  renderAdopterForm() {
+    return (
+      <section className="adopter-data non-standard hidden">
+        <div className="form-group col-sm-12" id="adopter-member-form-group">
+          <label htmlFor="districtAdopter">
+            MOC appearing at event (adopter)
+</label>
+          <Input type="text" class="form-control input-underline" id="districtAdopter" placeholder="Full name" value="" autocomplete="off" />
+          <span id="adopter-member-help-block" className="help-block">
+Only first name and last name, not titles
+</span>
+        </div>
+      </section>
+    );
   }
 
   render() {
@@ -123,7 +134,10 @@ class MemberLookup extends React.Component {
       allNames,
       currentTownHall,
       togglePersonMode,
+      getFieldDecorator,
     } = this.props;
+
+
     return (
       <section className="member-info text-info">
         <h4 id="member-title">
@@ -145,24 +159,30 @@ class MemberLookup extends React.Component {
             Candidate
           </Radio.Button>
         </Radio.Group>
-        <AutoComplete
-          dataSource={allNames}
-          style={{ width: 200 }}
-          onSelect={this.onNameSelect}
-          filterOption={(inputValue, option) => option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1}
-          placeholder="Member of congress name"
-        />
-
+        <FormItem>
+          {getFieldDecorator('Lawmaker Name', {
+            rules: [{ required: true, message: 'Please input a member of congress' }],
+          })(
+            <AutoComplete
+              dataSource={allNames}
+              style={{ width: 200 }}
+              onSelect={this.onNameSelect}
+              filterOption={(inputValue, option) => option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1}
+              placeholder="Member of congress name"
+            />,
+          )}
+        </FormItem>
         <FormItem className="form-group col-md-12 col-sm-12">
-          
+
             Home State
           <Input type="text" className="form-control input-underline" id="stateName" placeholder="Home State" value={currentTownHall.stateName} />
         </FormItem>
         <div className="form-group col-md-12 col-sm-12 district-group federal-district-group" id="federal-district-group">
-          <label  for="District" className="sr-only">
+          <label htmlFor="District" className="sr-only">
             Federal District
           </label>
-          <Input type="text" 
+          <Input
+type="text"
             className="form-control input-underline"
             id="displayDistrict"
             placeholder="District"
@@ -173,15 +193,21 @@ class MemberLookup extends React.Component {
             How the district will be displayed
           </span>
         </div>
-                    
+
         <FormItem className="form-group party col-sm-12">
           <Select
             value={currentTownHall.party || ''}
             placeholder="Party"
           >
-            <Option value="Democratic">Democratic</Option>
-            <Option value="Republican">Republican</Option>
-            <Option value="Independent">Independent</Option>
+            <Option value="Democratic">
+Democratic
+</Option>
+            <Option value="Republican">
+Republican
+</Option>
+            <Option value="Independent">
+Independent
+</Option>
           </Select>
         </FormItem>
       </section>
@@ -190,7 +216,7 @@ class MemberLookup extends React.Component {
 }
 
 MemberLookup.propTypes = {
-  allPeople: PropTypes.arrayOf(PropTypes.shape( 
+  allPeople: PropTypes.arrayOf(PropTypes.shape(
     {
       id: PropTypes.number || PropTypes.string,
       nameEntered: PropTypes.string,

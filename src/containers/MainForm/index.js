@@ -26,17 +26,27 @@ import {
 
 import MemberForm from '../../components/MemberForm';
 import LocationForm from '../../components/LocationForm';
+import DateTimeForm from '../../components/DateTimeForm';
 
 import 'antd/dist/antd.css';
 
 import { getTownHall } from '../../state/townhall/selectors';
 import { toggleMemberCandidate, lookUpAddress } from '../../state/selections/actions';
-import { setLatLng } from '../../state/townhall/actions';
+import {
+  setLatLng,
+  setDate,
+  setStartTime,
+  setEndTime,
+  getTimeZone,
+} from '../../state/townhall/actions';
 
 const FormItem = Form.Item;
 const { Option } = Select;
 
 class MainForm extends React.Component {
+  constructor(props) {
+    super(props)
+  }
 
   componentWillMount() {
     const {
@@ -44,6 +54,30 @@ class MainForm extends React.Component {
       peopleNameUrl,
     } = this.props;
     startSetPeople(peopleNameUrl);
+  }
+
+  static shouldGetLatLng(currentTownHall, nextTownHall) {
+    console.log(
+      currentTownHall.yearMonthDay,
+      currentTownHall.Time,
+      currentTownHall.lat,
+      nextTownHall.yearMonthDay,
+      nextTownHall.Time,
+      nextTownHall.lat,
+    )
+    if (
+      (nextTownHall.yearMonthDay &&
+      nextTownHall.Time &&
+      nextTownHall.lat)
+      &&
+      (currentTownHall.yearMonthDay !== nextTownHall.yearMonthDay ||
+      currentTownHall.Time !== nextTownHall.Time ||
+      currentTownHall.timeEnd !== nextTownHall.timeEnd ||
+      currentTownHall.lat !== nextTownHall.lat)
+    ) {
+      return true;
+    }
+    return false;
   }
 
   componentWillReceiveProps(nextProps) {
@@ -54,7 +88,25 @@ class MainForm extends React.Component {
     if (peopleNameUrl !== nextProps.peopleNameUrl) {
       startSetPeople(nextProps.peopleNameUrl);
     }
+  
   }
+
+  componentDidUpdate(prevProps){
+    const {
+      currentTownHall,
+      setTimeZone,
+    } = this.props;
+    if (MainForm.shouldGetLatLng(prevProps.currentTownHall, currentTownHall)) {
+      console.log('getting zone')
+      setTimeZone({
+        date: currentTownHall.dateString,
+        time: currentTownHall.Time,
+        lat: currentTownHall.lat,
+        lng: currentTownHall.lng,
+      });
+    }
+  }
+
 
 
   render() {
@@ -68,10 +120,16 @@ class MainForm extends React.Component {
       selectedUSState,
       geoCodeLocation,
       setLatLng,
+      setDate,
+      setStartTime, 
+      setEndTime,
       tempAddress,
       tempLat,
       tempLng,
     } = this.props;
+    const {
+      getFieldDecorator,
+    } = this.props.form;
     return (
       <div class="new-event-form col-md-9">
         <h3 className="text-success">Enter a new town hall event</h3>
@@ -87,6 +145,7 @@ class MainForm extends React.Component {
             requestPersonDataById={requestPersonDataById}
             selectedUSState={selectedUSState}
             togglePersonMode={togglePersonMode}
+            getFieldDecorator={getFieldDecorator}
           />
           <section class="meeting infomation">
             <h4 class="text-info">
@@ -119,32 +178,11 @@ class MainForm extends React.Component {
             tempLng={tempLng}
             saveAddress={setLatLng}
           />
-          <section class="time-data event-details">
-            <div class="checkbox col-sm-12">
-              <label>
-                <Input type="checkbox" class="date-string" />
-                <span class="checkbox-label">Click for repeating event (eg. 'First Wed')</span>
-              </label>
-            </div>
-            <div class="form-group col-sm-12">
-              <label  for="yearMonthDay">Date</label>
-              <Input type="date" class="form-control datetime date" id="yearMonthDay" placeholder="MM/DD/YYYY" />
-              <span id="yearMonthDay-error" class="help-block error-message hidden">Please enter a valid date</span>
-            </div>
-            <div class="form-group hidden repeating">
-              <label  for="repeatingString">Repeating Event</label>
-              <input type="text" class="form-control input-underline " id="repeatingEvent" placeholder="Eg. First Tuesday of the month" />
-            </div>
-            <div class="form-group col-sm-6">
-              <label for="Time">Start Time (HH:MM AM/PM)</label>
-              <input type="time" class="form-control datetime " id="timeStart24" placeholder="HH:MM AM/PM" />
-              <span id="timeStart24-error" class="help-block error-message hidden">Please enter a valid time</span>
-            </div>
-            <div class="form-group col-sm-6">
-              <label for="endTime">End Time (HH:MM AM/PM)</label>
-              <input type="time" class="form-control datetime " id="timeEnd24" placeholder="HH:MM AM/PM" />
-            </div>
-          </section>
+          <DateTimeForm 
+            setDate={setDate}
+            setStartTime={setStartTime}
+            setEndTime={setEndTime}
+          />
           <section class="extra-data event-details">
             <div class="form-group col-sm-12">
               <label for="link">URL related to event (optional)</label>
@@ -177,7 +215,7 @@ class MainForm extends React.Component {
           <span id="general-error" class="help-block error-message hidden"></span>
         </Form>
       </div>
-    )
+    );
   }
 }
 
@@ -194,11 +232,17 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
+  geoCodeLocation: address => dispatch(lookUpAddress(address)),
   requestPersonDataById: (peopleDataUrl, id) => dispatch(requestPersonDataById(peopleDataUrl, id)),
+  setDate: date => dispatch(setDate(date)),
+  setEndTime: time => dispatch(setEndTime(time)),
+  setLatLng: payload => dispatch(setLatLng(payload)),
+  setStartTime: time => dispatch(setStartTime(time)),
+  setTimeZone: payload => dispatch(getTimeZone(payload)),
   startSetPeople: peopleNameUrl => dispatch(startSetPeople(peopleNameUrl)),
   togglePersonMode: mode => dispatch(toggleMemberCandidate(mode)),
-  geoCodeLocation: address => dispatch(lookUpAddress(address)),
-  setLatLng: payload => dispatch(setLatLng(payload))
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(MainForm);
+const WrappedMainForm = Form.create()(MainForm);
+
+export default connect(mapStateToProps, mapDispatchToProps)(WrappedMainForm);

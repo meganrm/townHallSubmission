@@ -51,7 +51,6 @@ const townhallReducer = (state = initialState, { type, payload }) => {
   let district;
   let chamber;
   const timeFormats = ['hh:mm A', 'h:mm A'];
-  const dateFormats = ['YYYY-MM-DD', 'MM/DD/YYYY', 'MM-DD-YYYY', 'MMMM D, YYYY'];
   const tempEnd = moment(payload, timeFormats).add(2, 'h');
   switch (type) {
   case 'RESET_ALL':
@@ -115,8 +114,8 @@ const townhallReducer = (state = initialState, { type, payload }) => {
   case 'SET_DATE':
     return {
       ...state,
-      yearMonthDay: moment(payload, dateFormats).format('YYYY-MM-DD'),
-      dateString: moment(payload, dateFormats).format('ddd, MMM D YYYY'),
+      yearMonthDay: moment(payload).format('YYYY-MM-DD'),
+      dateString: moment(payload).format('ddd, MMM D YYYY'),
     };
 
   case 'SET_LAT_LNG':
@@ -129,7 +128,7 @@ const townhallReducer = (state = initialState, { type, payload }) => {
   case 'SET_TIME_ZONE':
     return {
       ...state,
-      zoneString: payload.timeZoneId,
+      zoneString: payload.zoneString,
       timeZone: payload.timeZone,
       dateObj: new Date(`${state.yearMonthDay.replace(/-/g, '/')} ${state.Time} ${payload.utcoffset}`).getTime(),
     };
