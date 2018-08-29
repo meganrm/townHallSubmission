@@ -70,6 +70,9 @@ memberUpdating.updateFieldsFromMember = function updateFieldsFromMember($form, $
         displayDistrict.val('Senate').parent().addClass('has-success');
     } else if (mocdata.district) {
         displayDistrict.val(`${mocdata.state}-${mocdata.district}`).parent().addClass('has-success');
+    } else if (mocdata.chamber === 'statewide' && mocdata.role) {
+        console.log(mocdata)
+        displayDistrict.val(`${mocdata.role.toUpperCase()} ${mocdata.state}`);
     }
     $memberInput.val(mocdata.displayName);
     party.val(mocdata.party).parent().addClass('has-success');

@@ -10,6 +10,7 @@ export default class Candidate {
         this.party = data.party;
         this.displayName = data.Member;
         this.state = data.state;
+        this.office = data.role || null;
         this.stateName = data.stateName;
         this.district = data.district || null;
     }
