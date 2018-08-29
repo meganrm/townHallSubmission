@@ -96,6 +96,9 @@ memberUpdating.getEventDataFromMember = function getEventDataFromMember(mocdata)
         const zeropadding = '00';
         const updatedDistrict = zeropadding.slice(0, zeropadding.length - mocdata.district.length) + mocdata.district;
         TownHall.currentEvent.district = updatedDistrict;
+    } else if (mocdata.chamber === 'statewide') {
+        TownHall.currentEvent.chamber = 'statewide';
+        TownHall.currentEvent.office = mocdata.role;
     }
 };
 
