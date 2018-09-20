@@ -2,6 +2,7 @@
 import React from 'react';
 import ReactDom from 'react-dom';
 import { Provider } from 'react-redux';
+
 import {
     firebase,
     firebasedb,
@@ -11,6 +12,9 @@ import {
 import newEventView from './scripts/views/newEventView';
 import './scripts/views/memberUpdatingView';
 import './scripts/controllers/routes';
+import {
+    writeUserData,
+} from './state/user/actions';
 
 import './vendor/styles/normalize.css';
 import './styles/customboot.less';
@@ -20,14 +24,6 @@ import configureStore from './store/configureStore';
 
 const provider = new firebase.auth.GoogleAuthProvider();
 const store = configureStore();
-
-function writeUserData(userId, name, email) {
-    firebasedb.ref(`users/${userId}`).update({
-        email,
-        username: name,
-    });
-}
-
 
 const jsx = (
     <Provider store={store}>
@@ -58,7 +54,8 @@ firebase.auth().onAuthStateChanged((user) => {
         console.log(user.displayName, ' is signed in');
         // eventHandler.readData();
         newEventView.showUserEvents();
-        writeUserData(user.uid, user.displayName, user.email);
+        
+        store.dispatch(writeUserData(user));
     } else {
         signIn();
     // No user is signed in.

@@ -4,6 +4,8 @@ import statesAb from '../../data/states';
 const initialState = {
   Location: null,
   Member: null,
+  members: [],
+  district: [],
   Notes: '',
   Time: null,
   address: null,
@@ -18,6 +20,7 @@ const initialState = {
   eventName: null,
   govtrack_id: null,
   iconFlag: null,
+  office: null,
   lat: 0,
   lng: 0,
   meetingType: null,
@@ -53,7 +56,7 @@ const townhallReducer = (state = initialState, { type, payload }) => {
   const timeFormats = ['hh:mm A', 'h:mm A'];
   const tempEnd = moment(payload, timeFormats).add(2, 'h');
   switch (type) {
-  case 'RESET_ALL':
+  case 'RESET_TOWNHALL':
     return initialState;
 
   case 'SET_DISTRICT':
@@ -89,8 +92,39 @@ const townhallReducer = (state = initialState, { type, payload }) => {
       thp_id: payload.thp_id || null,
       stateName: payload.stateName || statesAb[payload.state],
       party: payload.party,
+      office: payload.office || payload.role || null,
 
     };
+  case 'SET_ADDITIONAL_MEMBER': 
+      if (payload.type === 'sen' || payload.chamber === 'upper') {
+        district = null;
+        chamber = 'upper';
+      } else if (payload.type === 'rep' || payload.chamber === 'lower') {
+        chamber = 'lower';
+        const zeropadding = '00';
+        const updatedDistrict = zeropadding.slice(0, zeropadding.length - payload.district.length) + payload.district;
+        district = updatedDistrict;
+      }
+    return {
+      ...state,
+      members: [
+        ...state.members,
+        {
+          party: payload.party,
+          chamber,
+          govtrack_id: payload.govtrack_id || null,
+          thp_id: payload.thp_id || null,
+          displayName: payload.name,
+          state: payload.state,
+          district,
+          office: payload.office || payload.role || null,
+
+        }],
+        districts: {
+          ...state.districts,
+          [payload.state]: [...state.districts[payload.state], district],
+        },
+    }
   case 'SET_MEETING_TYPE':
     return {
       ...state,

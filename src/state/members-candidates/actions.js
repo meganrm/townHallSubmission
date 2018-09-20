@@ -1,5 +1,5 @@
 import { firebasedb } from '../../scripts/util/setupFirebase';
-import { setDataFromPersonInDatabase } from '../townhall/actions';
+import { setDataFromPersonInDatabase, setAdditionalMember } from '../townhall/actions';
 
 export const setPeople = people => ({
   payload: people,
@@ -21,4 +21,12 @@ export const requestPersonDataById = (peopleDataUrl, id) => dispatch => firebase
   .then((result) => {
     const personData = result.val();
     return (dispatch(setDataFromPersonInDatabase(personData)));
+  });
+
+export const requestAdditionalPersonDataById = (peopleDataUrl, id) => dispatch => firebasedb.ref(`${peopleDataUrl}/${id}`)
+  .once('value')
+  .then((result) => {
+    const personData = result.val();
+    console.log('setting additional member')
+    return (dispatch(setAdditionalMember(personData)));
   });

@@ -1,7 +1,9 @@
 import request from 'superagent';
 
-export const resetSelections = () => ({
-  type: 'RESET_ALL',
+import { firebasedb } from '../../scripts/util/setupFirebase';
+
+export const resetTownHall = () => ({
+  type: 'RESET_TOWNHALL',
 });
 
 export const setDistrict = payload => ({
@@ -19,7 +21,12 @@ export const setDataFromPersonInDatabase = payload => ({
   type: 'SET_DATA_FROM_PERSON',
 });
 
-export const setMeetingTYpe = payload => ({
+export const setAdditionalMember = payload => ({
+  payload,
+  type: 'SET_ADDITIONAL_MEMBER',
+});
+
+export const setMeetingType = payload => ({
   payload,
   type: 'SET_MEETING_TYPE',
 });
@@ -133,3 +140,41 @@ export const getTimeZone = payload => (dispatch) => {
       console.log(error);
     });
 };
+
+const updateMOCData = (payload) => {
+  if (!payload.memberId) {
+    return Promise.resolve();
+  }
+  const updates = {
+    lastUpdated: Date.now(),
+    lastUpdatedBy: payload.userDisplayName,
+  };
+  return firebasedb.ref(`${payload.mocDataPath}/${payload.memberId}`).update(updates);
+};
+
+const updateUserEvents = (payload) => {
+  const path = `users/${payload.uid}`;
+  const updates = {};
+  const currentEvent = {};
+  const mocData = {
+    lastUpdated: Date.now(),
+    govtrack_id: payload.govtrack_id || null,
+    thp_id: payload.thp_id || null,
+  };
+  let id = payload.govtrack_id ? payload.govtrack_id : payload.thp_id;
+  id = id || 'candidate';
+  updates[`${path}/currentEvents/${payload.eventId}`] = currentEvent;
+  updates[`${path}/mocs/${id}`] = mocData;
+  return firebasedb.ref().update(updates);
+};
+
+export const saveMetaData = payload => (dispatch) => {
+  Promise.all([updateMOCData(payload), updateUserEvents()])
+    .then(() => dispatch(resetTownHall()))
+    .catch((error) => {
+      console.log('error updating user or moc', error);
+    });
+};
+
+export const submitEventForReview = payload => dispatch => firebasedb.ref(`${payload.saveUrl}/${payload.currentTownHall.eventId}`).update(payload.currentTownHall)
+    .then(() => dispatch(saveMetaData(payload.metaData)));

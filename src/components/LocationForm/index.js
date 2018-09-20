@@ -3,15 +3,10 @@ import PropTypes from 'prop-types';
 import { uniq } from 'lodash';
 
 import {
-  AutoComplete,
   Input,
   Form,
-  Radio,
   Select,
 } from 'antd';
-import {
-  find,
-} from 'lodash';
 
 const {
   Option,
@@ -23,6 +18,7 @@ class LocationForm extends React.Component {
     super(props);
     this.state = {
       data: [],
+      validating: false,
       value: undefined,
     };
     this.handleChange = this.handleChange.bind(this);
@@ -41,6 +37,7 @@ class LocationForm extends React.Component {
     if (nextProps.tempAddress) {
       this.setState(prevState => ({
         data: uniq([...prevState.data, `Formatted: ${nextProps.tempAddress}`]),
+        validating: "success",
       }));
     }
   }
@@ -50,10 +47,10 @@ class LocationForm extends React.Component {
       geoCodeLocation,
     } = this.props;
     const { value } = this.state;
-    console.log(value.split(': '))
     geoCodeLocation(value.split(': ')[1]);
     this.setState(prevState => ({
       data: uniq([...prevState.data, prevState.value]),
+      validating: 'validating',
     }));
   }
 
@@ -81,7 +78,7 @@ class LocationForm extends React.Component {
   }
 
   renderTeleInputs() {
-    <FormItem className="form-group col-sm-12">
+    <FormItem>
       <label className="" htmlFor="phoneNumber">
         Phone Number format: (555) 555-5555
       </label>
@@ -93,17 +90,31 @@ class LocationForm extends React.Component {
   }
 
   render() {
-    const options = this.state.data.map(d => (
+    const {
+      validating,
+      data,
+    } = this.state;
+    const options = data.map(d => (
       <Option key={d}>
           {d}
       </Option>
     ));
     return (
       <React.Fragment>
-        <FormItem class="form-group col-sm-12 general-inputs">
-          <Input type="text" className="form-control input-underline" id="Location" placeholder="Name of location (eg. Gary Recreation Center)" value="" />
+        <FormItem class="general-inputs">
+          <Input 
+            type="text" 
+            className="input-underline" 
+            id="Location" 
+            placeholder="Name of location (eg. Gary Recreation Center)"
+          />
         </FormItem>
-        <FormItem className="form-group col-sm-12 general-inputs" id="location-form-group">
+        <FormItem
+          className="general-inputs"
+          id="location-form-group"
+          hasFeedback
+          validateStatus={validating}
+          >
           <Select
             showSearch
             combobox
@@ -117,16 +128,17 @@ class LocationForm extends React.Component {
             onSearch={this.handleChange}
             onSelect={this.handleSelect}
             notFoundContent={null}
+        
           >
             {options}
-            <Option value= "disabled" disabled>
-Hit enter to geocode address, then select address from dropdown
-</Option>
+            <Option value="disabled" disabled>
+            Hit enter to geocode address, then select address from dropdown
+            </Option>
           </Select>
-          <span id="address-feedback" className="help-block">
-Enter a valid street address, if there isn't one, leave this blank
-          </span>
         </FormItem>
+          <span id="address-feedback" className="help-block">
+            Enter a valid street address, if there isn't one, leave this blank
+          </span>
       </React.Fragment>
     );
   }

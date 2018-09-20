@@ -2,13 +2,16 @@ import React from 'react';
 import { connect } from 'react-redux';
 import {
   Form,
+  Button,
   Input,
   Select,
+  Checkbox,
 } from 'antd';
 
 import {
   startSetPeople,
   requestPersonDataById,
+  requestAdditionalPersonDataById,
 } from '../../state/members-candidates/actions';
 
 import {
@@ -18,17 +21,23 @@ import {
 import {
   getPeopleNameUrl,
   getPeopleDataUrl,
+  getSaveUrl,
   getSelectedUSState,
   getTempAddress,
   getTempLat,
   getTempLng,
+  getMode,
 } from '../../state/selections/selectors';
-
+import {
+  getUid,
+  getUserEmail,
+  getUserName,
+} from '../../state/user/selectors';
 import MemberForm from '../../components/MemberForm';
 import LocationForm from '../../components/LocationForm';
 import DateTimeForm from '../../components/DateTimeForm';
 
-import 'antd/dist/antd.css';
+import 'antd/dist/antd.less';
 
 import { getTownHall } from '../../state/townhall/selectors';
 import { toggleMemberCandidate, lookUpAddress } from '../../state/selections/actions';
@@ -36,16 +45,25 @@ import {
   setLatLng,
   setDate,
   setStartTime,
+  setMeetingType,
   setEndTime,
+  setValue,
   getTimeZone,
+  saveMetaData,
+  submitEventForReview,
 } from '../../state/townhall/actions';
 
 const FormItem = Form.Item;
 const { Option } = Select;
+const { TextArea } = Input;
 
 class MainForm extends React.Component {
   constructor(props) {
-    super(props)
+    super(props);
+    this.handleMeetingChange = this.handleMeetingChange.bind(this);
+    this.handleInputBlur = this.handleInputBlur.bind(this);
+    this.onCheckBoxChecked = this.onCheckBoxChecked.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   componentWillMount() {
@@ -57,23 +75,14 @@ class MainForm extends React.Component {
   }
 
   static shouldGetLatLng(currentTownHall, nextTownHall) {
-    console.log(
-      currentTownHall.yearMonthDay,
-      currentTownHall.Time,
-      currentTownHall.lat,
-      nextTownHall.yearMonthDay,
-      nextTownHall.Time,
-      nextTownHall.lat,
-    )
     if (
-      (nextTownHall.yearMonthDay &&
-      nextTownHall.Time &&
-      nextTownHall.lat)
-      &&
-      (currentTownHall.yearMonthDay !== nextTownHall.yearMonthDay ||
-      currentTownHall.Time !== nextTownHall.Time ||
-      currentTownHall.timeEnd !== nextTownHall.timeEnd ||
-      currentTownHall.lat !== nextTownHall.lat)
+      (nextTownHall.yearMonthDay
+      && nextTownHall.Time
+      && nextTownHall.lat)
+      &&      (currentTownHall.yearMonthDay !== nextTownHall.yearMonthDay
+      || currentTownHall.Time !== nextTownHall.Time
+      || currentTownHall.timeEnd !== nextTownHall.timeEnd
+      || currentTownHall.lat !== nextTownHall.lat)
     ) {
       return true;
     }
@@ -88,16 +97,15 @@ class MainForm extends React.Component {
     if (peopleNameUrl !== nextProps.peopleNameUrl) {
       startSetPeople(nextProps.peopleNameUrl);
     }
-  
   }
 
-  componentDidUpdate(prevProps){
+  componentDidUpdate(prevProps) {
     const {
       currentTownHall,
       setTimeZone,
     } = this.props;
     if (MainForm.shouldGetLatLng(prevProps.currentTownHall, currentTownHall)) {
-      console.log('getting zone')
+      console.log('getting zone');
       setTimeZone({
         date: currentTownHall.dateString,
         time: currentTownHall.Time,
@@ -107,21 +115,81 @@ class MainForm extends React.Component {
     }
   }
 
+  handleSubmit(e) {
+    e.preventDefault();
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        console.log('Received values of form: ', values);
+      }
+    });
+    return;
+    const {
+      currentTownHall,
+      saveUrl,
+      submitMetaData,
+      peopleDataUrl,
+      updateUserSubmission,
+      submitEventForReview,
+      memberId,
+      userDisplayName,
+      uid,
+    } = this.props;
+    const metaData = {
+      eventId,
+      memberId,
+      govtrack_id,
+      mocDataPath: peopleDataUrl,
+      thp_id,
+      uid,
+      userDisplayName,
+    };
 
+    if (currentTownHall.meetingType === 'No Events') {
+      return submitMetaData(metaData);
+    }
+
+    console.log(saveUrl);
+    const submit = {
+      currentTownHall,
+      saveUrl,
+      metaData,
+    };
+    submitEventForReview(submit);
+  }
+
+  onCheckBoxChecked(e) {
+    const { setValue } = this.props;
+    setValue({ key: e.target.id, value: e.target.checked });
+  }
+
+  handleInputBlur(e) {
+    console.log(e.target);
+    const { setValue } = this.props;
+    setValue({ key: e.target.id, value: e.target.value });
+  }
+
+  handleMeetingChange(value) {
+    const {
+      setMeetingType,
+    } = this.props;
+    console.log(value);
+    setMeetingType(value);
+  }
 
   render() {
-    const { 
-      allNames, 
+    const {
+      allNames,
       allPeople,
       currentTownHall,
       peopleDataUrl,
+      personMode,
       requestPersonDataById,
       togglePersonMode,
       selectedUSState,
       geoCodeLocation,
       setLatLng,
       setDate,
-      setStartTime, 
+      setStartTime,
       setEndTime,
       tempAddress,
       tempLat,
@@ -129,11 +197,13 @@ class MainForm extends React.Component {
     } = this.props;
     const {
       getFieldDecorator,
+      getFieldValue,
+      setFieldsValue,
     } = this.props.form;
     return (
-      <div class="new-event-form col-md-9">
-        <h3 className="text-success">Enter a new town hall event</h3>
+      <div className="new-event-form">
         <Form
+          onSubmit={this.handleSubmit}
           id="new-event-form-element"
           layout="horizontal"
         >
@@ -143,76 +213,160 @@ class MainForm extends React.Component {
             currentTownHall={currentTownHall}
             peopleDataUrl={peopleDataUrl}
             requestPersonDataById={requestPersonDataById}
+            requestAdditionalPersonDataById={requestAdditionalPersonDataById}
             selectedUSState={selectedUSState}
             togglePersonMode={togglePersonMode}
             getFieldDecorator={getFieldDecorator}
+            personMode={personMode}
+            getFieldValue={getFieldValue}
+            setFieldsValue={setFieldsValue}
           />
-          <section class="meeting infomation">
-            <h4 class="text-info">
+          <section className="meeting infomation">
+            <h4>
               Information about the Event
             </h4>
-            <div class="form-group col-sm-12">
-              <Input type="text" class="form-control input-underline" id="eventName" value={currentTownHall.eventName || ''} placeholder="Name of the event" />
-            </div>
             <FormItem>
-              <Select>
-                <Option value="Town Hall">Town Hall</Option>
-                <Option value="Tele-Town Hall">Tele-Town Hall</Option>
-                <Option value="Ticketed Event">Ticketed Event</Option>
-                <Option value="Campaign Town Hall">Campaign Town Hall</Option>
-                <Option value="Adopt-A-District/State">Adopt-A-District/State</Option>
-                <Option value="Empty Chair Town Hall">Empty Chair Town Hall</Option>
-                <Option value="Hearing">Hearing</Option>
-                <Option value="DC Event">DC Event</Option>
-                <Option value="Office Hours">Office Hours</Option>
-                <Option value="Other">Other</Option>
-                <Option className="text-secondary" value="No Events">No new events</Option>
-              </Select>
-              <span id="meetingType-error" class="help-block error-message hidden">Please select type of event</span>
+              <Input
+                type="text"
+                className="input-underline"
+                id="eventName"
+                placeholder="Name of the event"
+                onBlur={this.handleInputBlur}
+              />
+            </FormItem>
+            <FormItem>
+              {getFieldDecorator('meetingType', {
+                rules: [{ required: true, message: 'Please select type of event' }],
+              })(
+
+                <Select
+                  onChange={this.handleMeetingChange}
+                  key="meetingType"
+                  placeholder="Meeting type"
+                >
+                  <Option value="Town Hall">
+                  Town Hall
+                  </Option>
+                  <Option value="Tele-Town Hall">
+                  Tele-Town Hall
+                  </Option>
+                  <Option value="Ticketed Event">
+                  Ticketed Event
+                  </Option>
+                  <Option value="Campaign Town Hall">
+                  Campaign Town Hall
+                  </Option>
+                  <Option value="Adopt-A-District/State">
+                  Adopt-A-District/State
+                  </Option>
+                  <Option value="Empty Chair Town Hall">
+                  Empty Chair Town Hall
+                  </Option>
+                  <Option value="Hearing">
+                  Hearing
+                  </Option>
+                  <Option value="DC Event">
+                  DC Event
+                  </Option>
+                  <Option value="Office Hours">
+                  Office Hours
+                  </Option>
+                  <Option value="Other">
+                    Other
+                    </Option>
+                  <Option className="text-secondary" value="No Events">
+                    No new events
+                    </Option>
+                </Select>,
+              )}
             </FormItem>
           </section>
-          <LocationForm 
+          <LocationForm
             geoCodeLocation={geoCodeLocation}
             tempAddress={tempAddress}
             tempLat={tempLat}
             tempLng={tempLng}
             saveAddress={setLatLng}
+            getFieldDecorator={getFieldDecorator}
+
           />
-          <DateTimeForm 
+          <DateTimeForm
             setDate={setDate}
             setStartTime={setStartTime}
             setEndTime={setEndTime}
+            getFieldDecorator={getFieldDecorator}
+
           />
-          <section class="extra-data event-details">
-            <div class="form-group col-sm-12">
-              <label for="link">URL related to event (optional)</label>
-              <input type="url" class="form-control input-underline" id="link" placeholder="Link" value="" />
-            </div>
-            <div class="form-group col-sm-12">
-              <label  for="linkName">Link display name (optional)</label>
-              <input type="text" class="form-control input-underline" id="linkName" placeholder="Link Name" value="" />
-            </div>
-            <div class="checkbox col-sm-12">
-              <label>
-                <input type="checkbox" class="general-checkbox" id="ada_accessible" />
-                <span class="checkbox-label">ADA accessible?</span>
+          <section className="extra-data event-details">
+            <h4>
+              Additional information
+            </h4>
+            <FormItem>
+              <label htmlFor="link">
+URL related to event (optional)
+</label>
+              <Input
+                type="url"
+                class="input-underline"
+                id="link"
+                placeholder="Link"
+                onBlur={this.handleInputBlur}
+              />
+            </FormItem>
+            <FormItem>
+              <label htmlFor="linkName">
+Link display name (optional)
+</label>
+              <Input
+                type="text"
+                class="input-underline"
+                id="linkName"
+                placeholder="Link Name"
+                onBlur={this.handleInputBlur}
+              />
+            </FormItem>
+            <FormItem>
+              <Checkbox
+                type="checkbox"
+                class="general-checkbox"
+                id="ada_accessible"
+                onChange={this.onCheckBoxChecked}
+              >
+              ADA accessible?
+              </Checkbox>
+            </FormItem>
+            <FormItem>
+              <label htmlFor="Notes">
+Public Notes
+</label>
+              <TextArea
+                id="Notes"
+                rows={3}
+                placeholder="Notes about event that cannot be entered anywhere else."
+                onBlur={this.handleInputBlur}
+
+              />
+            </FormItem>
+            <FormItem>
+              <label htmlFor="Internal-Notes">
+              Internal Notes to THP Team
               </label>
-            </div>
-            <div class="row">
-              <div class="col-sm-8">
-                <div class="form-group col-sm-12">
-                  <label for="Notes">Public Notes</label>
-                  <textarea class="form-control" id="Notes" placeholder="Notes about event that cannot be entered anywhere else." rows="3"></textarea>
-                </div>
-                <div class="form-group col-sm-12">
-                  <label for="Internal-Notes">Internal Notes to THP Team</label>
-                  <textarea class="form-control" id="Internal-Notes" placeholder="Notes for Town Hall Project team." rows="3"></textarea>
-                </div>
-              </div>
-            </div>
+              <TextArea
+                rows={3}
+                id="Internal-Notes"
+                placeholder="Notes for Town Hall Project team."
+                onBlur={this.handleInputBlur}
+              />
+            </FormItem>
           </section>
-          <button class="btn btn-default btn-secondary" type="submit" name="button">Submit</button>
-          <span id="general-error" class="help-block error-message hidden"></span>
+          <Button
+            type="primary"
+            htmlType="submit"
+            name="button"
+          >
+            Submit
+
+          </Button>
         </Form>
       </div>
     );
@@ -225,10 +379,14 @@ const mapStateToProps = state => ({
   currentTownHall: getTownHall(state),
   peopleDataUrl: getPeopleDataUrl(state),
   peopleNameUrl: getPeopleNameUrl(state),
+  personMode: getMode(state),
+  saveUrl: getSaveUrl(state),
   selectedUSState: getSelectedUSState(state),
   tempAddress: getTempAddress(state),
   tempLat: getTempLat(state),
   tempLng: getTempLng(state),
+  uid: getUid(state),
+  userDisplayName: getUserName(state),
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -237,9 +395,13 @@ const mapDispatchToProps = dispatch => ({
   setDate: date => dispatch(setDate(date)),
   setEndTime: time => dispatch(setEndTime(time)),
   setLatLng: payload => dispatch(setLatLng(payload)),
+  setMeetingType: payload => dispatch(setMeetingType(payload)),
   setStartTime: time => dispatch(setStartTime(time)),
   setTimeZone: payload => dispatch(getTimeZone(payload)),
+  setValue: payload => dispatch(setValue(payload)),
   startSetPeople: peopleNameUrl => dispatch(startSetPeople(peopleNameUrl)),
+  submitEventForReview: payload => dispatch(submitEventForReview(payload)),
+  submitMetaData: payload => dispatch(saveMetaData(payload)),
   togglePersonMode: mode => dispatch(toggleMemberCandidate(mode)),
 });
 
