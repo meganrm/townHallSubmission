@@ -58,6 +58,7 @@ class MemberLookup extends React.Component {
       HD: 'House District',
       SD: 'Senate District',
       GOV: 'Governor',
+      statewide: 'Governor',
       LTGOV: 'Lt. Governor',
       upper: 'Sen.',
       lower: 'Rep.',
@@ -114,7 +115,7 @@ class MemberLookup extends React.Component {
     } = this.props;
     // can use data-binding to get
     const keys = getFieldValue('keys');
-    // We need at least one pasesenger
+    // We need at least one member
     if (keys.length === 1) {
       return;
     }

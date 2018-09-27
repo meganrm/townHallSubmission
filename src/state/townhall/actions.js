@@ -128,7 +128,6 @@ export const getTimeZone = payload => (dispatch) => {
       }
 
       const dateObj = new Date(`${payload.date.replace(/-/g, '/')} ${payload.time} ${utcoffset}`).getTime();
-
       return (dispatch(setDateWithTimeZone(
         {
           dateObj,
@@ -169,7 +168,7 @@ const updateUserEvents = (payload) => {
 };
 
 export const saveMetaData = payload => (dispatch) => {
-  Promise.all([updateMOCData(payload), updateUserEvents()])
+  Promise.all([updateMOCData(payload), updateUserEvents(payload)])
     .then(() => dispatch(resetTownHall()))
     .catch((error) => {
       console.log('error updating user or moc', error);
@@ -177,4 +176,5 @@ export const saveMetaData = payload => (dispatch) => {
 };
 
 export const submitEventForReview = payload => dispatch => firebasedb.ref(`${payload.saveUrl}/${payload.currentTownHall.eventId}`).update(payload.currentTownHall)
-    .then(() => dispatch(saveMetaData(payload.metaData)));
+  .then(() => dispatch(saveMetaData(payload.metaData)))
+  .catch(console.log);

@@ -19,12 +19,12 @@ class DateTimeForm extends React.Component {
     this.onRepeatingEventCheckboxChanged = this.onRepeatingEventCheckboxChanged.bind(this);
     this.state = {
       repeatingEvent: false,
-    }
+    };
   }
 
   onRepeatingEventCheckboxChanged(e) {
     console.log(`checked = ${e.target.checked}`);
-    this.setState({ repeatingEvent: e.target.checked })
+    this.setState({ repeatingEvent: e.target.checked });
   }
 
   onChangeDate(date) {
@@ -48,28 +48,29 @@ class DateTimeForm extends React.Component {
     setEndTime(timeString);
   }
 
-  renderReatingEvent(){
+  renderReatingEvent() {
     const { repeatingEvent } = this.state;
     return repeatingEvent ? (
-        <FormItem className="repeating">
-          <label htmlFor="repeatingEvent">
+      <FormItem className="repeating">
+        <label htmlFor="repeatingEvent">
           Repeating Event
-          </label>
-          <Input 
-            type="text" 
-            className="input-underline" 
-            id="repeatingEvent" 
-            placeholder="Eg. First Tuesday of the month" />
-        </FormItem>
-    ): 
-    (
+        </label>
+        <Input
+          type="text"
+          className="input-underline"
+          id="repeatingEvent"
+          placeholder="Eg. First Tuesday of the month"
+        />
+      </FormItem>
+    )
+      : (
         <FormItem>
           <DatePicker onChange={this.onChangeDate} />
           <span id="yearMonthDay-error" className="help-block error-message hidden">
           Please enter a valid date
           </span>
         </FormItem>
-    )
+      );
   }
 
   render() {
@@ -77,7 +78,8 @@ class DateTimeForm extends React.Component {
       <React.Fragment>
         <FormItem className="checkbox">
           <Checkbox
-            onChange={this.onRepeatingEventCheckboxChanged}>
+            onChange={this.onRepeatingEventCheckboxChanged}
+          >
             Repeating Event
           </Checkbox>
         </FormItem>

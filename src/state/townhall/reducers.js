@@ -1,11 +1,12 @@
 import moment from 'moment';
 import statesAb from '../../data/states';
+import { firebasedb } from '../../scripts/util/setupFirebase';
 
 const initialState = {
   Location: null,
   Member: null,
   members: [],
-  district: [],
+  districts: [],
   Notes: '',
   Time: null,
   address: null,
@@ -81,30 +82,38 @@ const townhallReducer = (state = initialState, { type, payload }) => {
       const zeropadding = '00';
       const updatedDistrict = zeropadding.slice(0, zeropadding.length - payload.district.length) + payload.district;
       district = updatedDistrict;
+    } else if (payload.role === 'Gov') {
+      chamber = 'statewide';
+      district = null;
     }
+    const eventId = firebasedb.ref('townHallIds').push().key;
     return {
       ...state,
       chamber,
       district,
       state: payload.state,
       displayName: payload.displayName,
+      Member: payload.displayName,
       govtrack_id: payload.govtrack_id || null,
-      thp_id: payload.thp_id || null,
+      thp_id: payload.thp_id || payload.thp_key || null,
       stateName: payload.stateName || statesAb[payload.state],
       party: payload.party,
       office: payload.office || payload.role || null,
-
+      eventId,
     };
-  case 'SET_ADDITIONAL_MEMBER': 
-      if (payload.type === 'sen' || payload.chamber === 'upper') {
-        district = null;
-        chamber = 'upper';
-      } else if (payload.type === 'rep' || payload.chamber === 'lower') {
-        chamber = 'lower';
-        const zeropadding = '00';
-        const updatedDistrict = zeropadding.slice(0, zeropadding.length - payload.district.length) + payload.district;
-        district = updatedDistrict;
-      }
+  case 'SET_ADDITIONAL_MEMBER':
+    if (payload.type === 'sen' || payload.chamber === 'upper') {
+      district = null;
+      chamber = 'upper';
+    } else if (payload.type === 'rep' || payload.chamber === 'lower') {
+      chamber = 'lower';
+      const zeropadding = '00';
+      const updatedDistrict = zeropadding.slice(0, zeropadding.length - payload.district.length) + payload.district;
+      district = updatedDistrict;
+    } else if (payload.role === 'Gov') {
+      chamber = 'statewide';
+      district = null;
+    }
     return {
       ...state,
       members: [
@@ -113,23 +122,24 @@ const townhallReducer = (state = initialState, { type, payload }) => {
           party: payload.party,
           chamber,
           govtrack_id: payload.govtrack_id || null,
-          thp_id: payload.thp_id || null,
+          thp_id: payload.thp_id || payload.thp_key || null,
           displayName: payload.name,
+          Member: payload.name,
           state: payload.state,
           district,
           office: payload.office || payload.role || null,
 
         }],
-        districts: {
-          ...state.districts,
-          [payload.state]: [...state.districts[payload.state], district],
-        },
-    }
+      districts: {
+        ...state.districts,
+        [payload.state]: [...state.districts[payload.state], district],
+      },
+    };
   case 'SET_MEETING_TYPE':
     return {
       ...state,
-      meetingType: payload.meetingType,
-      iconFlag: iconFlagMap[payload.meetingType],
+      meetingType: payload,
+      iconFlag: iconFlagMap[payload],
     };
   case 'SET_START_TIME':
     return {
@@ -164,7 +174,7 @@ const townhallReducer = (state = initialState, { type, payload }) => {
       ...state,
       zoneString: payload.zoneString,
       timeZone: payload.timeZone,
-      dateObj: new Date(`${state.yearMonthDay.replace(/-/g, '/')} ${state.Time} ${payload.utcoffset}`).getTime(),
+      dateObj: payload.dateObj,
     };
   case 'ADD_DISCLAIMER':
     return {

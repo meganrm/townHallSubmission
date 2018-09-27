@@ -58,22 +58,6 @@ const { Option } = Select;
 const { TextArea } = Input;
 
 class MainForm extends React.Component {
-  constructor(props) {
-    super(props);
-    this.handleMeetingChange = this.handleMeetingChange.bind(this);
-    this.handleInputBlur = this.handleInputBlur.bind(this);
-    this.onCheckBoxChecked = this.onCheckBoxChecked.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
-
-  componentWillMount() {
-    const {
-      startSetPeople,
-      peopleNameUrl,
-    } = this.props;
-    startSetPeople(peopleNameUrl);
-  }
-
   static shouldGetLatLng(currentTownHall, nextTownHall) {
     if (
       (nextTownHall.yearMonthDay
@@ -89,14 +73,35 @@ class MainForm extends React.Component {
     return false;
   }
 
-  componentWillReceiveProps(nextProps) {
+  constructor(props) {
+    super(props);
+    this.handleMeetingChange = this.handleMeetingChange.bind(this);
+    this.handleInputBlur = this.handleInputBlur.bind(this);
+    this.onCheckBoxChecked = this.onCheckBoxChecked.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.state = { ...props.currentTownHall }
+  }
+
+  componentWillMount() {
     const {
       startSetPeople,
       peopleNameUrl,
     } = this.props;
+    startSetPeople(peopleNameUrl);
+  }
+
+
+  componentWillReceiveProps(nextProps) {
+    const {
+      startSetPeople,
+      peopleNameUrl,
+      currentTownHall,
+    } = this.props;
     if (peopleNameUrl !== nextProps.peopleNameUrl) {
       startSetPeople(nextProps.peopleNameUrl);
     }
+    // this.setState({ ...currentTownHall });
   }
 
   componentDidUpdate(prevProps) {
@@ -115,6 +120,10 @@ class MainForm extends React.Component {
     }
   }
 
+  handleChange(e) {
+    // this.setState({[e.target.id]: event.target.value});
+  }
+
   handleSubmit(e) {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
@@ -122,7 +131,6 @@ class MainForm extends React.Component {
         console.log('Received values of form: ', values);
       }
     });
-    return;
     const {
       currentTownHall,
       saveUrl,
@@ -135,11 +143,11 @@ class MainForm extends React.Component {
       uid,
     } = this.props;
     const metaData = {
-      eventId,
+      eventId: currentTownHall.eventId,
       memberId,
-      govtrack_id,
+      govtrack_id: currentTownHall.govtrack_id || null,
       mocDataPath: peopleDataUrl,
-      thp_id,
+      thp_id: currentTownHall.thp_id || null,
       uid,
       userDisplayName,
     };
@@ -236,7 +244,7 @@ class MainForm extends React.Component {
             </FormItem>
             <FormItem>
               {getFieldDecorator('meetingType', {
-                rules: [{ required: true, message: 'Please select type of event' }],
+                rules: [{ required: true, message: 'Please select type of event', initialValue: null }],
               })(
 
                 <Select
@@ -287,8 +295,8 @@ class MainForm extends React.Component {
             tempLat={tempLat}
             tempLng={tempLng}
             saveAddress={setLatLng}
+            handleInputBlur={this.handleInputBlur}
             getFieldDecorator={getFieldDecorator}
-
           />
           <DateTimeForm
             setDate={setDate}
@@ -303,26 +311,28 @@ class MainForm extends React.Component {
             </h4>
             <FormItem>
               <label htmlFor="link">
-URL related to event (optional)
-</label>
+                URL related to event (optional)
+              </label>
               <Input
                 type="url"
                 class="input-underline"
                 id="link"
                 placeholder="Link"
                 onBlur={this.handleInputBlur}
+                onChange={this.handleChange}
               />
             </FormItem>
             <FormItem>
               <label htmlFor="linkName">
-Link display name (optional)
-</label>
+                Link display name (optional)
+              </label>
               <Input
                 type="text"
                 class="input-underline"
                 id="linkName"
                 placeholder="Link Name"
                 onBlur={this.handleInputBlur}
+                onChange={this.handleChange}
               />
             </FormItem>
             <FormItem>
@@ -337,14 +347,14 @@ Link display name (optional)
             </FormItem>
             <FormItem>
               <label htmlFor="Notes">
-Public Notes
-</label>
+              Public Notes
+              </label>
               <TextArea
                 id="Notes"
                 rows={3}
                 placeholder="Notes about event that cannot be entered anywhere else."
                 onBlur={this.handleInputBlur}
-
+                onChange={this.handleChange}
               />
             </FormItem>
             <FormItem>
@@ -356,6 +366,7 @@ Public Notes
                 id="Internal-Notes"
                 placeholder="Notes for Town Hall Project team."
                 onBlur={this.handleInputBlur}
+                onChange={this.handleChange}
               />
             </FormItem>
           </section>

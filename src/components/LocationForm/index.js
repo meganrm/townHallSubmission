@@ -91,6 +91,9 @@ class LocationForm extends React.Component {
 
   render() {
     const {
+      handleInputBlur
+    } = this.props;
+    const {
       validating,
       data,
     } = this.state;
@@ -107,6 +110,7 @@ class LocationForm extends React.Component {
             className="input-underline" 
             id="Location" 
             placeholder="Name of location (eg. Gary Recreation Center)"
+            onBlur={handleInputBlur}
           />
         </FormItem>
         <FormItem
