@@ -158,7 +158,11 @@ class MainForm extends React.Component {
 
     console.log(saveUrl);
     const submit = {
-      currentTownHall,
+      currentTownHall: {
+        ...currentTownHall,
+        lastUpdated: Date.now(),
+        enteredBy: uid,
+      },
       saveUrl,
       metaData,
     };
