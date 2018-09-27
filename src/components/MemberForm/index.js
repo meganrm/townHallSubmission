@@ -239,7 +239,7 @@ class MemberLookup extends React.Component {
           onChange={event => togglePersonMode(event.target.value)}
         >
           <Radio.Button value="moc">
-            Sitting MoC
+            In office (Moc or Gov)
           </Radio.Button>
           <Radio.Button value="candidate">
             Candidate
