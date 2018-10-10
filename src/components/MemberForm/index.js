@@ -199,7 +199,7 @@ class MemberLookup extends React.Component {
             id="person-preview"
             placeholder="Lawmaker/candidate info"
             value={`${this.formatName(key)} ${this.formatDistrct(key)}`}
-            readonly
+            readOnly
           />
         </FormItem>
       </React.Fragment>

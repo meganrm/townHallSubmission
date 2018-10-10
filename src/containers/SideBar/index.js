@@ -38,12 +38,12 @@ class SideBar extends React.Component {
     
     render() {
         return (
-        <section class="session-data">
+        <section className="session-data">
           <h4>Welcome</h4>
           <small>Having trouble? Email info@townhallproject.com</small>
-          <p id="submitted-meta-data" class="hidden"><span>You've submitted: </span><span id="submitted-total" >0</span><span> event(s)</span></p>
-          <p id="submit-success" class="hidden text-success">Thank you for submitting an event!</p>
-          <ul id="submitted" class="list-group events-table">
+          <p id="submitted-meta-data" className="hidden"><span>You've submitted: </span><span id="submitted-total" >0</span><span> event(s)</span></p>
+          <p id="submit-success" className="hidden text-success">Thank you for submitting an event!</p>
+          <ul id="submitted" className="list-group events-table">
           </ul>
   
             <Menu
