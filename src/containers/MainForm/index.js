@@ -1,4 +1,8 @@
 import React from 'react';
+import {
+  includes,
+  mapValues,
+} from 'lodash';
 import { connect } from 'react-redux';
 import {
   Form,
@@ -8,6 +12,7 @@ import {
   Checkbox,
 } from 'antd';
 
+import { disclaimerMeetingTypes } from '../../constants';
 import {
   startSetPeople,
   requestPersonDataById,
@@ -42,6 +47,8 @@ import 'antd/dist/antd.less';
 import { getTownHall } from '../../state/townhall/selectors';
 import { toggleMemberCandidate, lookUpAddress } from '../../state/selections/actions';
 import {
+  mergeNotes,
+  addDisclaimer,
   setLatLng,
   setDate,
   setStartTime,
@@ -63,7 +70,7 @@ class MainForm extends React.Component {
       (nextTownHall.yearMonthDay
       && nextTownHall.Time
       && nextTownHall.lat)
-      &&      (currentTownHall.yearMonthDay !== nextTownHall.yearMonthDay
+      && (currentTownHall.yearMonthDay !== nextTownHall.yearMonthDay
       || currentTownHall.Time !== nextTownHall.Time
       || currentTownHall.timeEnd !== nextTownHall.timeEnd
       || currentTownHall.lat !== nextTownHall.lat)
@@ -79,8 +86,7 @@ class MainForm extends React.Component {
     this.handleInputBlur = this.handleInputBlur.bind(this);
     this.onCheckBoxChecked = this.onCheckBoxChecked.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.state = { ...props.currentTownHall }
+    // this.state = { ...props.currentTownHall };
   }
 
   componentWillMount() {
@@ -97,11 +103,12 @@ class MainForm extends React.Component {
       startSetPeople,
       peopleNameUrl,
       currentTownHall,
+      form,
     } = this.props;
     if (peopleNameUrl !== nextProps.peopleNameUrl) {
       startSetPeople(nextProps.peopleNameUrl);
     }
-    // this.setState({ ...currentTownHall });
+    // this.setState({...nextProps.currentTownHall})
   }
 
   componentDidUpdate(prevProps) {
@@ -120,13 +127,9 @@ class MainForm extends React.Component {
     }
   }
 
-  handleChange(e) {
-    // this.setState({[e.target.id]: event.target.value});
-  }
-
   handleSubmit(e) {
     e.preventDefault();
-    this.props.form.validateFields((err, values) => {
+    this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values);
       }
@@ -136,6 +139,7 @@ class MainForm extends React.Component {
       saveUrl,
       submitMetaData,
       peopleDataUrl,
+      mergeNotes,
       updateUserSubmission,
       submitEventForReview,
       memberId,
@@ -155,7 +159,7 @@ class MainForm extends React.Component {
     if (currentTownHall.meetingType === 'No Events') {
       return submitMetaData(metaData);
     }
-
+    mergeNotes()
     console.log(saveUrl);
     const submit = {
       currentTownHall: {
@@ -167,6 +171,7 @@ class MainForm extends React.Component {
       metaData,
     };
     submitEventForReview(submit);
+    this.props.form.resetFields()
   }
 
   onCheckBoxChecked(e) {
@@ -176,15 +181,19 @@ class MainForm extends React.Component {
 
   handleInputBlur(e) {
     console.log(e.target);
-    const { setValue } = this.props;
+    const { setValue, form } = this.props;
     setValue({ key: e.target.id, value: e.target.value });
   }
 
   handleMeetingChange(value) {
     const {
+      addDisclaimer,
       setMeetingType,
     } = this.props;
     console.log(value);
+    if (includes(disclaimerMeetingTypes, value)){
+      addDisclaimer()
+    }
     setMeetingType(value);
   }
 
@@ -238,13 +247,15 @@ class MainForm extends React.Component {
               Information about the Event
             </h4>
             <FormItem>
-              <Input
-                type="text"
-                className="input-underline"
-                id="eventName"
-                placeholder="Name of the event"
-                onBlur={this.handleInputBlur}
-              />
+              {getFieldDecorator('eventName')(
+                <Input
+                  type="text"
+                  className="input-underline"
+                  id="eventName"
+                  placeholder="Name of the event"
+                  onBlur={this.handleInputBlur}
+                />,
+              )}
             </FormItem>
             <FormItem>
               {getFieldDecorator('meetingType', {
@@ -285,10 +296,10 @@ class MainForm extends React.Component {
                   </Option>
                   <Option value="Other">
                     Other
-                    </Option>
+                  </Option>
                   <Option className="text-secondary" value="No Events">
                     No new events
-                    </Option>
+                  </Option>
                 </Select>,
               )}
             </FormItem>
@@ -317,27 +328,31 @@ class MainForm extends React.Component {
               <label htmlFor="link">
                 URL related to event (optional)
               </label>
-              <Input
-                type="url"
-                class="input-underline"
-                id="link"
-                placeholder="Link"
-                onBlur={this.handleInputBlur}
-                onChange={this.handleChange}
-              />
+              {getFieldDecorator('link')(
+
+                <Input
+                  type="url"
+                  className="input-underline"
+                  id="link"
+                  placeholder="Link"
+                  onBlur={this.handleInputBlur}
+                  onChange={this.handleChange}
+                />,
+              )}
             </FormItem>
             <FormItem>
               <label htmlFor="linkName">
                 Link display name (optional)
               </label>
-              <Input
-                type="text"
-                class="input-underline"
-                id="linkName"
-                placeholder="Link Name"
-                onBlur={this.handleInputBlur}
-                onChange={this.handleChange}
-              />
+              {getFieldDecorator('linkName')(
+                <Input
+                  type="text"
+                  className="input-underline"
+                  id="linkName"
+                  placeholder="Link Name"
+                  onBlur={this.handleInputBlur}
+                />,
+              )}
             </FormItem>
             <FormItem>
               <Checkbox
@@ -353,25 +368,27 @@ class MainForm extends React.Component {
               <label htmlFor="Notes">
               Public Notes
               </label>
-              <TextArea
-                id="Notes"
-                rows={3}
-                placeholder="Notes about event that cannot be entered anywhere else."
-                onBlur={this.handleInputBlur}
-                onChange={this.handleChange}
-              />
+              {getFieldDecorator('Notes')(
+                <TextArea
+                  id="Notes"
+                  rows={3}
+                  placeholder="Notes about event that cannot be entered anywhere else."
+                  onBlur={this.handleInputBlur}
+                />,
+              )}
             </FormItem>
             <FormItem>
               <label htmlFor="Internal-Notes">
               Internal Notes to THP Team
               </label>
-              <TextArea
-                rows={3}
-                id="Internal-Notes"
-                placeholder="Notes for Town Hall Project team."
-                onBlur={this.handleInputBlur}
-                onChange={this.handleChange}
-              />
+              {getFieldDecorator('Internal-Notes')(
+                <TextArea
+                  rows={3}
+                  id="Internal-Notes"
+                  placeholder="Notes for Town Hall Project team."
+                  onBlur={this.handleInputBlur}
+                />,
+              )}
             </FormItem>
           </section>
           <Button
@@ -380,7 +397,6 @@ class MainForm extends React.Component {
             name="button"
           >
             Submit
-
           </Button>
         </Form>
       </div>
@@ -405,7 +421,9 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
+  addDisclaimer: () => dispatch(addDisclaimer()),
   geoCodeLocation: address => dispatch(lookUpAddress(address)),
+  mergeNotes: () => dispatch(mergeNotes()),
   requestPersonDataById: (peopleDataUrl, id) => dispatch(requestPersonDataById(peopleDataUrl, id)),
   setDate: date => dispatch(setDate(date)),
   setEndTime: time => dispatch(setEndTime(time)),
@@ -420,6 +438,29 @@ const mapDispatchToProps = dispatch => ({
   togglePersonMode: mode => dispatch(toggleMemberCandidate(mode)),
 });
 
-const WrappedMainForm = Form.create()(MainForm);
+const WrappedMainForm = Form.create({
+  onFieldsChange(props, changedFields) {
+    const { setValue } = props;
+
+    // const changedValue = values(changedFields)[0];
+    console.log('fields changed', changedFields);
+    // setValue(changedValue.name, changedValue.value);
+  },
+  mapPropsToFields(props) {
+    console.log('props to fields', props.currentTownHall);
+
+    
+    const toreturn = mapValues(props.currentTownHall, value => (
+          Form.createFormField({
+            value,
+          })
+    ));
+    console.log(toreturn)
+    return toreturn
+  },
+  onValuesChange(_, values) {
+    console.log(values);
+  },
+})(MainForm);
 
 export default connect(mapStateToProps, mapDispatchToProps)(WrappedMainForm);
