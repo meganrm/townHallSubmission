@@ -35,7 +35,6 @@ import {
 } from '../../state/selections/selectors';
 import {
   getUid,
-  getUserEmail,
   getUserName,
 } from '../../state/user/selectors';
 import MemberForm from '../../components/MemberForm';
@@ -86,7 +85,7 @@ class MainForm extends React.Component {
     this.handleInputBlur = this.handleInputBlur.bind(this);
     this.onCheckBoxChecked = this.onCheckBoxChecked.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    // this.state = { ...props.currentTownHall };
+    this.checkSubmit = this.checkSubmit.bind(this);
   }
 
   componentWillMount() {
@@ -120,20 +119,24 @@ class MainForm extends React.Component {
       console.log('getting zone');
       setTimeZone({
         date: currentTownHall.dateString,
-        time: currentTownHall.Time,
         lat: currentTownHall.lat,
         lng: currentTownHall.lng,
+        time: currentTownHall.Time,
       });
     }
   }
 
-  handleSubmit(e) {
+  checkSubmit(e){
     e.preventDefault();
-    this.props.form.validateFieldsAndScroll((err, values) => {
-      if (!err) {
-        console.log('Received values of form: ', values);
+    this.props.form.validateFieldsAndScroll(['meetingType'], (err, values) => {
+      if (err) {
+        return console.log(err);
       }
+      this.handleSubmit()
     });
+  }
+
+  handleSubmit() {
     const {
       currentTownHall,
       saveUrl,
@@ -159,7 +162,7 @@ class MainForm extends React.Component {
     if (currentTownHall.meetingType === 'No Events') {
       return submitMetaData(metaData);
     }
-    mergeNotes()
+    mergeNotes();
     console.log(saveUrl);
     const submit = {
       currentTownHall: {
@@ -167,11 +170,11 @@ class MainForm extends React.Component {
         lastUpdated: Date.now(),
         enteredBy: uid,
       },
-      saveUrl,
       metaData,
+      saveUrl,
     };
     submitEventForReview(submit);
-    this.props.form.resetFields()
+    this.props.form.resetFields();
   }
 
   onCheckBoxChecked(e) {
@@ -181,7 +184,7 @@ class MainForm extends React.Component {
 
   handleInputBlur(e) {
     console.log(e.target);
-    const { setValue, form } = this.props;
+    const { setValue } = this.props;
     setValue({ key: e.target.id, value: e.target.value });
   }
 
@@ -191,8 +194,8 @@ class MainForm extends React.Component {
       setMeetingType,
     } = this.props;
     console.log(value);
-    if (includes(disclaimerMeetingTypes, value)){
-      addDisclaimer()
+    if (includes(disclaimerMeetingTypes, value)) {
+      addDisclaimer();
     }
     setMeetingType(value);
   }
@@ -224,7 +227,7 @@ class MainForm extends React.Component {
     return (
       <div className="new-event-form">
         <Form
-          onSubmit={this.handleSubmit}
+          onSubmit={this.checkSubmit}
           id="new-event-form-element"
           layout="horizontal"
         >
@@ -259,7 +262,7 @@ class MainForm extends React.Component {
             </FormItem>
             <FormItem>
               {getFieldDecorator('meetingType', {
-                rules: [{ required: true, message: 'Please select type of event', initialValue: null }],
+                rules: [{ required: true, message: 'Please select type of event' }],
               })(
 
                 <Select
@@ -440,26 +443,18 @@ const mapDispatchToProps = dispatch => ({
 
 const WrappedMainForm = Form.create({
   onFieldsChange(props, changedFields) {
-    const { setValue } = props;
-
-    // const changedValue = values(changedFields)[0];
-    console.log('fields changed', changedFields);
-    // setValue(changedValue.name, changedValue.value);
+    // console.log(changedFields)
   },
   mapPropsToFields(props) {
-    console.log('props to fields', props.currentTownHall);
-
-    
-    const toreturn = mapValues(props.currentTownHall, value => (
-          Form.createFormField({
-            value,
-          })
+    const { currentTownHall } = props;
+    return mapValues(currentTownHall, value => (
+      Form.createFormField({
+        value,
+      })
     ));
-    console.log(toreturn)
-    return toreturn
   },
   onValuesChange(_, values) {
-    console.log(values);
+    // console.log(values);
   },
 })(MainForm);
 

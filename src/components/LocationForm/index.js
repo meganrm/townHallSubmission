@@ -27,31 +27,14 @@ class LocationForm extends React.Component {
     this.handleSelect = this.handleSelect.bind(this);
   }
 
-  handleChange(value) {
-    this.setState({
-      value: `You entered: ${value}`,
-    });
-  }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.tempAddress) {
       this.setState(prevState => ({
         data: uniq([...prevState.data, `Formatted: ${nextProps.tempAddress}`]),
-        validating: "success",
+        validating: 'success',
       }));
     }
-  }
-
-  handleSearch() {
-    const {
-      geoCodeLocation,
-    } = this.props;
-    const { value } = this.state;
-    geoCodeLocation(value.split(': ')[1]);
-    this.setState(prevState => ({
-      data: uniq([...prevState.data, prevState.value]),
-      validating: 'validating',
-    }));
   }
 
   onKeyDown(e) {
@@ -60,79 +43,105 @@ class LocationForm extends React.Component {
     }
   }
 
-  handleSelect(value) {
-    const { 
-      saveAddress, 
-      tempLat, 
-      tempLng 
+  handleSearch() {
+    const {
+      geoCodeLocation,
     } = this.props;
-    const address = value.split(': ')[1]
+    const {
+      value,
+    } = this.state;
+    geoCodeLocation(value.split(': ')[1]);
+    this.setState(prevState => ({
+      data: uniq([...prevState.data, prevState.value]),
+      validating: 'validating',
+    }));
+  }
+
+  handleChange(value) {
+    this.setState({
+      value: `You entered: ${value}`,
+    });
+  }
+
+  handleSelect(value) {
+    const {
+      saveAddress,
+      tempLat,
+      tempLng,
+    } = this.props;
+    const address = value.split(': ')[1];
     saveAddress({
       address,
-      lng: tempLng, 
-      lat: tempLat, 
+      lng: tempLng,
+      lat: tempLat,
     });
     this.setState({
       value: address,
-    })
+    });
   }
 
-  renderTeleInputs() {
-    <FormItem>
-      <label className="" htmlFor="phoneNumber">
+  static renderTeleInputs() {
+    return (
+      <FormItem>
+        <label className="" htmlFor="phoneNumber">
         Phone Number format: (555) 555-5555
-      </label>
-      <Input type="tel" class="form-control" id="phoneNumber" placeholder="Phone Number" value="" />
-      <span id="phoneNumber-error" className="help-block error-message hidden">
+        </label>
+        <Input type="tel" class="form-control" id="phoneNumber" placeholder="Phone Number" value="" />
+        <span id="phoneNumber-error" className="help-block error-message hidden">
         Please enter a valid phone number
-      </span>
-    </FormItem>;
+        </span>
+      </FormItem>);
   }
 
   render() {
     const {
-      handleInputBlur
+      handleInputBlur,
+      style,
+      getFieldDecorator,
     } = this.props;
     const {
       validating,
       data,
+      value,
     } = this.state;
     const options = data.map(d => (
       <Option key={d}>
-          {d}
+        {d}
       </Option>
     ));
     return (
       <React.Fragment>
         <FormItem class="general-inputs">
-          <Input 
-            type="text" 
-            className="input-underline" 
-            id="Location" 
-            placeholder="Name of location (eg. Gary Recreation Center)"
-            onBlur={handleInputBlur}
-          />
+          {getFieldDecorator('Location')(
+            <Input
+              type="text"
+              className="input-underline"
+              id="Location"
+              placeholder="Name of location (eg. Gary Recreation Center)"
+              onBlur={handleInputBlur}
+            />,
+          )}
         </FormItem>
         <FormItem
           className="general-inputs"
           id="location-form-group"
           hasFeedback
           validateStatus={validating}
-          >
+        >
           <Select
             showSearch
             combobox
             onInputKeyDown={this.onKeyDown}
-            value={this.state.value}
+            value={value}
             placeholder="address"
-            style={this.props.style}
+            style={style}
             defaultActiveFirstOption={false}
             showArrow={false}
             filterOption={false}
             onSearch={this.handleChange}
             onSelect={this.handleSelect}
             notFoundContent={null}
-        
+
           >
             {options}
             <Option value="disabled" disabled>
@@ -140,12 +149,27 @@ class LocationForm extends React.Component {
             </Option>
           </Select>
         </FormItem>
-          <span id="address-feedback" className="help-block">
-            Enter a valid street address, if there isn't one, leave this blank
-          </span>
+        <span id="address-feedback" className="help-block">
+          Enter a valid street address, if there isn't one, leave this blank
+        </span>
       </React.Fragment>
     );
   }
 }
+
+LocationForm.propTypes = {
+  geoCodeLocation: PropTypes.func.isRequired,
+  handleInputBlur: PropTypes.func.isRequired,
+  saveAddress: PropTypes.func.isRequired,
+  tempAddress: PropTypes.string,
+  tempLat: PropTypes.number,
+  tempLng: PropTypes.number,
+};
+
+LocationForm.defaultProps = {
+  tempAddress: null,
+  tempLat: 0,
+  tempLng: 0,
+};
 
 export default LocationForm;

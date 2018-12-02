@@ -2,9 +2,11 @@ require('dotenv').config();
 const path = require('path');
 const fs = require('fs');
 const lessToJs = require('less-vars-to-js');
+const {
+  EnvironmentPlugin,
+} = require('webpack');
 
-const devMode = process.env.NODE_ENV !== 'production'
-
+const devMode = process.env.NODE_ENV !== 'production';
 const themeVariables = lessToJs(fs.readFileSync(path.join(__dirname, './src/styles/ant-vars.less'), 'utf8'));
 
 const HTMLPlugin = require('html-webpack-plugin');
@@ -15,6 +17,14 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { ProvidePlugin } = require('webpack');
 
 const plugins = [
+  new EnvironmentPlugin({
+    FIREBASE_AUTH_DOMAIN: 'townhallproject-86312.firebaseapp.com',
+    DATABASE_URL: 'https://townhallproject-86312.firebaseio.com',
+    PROJECT_ID: 'townhallproject-86312',
+    FIREBASE_API_KEY: 'AIzaSyDwZ41RWIytGELNBnVpDr7Y_k1ox2F2Heg',
+    MESSAGING_SENDER_ID: 208752196071,
+    STORAGE_BUCKET: 'townhallproject-86312.appspot.com',
+  }),
   new ProvidePlugin({
     jQuery: 'jquery',
     $: 'jquery',
@@ -76,14 +86,14 @@ module.exports = {
           ],
         },
       },
-    {
+      {
         test: /\.(sa|sc|c)ss$/,
         use: [
-            devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
-            'css-loader',
-            'sass-loader',
+          devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
+          'css-loader',
+          'sass-loader',
         ],
-    },
+      },
       {
         test: /\.less$/,
         use: [

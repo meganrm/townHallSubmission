@@ -42,9 +42,9 @@ class MemberLookup extends React.Component {
     });
     console.log(person);
     if (index > 0) {
-      console.log('index bigger than 0', index)
+      console.log('index bigger than 0', index);
 
-      return requestAdditionalPersonDataById(peopleDataUrl, person.id)
+      return requestAdditionalPersonDataById(peopleDataUrl, person.id);
     }
     requestPersonDataById(peopleDataUrl, person.id);
   }
@@ -62,11 +62,11 @@ class MemberLookup extends React.Component {
       LTGOV: 'Lt. Governor',
       upper: 'Sen.',
       lower: 'Rep.',
-    }
+    };
     if (currentTownHall.displayName && personMode === 'moc') {
       return `${prefixMapping[currentTownHall.chamber]} ${currentTownHall.displayName} (${currentTownHall.party})`;
     }
-    else if (currentTownHall.displayName && personMode === 'candidate') {
+    if (currentTownHall.displayName && personMode === 'candidate') {
       return `${currentTownHall.displayName} (${currentTownHall.party}), Running for: `;
     }
     return '';
@@ -131,12 +131,10 @@ class MemberLookup extends React.Component {
       getFieldValue,
     } = this.props;
     getFieldDecorator('keys', {
-      initialValue: [0]
+      initialValue: [0],
     });
     const keys = getFieldValue('keys');
-    const formItems = keys.map((k, index) => {
-      return this.renderDatabaseLookupForm(k, keys)
-    });
+    const formItems = keys.map((k) => this.renderDatabaseLookupForm(k, keys));
     return formItems;
   }
 
@@ -164,7 +162,7 @@ class MemberLookup extends React.Component {
         <FormItem
           key={key}
         >
-          {getFieldDecorator('Lawmaker Name', {
+          {getFieldDecorator('displayName', {
             validateTrigger: ['onChange', 'onBlur'],
             rules: [{ required: true, message: 'Please input a member of congress' }],
           })(
@@ -177,7 +175,7 @@ class MemberLookup extends React.Component {
                 filterOption={(inputValue, option) => option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1}
                 placeholder="Member of congress name"
               />
-       
+
               {key > 0 ? (
                 <Icon
                   className="dynamic-delete-button"
@@ -203,10 +201,10 @@ class MemberLookup extends React.Component {
           />
         </FormItem>
       </React.Fragment>
-    )
+    );
   }
 
-  renderAdopterForm() {
+  static renderAdopterForm() {
     return (
       <section className="adopter-data non-standard hidden">
         <div className="form-group col-sm-12" id="adopter-member-form-group">
@@ -249,13 +247,14 @@ class MemberLookup extends React.Component {
           </Radio.Button>
         </Radio.Group>
         {personMode === 'manual' ? renderCustomPersonForm(
-          { currentTownHall,
-            selectedUSState, 
+          {
+            currentTownHall,
+            selectedUSState,
           },
         ) : this.memberForms()}
 
         <div className="district-group federal-district-group" id="federal-district-group">
-  
+
           <FormItem>
             <Button type="dashed" onClick={this.addMember} style={{ width: '60%' }}>
               <Icon type="plus" /> Add another lawmaker

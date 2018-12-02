@@ -11,6 +11,12 @@
   },
   "rules": {
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+    "jsx-a11y/label-has-for": ["error", {
+      "required": {
+        "some": ["nesting", "id"]
+      }
+    }],
+    "react/jsx-one-expression-per-line": "off",
     "max-len":"off",
     "indent": ["error", 2],
     "no-param-reassign":"off",

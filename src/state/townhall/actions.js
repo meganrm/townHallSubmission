@@ -93,7 +93,7 @@ export const getLatLng = payload => dispatch => request
       console.log(res);
       return (dispatch(setLatLng(res)));
     }
-    return Promise.reject('error geocoding', res);
+    return Promise.reject('error geocoding');
   });
 
 export const getTimeZone = payload => (dispatch) => {
@@ -156,8 +156,8 @@ const updateUserEvents = (payload) => {
   const updates = {};
   const currentEvent = {};
   const mocData = {
-    lastUpdated: Date.now(),
     govtrack_id: payload.govtrack_id || null,
+    lastUpdated: Date.now(),
     thp_id: payload.thp_id || null,
   };
   let id = payload.govtrack_id ? payload.govtrack_id : payload.thp_id;
