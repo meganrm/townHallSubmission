@@ -16,7 +16,7 @@ export const setUsState = payload => ({
   type: 'SET_US_STATE',
 });
 
-export const setDataFromPersonInDatabase = payload => ({
+export const setDataFromPersonInDatabaseAction = payload => ({
   payload,
   type: 'SET_DATA_FROM_PERSON',
 });
@@ -93,7 +93,7 @@ export const getLatLng = payload => dispatch => request
       console.log(res);
       return (dispatch(setLatLng(res)));
     }
-    return Promise.reject('error geocoding');
+    return Promise.reject(new Error('error geocoding'));
   });
 
 export const getTimeZone = payload => (dispatch) => {
@@ -116,10 +116,10 @@ export const getTimeZone = payload => (dispatch) => {
       }, '');
       const offset = response.rawOffset / 60 / 60 + response.dstOffset / 60 / 60;
       let utcoffset;
-      if (parseInt(offset) === offset) {
+      if (Number(offset) === offset) {
         utcoffset = `UTC${offset}00`;
       } else {
-        const fract = offset * 10 % 10 / 10;
+        const fract = ((offset * 10) % 10) / 10;
         const integr = Math.trunc(offset);
         let mins = (Math.abs(fract * 60)).toString();
         const zeros = '00';
@@ -178,3 +178,9 @@ export const saveMetaData = payload => (dispatch) => {
 export const submitEventForReview = payload => dispatch => firebasedb.ref(`${payload.saveUrl}/${payload.currentTownHall.eventId}`).update(payload.currentTownHall)
   .then(() => dispatch(saveMetaData(payload.metaData)))
   .catch(console.log);
+
+export const setDataFromPersonInDatabase = payload => (dispatch) => {
+  const eventId = firebasedb.ref('townHallIds').push().key;
+  const eventInfo = { eventId, ...payload };
+  return (dispatch(setDataFromPersonInDatabaseAction(eventInfo)));
+};

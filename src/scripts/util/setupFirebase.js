@@ -2,14 +2,6 @@
 // Initialize Firebase
 
 /* globals firebase */
-console.log(
-  process.env.FIREBASE_API_KEY, 
-  process.env.FIREBASE_AUTH_DOMAIN,
-  process.env.DATABASE_URL, 
-  process.env.PROJECT_ID,
-  process.env.MESSAGING_SENDER_ID,
-  process.env.STORAGE_BUCKET
-  )
 
 const config = {
   apiKey: process.env.FIREBASE_API_KEY,

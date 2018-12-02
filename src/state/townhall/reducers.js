@@ -87,7 +87,6 @@ const townhallReducer = (state = initialState, { type, payload }) => {
       chamber = 'statewide';
       district = null;
     }
-    const eventId = firebasedb.ref('townHallIds').push().key;
     return {
       ...state,
       chamber,
@@ -99,8 +98,8 @@ const townhallReducer = (state = initialState, { type, payload }) => {
       thp_id: payload.thp_id || payload.thp_key || null,
       stateName: payload.stateName || statesAb[payload.state],
       party: payload.party,
-      office: payload.office || payload.role || null,
-      eventId,
+      office: payload.role || null,
+      eventId: payload.eventId,
     };
   case 'SET_ADDITIONAL_MEMBER':
     if (payload.type === 'sen' || payload.chamber === 'upper') {
