@@ -27,6 +27,6 @@ export const requestAdditionalPersonDataById = (peopleDataUrl, id) => dispatch =
   .once('value')
   .then((result) => {
     const personData = result.val();
-    console.log('setting additional member')
+    console.log('setting additional member');
     return (dispatch(setAdditionalMember(personData)));
   });

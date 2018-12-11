@@ -1,12 +1,9 @@
 import moment from 'moment';
 import statesAb from '../../data/states';
-import { firebasedb } from '../../scripts/util/setupFirebase';
 
 const initialState = {
   Location: null,
   Member: null,
-  members: [],
-  districts: [],
   Notes: '',
   Time: null,
   address: null,
@@ -17,14 +14,16 @@ const initialState = {
   disclaimer: null,
   displayName: null,
   district: null,
+  districts: [],
   eventId: null,
   eventName: null,
   govtrack_id: null,
   iconFlag: null,
-  office: null,
   lat: 0,
   lng: 0,
   meetingType: null,
+  members: [],
+  office: null,
   party: null,
   repeatingEvent: false,
   state: null,
@@ -56,7 +55,6 @@ const townhallReducer = (state = initialState, { type, payload }) => {
   let chamber;
   const timeFormats = ['hh:mm A', 'h:mm A'];
   const tempEnd = moment(payload, timeFormats).add(2, 'h');
-  console.log(type, payload)
   switch (type) {
   case 'RESET_TOWNHALL':
     return initialState;

@@ -281,4 +281,21 @@ MemberLookup.propTypes = {
   requestPersonDataById: PropTypes.func.isRequired,
 };
 
+// const WrappedMemberLookup = Form.create({
+//   onFieldsChange(props, changedFields) {
+//     // console.log(changedFields)
+//   },
+//   mapPropsToFields(props) {
+//     const {
+//       currentTownHall,
+//     } = props;
+//     return Form.createFormField({
+//       displayName: currentTownHall.displayName,
+//     })
+//   },
+//   onValuesChange(_, values) {
+//     console.log(values);
+//   },
+// })(MemberLookup);
+// export default WrappedMemberLookup;
 export default MemberLookup;

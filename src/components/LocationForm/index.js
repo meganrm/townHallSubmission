@@ -72,8 +72,8 @@ class LocationForm extends React.Component {
     const address = value.split(': ')[1];
     saveAddress({
       address,
-      lng: tempLng,
       lat: tempLat,
+      lng: tempLng,
     });
     this.setState({
       value: address,
@@ -128,6 +128,7 @@ class LocationForm extends React.Component {
           hasFeedback
           validateStatus={validating}
         >
+        {getFieldDecorator('address')(
           <Select
             showSearch
             combobox
@@ -147,7 +148,8 @@ class LocationForm extends React.Component {
             <Option value="disabled" disabled>
             Hit enter to geocode address, then select address from dropdown
             </Option>
-          </Select>
+          </Select>)
+        }
         </FormItem>
         <span id="address-feedback" className="help-block">
           Enter a valid street address, if there isn't one, leave this blank

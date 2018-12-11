@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {
   includes,
   mapValues,
@@ -116,7 +117,6 @@ class MainForm extends React.Component {
       setTimeZone,
     } = this.props;
     if (MainForm.shouldGetLatLng(prevProps.currentTownHall, currentTownHall)) {
-      console.log('getting zone');
       setTimeZone({
         date: currentTownHall.dateString,
         lat: currentTownHall.lat,
@@ -126,13 +126,13 @@ class MainForm extends React.Component {
     }
   }
 
-  checkSubmit(e){
+  checkSubmit(e) {
     e.preventDefault();
     this.props.form.validateFieldsAndScroll(['meetingType'], (err, values) => {
       if (err) {
         return console.log(err);
       }
-      this.handleSubmit()
+      this.handleSubmit();
     });
   }
 
@@ -174,7 +174,11 @@ class MainForm extends React.Component {
       saveUrl,
     };
     submitEventForReview(submit);
+    console.log('before reset', this.props.form.getFieldsValue())
+    
     this.props.form.resetFields();
+    console.log('after reset', this.props.form.getFieldsValue())
+
   }
 
   onCheckBoxChecked(e) {
@@ -441,6 +445,30 @@ const mapDispatchToProps = dispatch => ({
   togglePersonMode: mode => dispatch(toggleMemberCandidate(mode)),
 });
 
+MainForm.propTypes = {
+  startSetPeople: PropTypes.func.isRequired,
+  allNames: PropTypes.arrayOf(PropTypes.string).isRequired,
+  allPeople: PropTypes.arrayOf(PropTypes.string).isRequired,
+  currentTownHall: PropTypes.shape({}).isRequired,
+  peopleDataUrl: PropTypes.string.isRequired,
+  peopleNameUrl: PropTypes.string.isRequired,
+  personMode: PropTypes.string.isRequired,
+  saveUrl: PropTypes.string.isRequired,
+  selectedUSState: PropTypes.string,
+  tempAddress: PropTypes.string,
+  tempLat: PropTypes.number,
+  tempLng: PropTypes.number,
+  uid: PropTypes.string.isRequired,
+  userDisplayName: PropTypes.string.isRequired,
+};
+
+MainForm.defaultProps = {
+  selectedUSState: null,
+  tempAddress: '',
+  tempLat: 0,
+  tempLng: 0,
+};
+
 const WrappedMainForm = Form.create({
   onFieldsChange(props, changedFields) {
     // console.log(changedFields)
@@ -454,8 +482,9 @@ const WrappedMainForm = Form.create({
     ));
   },
   onValuesChange(_, values) {
-    // console.log(values);
+    console.log(values);
   },
 })(MainForm);
+
 
 export default connect(mapStateToProps, mapDispatchToProps)(WrappedMainForm);
