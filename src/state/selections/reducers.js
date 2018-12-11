@@ -25,6 +25,8 @@ const selectionReducer = (state = initialState, { type, payload }) => {
       lat: payload.lat,
       lng: payload.lng,
       address: payload.address,
+      state: payload.state,
+      stateName: payload.stateName,
     };
   default:
     return state;

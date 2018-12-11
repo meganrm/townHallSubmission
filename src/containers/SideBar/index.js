@@ -26,7 +26,6 @@ class SideBar extends React.Component {
     const {
       key,
     } = e;
-    console.log('click ', handleSetUSState);
     if (key === 'federal') {
       handleSetUSState(null);
     } else {

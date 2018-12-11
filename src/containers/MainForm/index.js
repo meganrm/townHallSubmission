@@ -24,16 +24,9 @@ import {
   getAllNames,
   getAllPeople,
 } from '../../state/members-candidates/selectors';
-import {
-  getPeopleNameUrl,
-  getPeopleDataUrl,
-  getSaveUrl,
-  getSelectedUSState,
-  getTempAddress,
-  getTempLat,
-  getTempLng,
-  getMode,
-} from '../../state/selections/selectors';
+
+import selectionStateBranch from '../../state/selections';
+
 import {
   getUid,
   getUserName,
@@ -174,11 +167,9 @@ class MainForm extends React.Component {
       saveUrl,
     };
     submitEventForReview(submit);
-    console.log('before reset', this.props.form.getFieldsValue())
-    
+    console.log('before reset', this.props.form.getFieldsValue());
     this.props.form.resetFields();
-    console.log('after reset', this.props.form.getFieldsValue())
-
+    console.log('after reset', this.props.form.getFieldsValue());
   }
 
   onCheckBoxChecked(e) {
@@ -197,7 +188,6 @@ class MainForm extends React.Component {
       addDisclaimer,
       setMeetingType,
     } = this.props;
-    console.log(value);
     if (includes(disclaimerMeetingTypes, value)) {
       addDisclaimer();
     }
@@ -222,19 +212,28 @@ class MainForm extends React.Component {
       tempAddress,
       tempLat,
       tempLng,
+      tempStateName,
+      tempState,
     } = this.props;
     const {
       getFieldDecorator,
       getFieldValue,
+      getFieldsValue,
       setFieldsValue,
+      resetFields,
     } = this.props.form;
     return (
       <div className="new-event-form">
         <Form
           onSubmit={this.checkSubmit}
+          onChange={this.handleFormChange}
           id="new-event-form-element"
           layout="horizontal"
         >
+          <Button
+            onClick={resetFields()}
+          >Reset fields
+          </Button>
           <MemberForm
             allNames={allNames}
             allPeople={allPeople}
@@ -248,6 +247,7 @@ class MainForm extends React.Component {
             personMode={personMode}
             getFieldValue={getFieldValue}
             setFieldsValue={setFieldsValue}
+            fields={getFieldsValue()}
           />
           <section className="meeting infomation">
             <h4>
@@ -316,6 +316,7 @@ class MainForm extends React.Component {
             tempAddress={tempAddress}
             tempLat={tempLat}
             tempLng={tempLng}
+            tempStateInfo={{ stateName: tempStateName, state: tempState }}
             saveAddress={setLatLng}
             handleInputBlur={this.handleInputBlur}
             getFieldDecorator={getFieldDecorator}
@@ -415,14 +416,16 @@ const mapStateToProps = state => ({
   allNames: getAllNames(state),
   allPeople: getAllPeople(state),
   currentTownHall: getTownHall(state),
-  peopleDataUrl: getPeopleDataUrl(state),
-  peopleNameUrl: getPeopleNameUrl(state),
-  personMode: getMode(state),
-  saveUrl: getSaveUrl(state),
-  selectedUSState: getSelectedUSState(state),
-  tempAddress: getTempAddress(state),
-  tempLat: getTempLat(state),
-  tempLng: getTempLng(state),
+  peopleDataUrl: selectionStateBranch.selectors.getPeopleDataUrl(state),
+  peopleNameUrl: selectionStateBranch.selectors.getPeopleNameUrl(state),
+  personMode: selectionStateBranch.selectors.getMode(state),
+  saveUrl: selectionStateBranch.selectors.getSaveUrl(state),
+  selectedUSState: selectionStateBranch.selectors.getSelectedUSState(state),
+  tempAddress: selectionStateBranch.selectors.getTempAddress(state),
+  tempLat: selectionStateBranch.selectors.getTempLat(state),
+  tempLng: selectionStateBranch.selectors.getTempLng(state),
+  tempState: selectionStateBranch.selectors.getTempState(state),
+  tempStateName: selectionStateBranch.selectors.getTempStateName(state),
   uid: getUid(state),
   userDisplayName: getUserName(state),
 });
@@ -471,7 +474,8 @@ MainForm.defaultProps = {
 
 const WrappedMainForm = Form.create({
   onFieldsChange(props, changedFields) {
-    // console.log(changedFields)
+    console.log('changed fields', changedFields)
+    props.onChange(changedFields)
   },
   mapPropsToFields(props) {
     const { currentTownHall } = props;
@@ -482,7 +486,7 @@ const WrappedMainForm = Form.create({
     ));
   },
   onValuesChange(_, values) {
-    console.log(values);
+    console.log('values changed', values);
   },
 })(MainForm);
 

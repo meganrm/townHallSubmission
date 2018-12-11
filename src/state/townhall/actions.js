@@ -90,7 +90,6 @@ export const getLatLng = payload => dispatch => request
         lat: results[0].geometry.location.lat,
         lng: results[0].geometry.location.lng,
       };
-      console.log(res);
       return (dispatch(setLatLng(res)));
     }
     return Promise.reject(new Error('error geocoding'));

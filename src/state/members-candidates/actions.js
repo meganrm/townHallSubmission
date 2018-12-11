@@ -14,7 +14,8 @@ export const startSetPeople = peopleNameUrl => dispatch => firebasedb.ref(people
       allpeople.push(person.val());
     });
     return (dispatch(setPeople(allpeople)));
-  });
+  })
+  .catch(console.log);
 
 export const requestPersonDataById = (peopleDataUrl, id) => dispatch => firebasedb.ref(`${peopleDataUrl}/${id}`)
   .once('value')

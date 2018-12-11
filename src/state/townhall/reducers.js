@@ -84,17 +84,20 @@ const townhallReducer = (state = initialState, { type, payload }) => {
     } else if (payload.role === 'Gov') {
       chamber = 'statewide';
       district = null;
+    } else if (payload.role === 'Pres') {
+      chamber = 'nationwide';
+      district = null;
     }
     return {
       ...state,
       chamber,
       district,
-      state: payload.state,
+      state: payload.state || null,
       displayName: payload.displayName,
       Member: payload.displayName,
       govtrack_id: payload.govtrack_id || null,
       thp_id: payload.thp_id || payload.thp_key || null,
-      stateName: payload.stateName || statesAb[payload.state],
+      stateName: payload.stateName || statesAb[payload.state] || null,
       party: payload.party,
       office: payload.role || null,
       eventId: payload.eventId,
@@ -161,11 +164,14 @@ const townhallReducer = (state = initialState, { type, payload }) => {
     };
 
   case 'SET_LAT_LNG':
+    console.log('SET_LAT_LNG', payload)
     return {
       ...state,
       lat: payload.lat,
       lng: payload.lng,
       address: payload.address,
+      state: state.state || payload.state || null,
+      stateName: state.stateName || payload.stateName || null,
     };
   case 'SET_TIME_ZONE':
     return {

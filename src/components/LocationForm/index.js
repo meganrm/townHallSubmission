@@ -68,9 +68,11 @@ class LocationForm extends React.Component {
       saveAddress,
       tempLat,
       tempLng,
+      tempStateInfo,
     } = this.props;
     const address = value.split(': ')[1];
     saveAddress({
+      ...tempStateInfo,
       address,
       lat: tempLat,
       lng: tempLng,

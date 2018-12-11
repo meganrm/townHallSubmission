@@ -40,10 +40,8 @@ class MemberLookup extends React.Component {
     const person = find(allPeople, {
       nameEntered: value,
     });
-    console.log(person);
     if (index > 0) {
       console.log('index bigger than 0', index);
-
       return requestAdditionalPersonDataById(peopleDataUrl, person.id);
     }
     requestPersonDataById(peopleDataUrl, person.id);
@@ -53,6 +51,7 @@ class MemberLookup extends React.Component {
     const {
       currentTownHall,
       personMode,
+      fields,
     } = this.props;
     const prefixMapping = {
       HD: 'House District',
@@ -62,7 +61,9 @@ class MemberLookup extends React.Component {
       LTGOV: 'Lt. Governor',
       upper: 'Sen.',
       lower: 'Rep.',
+      nationwide: 'President',
     };
+    console.log('fields', fields)
     if (currentTownHall.displayName && personMode === 'moc') {
       return `${prefixMapping[currentTownHall.chamber]} ${currentTownHall.displayName} (${currentTownHall.party})`;
     }
@@ -80,14 +81,17 @@ class MemberLookup extends React.Component {
     if (selectedUSState) {
       return currentTownHall.district;
     }
-    if (currentTownHall.chamber === 'lower') {
+    switch (currentTownHall.chamber) {
+    case 'lower':
       return `${currentTownHall.state}-${currentTownHall.district}`;
-    }
-    if (currentTownHall.chamber === 'upper') {
+
+    case 'upper':
       return 'Senate';
-    }
-    if (currentTownHall.chamber === 'statewide') {
+
+    case 'statewide':
       return currentTownHall.office || 'Statewide';
+    case 'nationwide': 
+      return currentTownHall.office || 'President';
     }
     return '';
   }
@@ -134,7 +138,7 @@ class MemberLookup extends React.Component {
       initialValue: [0],
     });
     const keys = getFieldValue('keys');
-    const formItems = keys.map((k) => this.renderDatabaseLookupForm(k, keys));
+    const formItems = keys.map(k => this.renderDatabaseLookupForm(k, keys));
     return formItems;
   }
 
