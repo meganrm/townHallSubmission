@@ -63,7 +63,6 @@ class MemberLookup extends React.Component {
       lower: 'Rep.',
       nationwide: 'President',
     };
-    console.log('fields', fields)
     if (currentTownHall.displayName && personMode === 'moc') {
       return `${prefixMapping[currentTownHall.chamber]} ${currentTownHall.displayName} (${currentTownHall.party})`;
     }

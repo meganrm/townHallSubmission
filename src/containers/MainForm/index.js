@@ -51,6 +51,7 @@ import {
   getTimeZone,
   saveMetaData,
   submitEventForReview,
+  resetTownHall,
 } from '../../state/townhall/actions';
 
 const FormItem = Form.Item;
@@ -75,11 +76,11 @@ class MainForm extends React.Component {
 
   constructor(props) {
     super(props);
-    this.handleMeetingChange = this.handleMeetingChange.bind(this);
     this.handleInputBlur = this.handleInputBlur.bind(this);
     this.onCheckBoxChecked = this.onCheckBoxChecked.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.checkSubmit = this.checkSubmit.bind(this);
+    this.resetAll = this.resetAll.bind(this);
   }
 
   componentWillMount() {
@@ -173,25 +174,22 @@ class MainForm extends React.Component {
   }
 
   onCheckBoxChecked(e) {
-    const { setValue } = this.props;
-    setValue({ key: e.target.id, value: e.target.checked });
+    // const { setValue } = this.props;
+    // setValue({ key: e.target.id, value: e.target.checked });
   }
 
   handleInputBlur(e) {
-    console.log(e.target);
-    const { setValue } = this.props;
-    setValue({ key: e.target.id, value: e.target.value });
+    // console.log(e.target);
+    // const { setValue } = this.props;
+    // setValue({ key: e.target.id, value: e.target.value });
   }
 
-  handleMeetingChange(value) {
+  resetAll() {
     const {
-      addDisclaimer,
-      setMeetingType,
+      resetAllData,
     } = this.props;
-    if (includes(disclaimerMeetingTypes, value)) {
-      addDisclaimer();
-    }
-    setMeetingType(value);
+    resetAllData();
+    console.log('resetting');
   }
 
   render() {
@@ -214,6 +212,7 @@ class MainForm extends React.Component {
       tempLng,
       tempStateName,
       tempState,
+      Notes,
     } = this.props;
     const {
       getFieldDecorator,
@@ -222,16 +221,16 @@ class MainForm extends React.Component {
       setFieldsValue,
       resetFields,
     } = this.props.form;
+    console.log('notes', Notes);
     return (
       <div className="new-event-form">
         <Form
           onSubmit={this.checkSubmit}
-          onChange={this.handleFormChange}
           id="new-event-form-element"
           layout="horizontal"
         >
           <Button
-            onClick={resetFields()}
+            onClick={this.resetAll}
           >Reset fields
           </Button>
           <MemberForm
@@ -254,7 +253,10 @@ class MainForm extends React.Component {
               Information about the Event
             </h4>
             <FormItem>
-              {getFieldDecorator('eventName')(
+              {getFieldDecorator('eventName', {
+                trigger: 'onBlur',
+                valuePropName: 'eventName',
+              } )(
                 <Input
                   type="text"
                   className="input-underline"
@@ -266,11 +268,15 @@ class MainForm extends React.Component {
             </FormItem>
             <FormItem>
               {getFieldDecorator('meetingType', {
-                rules: [{ required: true, message: 'Please select type of event' }],
+                initialValue: null,
+                rules: [{
+                  message: 'Please select type of event',
+                  required: true,
+                }],
+                valuePropName: 'meetingType',
               })(
 
                 <Select
-                  onChange={this.handleMeetingChange}
                   key="meetingType"
                   placeholder="Meeting type"
                 >
@@ -336,65 +342,77 @@ class MainForm extends React.Component {
               <label htmlFor="link">
                 URL related to event (optional)
               </label>
-              {getFieldDecorator('link')(
-
+              {getFieldDecorator('link',
+                {
+                  trigger: 'onBlur',
+                  valuePropName: 'link',
+                })(
                 <Input
-                  type="url"
-                  className="input-underline"
-                  id="link"
-                  placeholder="Link"
-                  onBlur={this.handleInputBlur}
-                  onChange={this.handleChange}
-                />,
+                    type="url"
+                    className="input-underline"
+                    id="link"
+                    placeholder="Link"
+                  />,
               )}
             </FormItem>
             <FormItem>
               <label htmlFor="linkName">
                 Link display name (optional)
               </label>
-              {getFieldDecorator('linkName')(
+              {getFieldDecorator('linkName', {
+                trigger: 'onBlur',
+                valuePropName: 'linkName',
+              })(
                 <Input
                   type="text"
                   className="input-underline"
                   id="linkName"
                   placeholder="Link Name"
-                  onBlur={this.handleInputBlur}
                 />,
               )}
             </FormItem>
             <FormItem>
-              <Checkbox
-                type="checkbox"
-                class="general-checkbox"
-                id="ada_accessible"
-                onChange={this.onCheckBoxChecked}
-              >
+              {
+                getFieldDecorator('ada_accessible', {
+                  valuePropName: 'ada_accessible',
+                })(
+                  <Checkbox
+                  type="checkbox"
+                  class="general-checkbox"
+                  id="ada_accessible"
+                >
               ADA accessible?
-              </Checkbox>
+                </Checkbox>,
+                )}
             </FormItem>
             <FormItem>
               <label htmlFor="Notes">
               Public Notes
               </label>
-              {getFieldDecorator('Notes')(
+              {getFieldDecorator('Notes',
+                {
+                  trigger: 'onBlur',
+                  valuePropName: 'Notes',
+                })(
                 <TextArea
-                  id="Notes"
-                  rows={3}
-                  placeholder="Notes about event that cannot be entered anywhere else."
-                  onBlur={this.handleInputBlur}
-                />,
+                    id="Notes"
+                    rows={3}
+                    placeholder="Notes about event that cannot be entered anywhere else."
+                  />,
               )}
             </FormItem>
             <FormItem>
               <label htmlFor="Internal-Notes">
               Internal Notes to THP Team
               </label>
-              {getFieldDecorator('Internal-Notes')(
+              {getFieldDecorator('Internal-Notes', {
+                valuePropName: 'Internal-Notes',
+                trigger: 'onBlur',
+              })(
                 <TextArea
                   rows={3}
                   id="Internal-Notes"
                   placeholder="Notes for Town Hall Project team."
-                  onBlur={this.handleInputBlur}
                 />,
               )}
             </FormItem>
@@ -434,6 +452,7 @@ const mapDispatchToProps = dispatch => ({
   addDisclaimer: () => dispatch(addDisclaimer()),
   geoCodeLocation: address => dispatch(lookUpAddress(address)),
   mergeNotes: () => dispatch(mergeNotes()),
+  resetAllData: () => dispatch(resetTownHall()),
   requestPersonDataById: (peopleDataUrl, id) => dispatch(requestPersonDataById(peopleDataUrl, id)),
   setDate: date => dispatch(setDate(date)),
   setEndTime: time => dispatch(setEndTime(time)),
@@ -461,8 +480,8 @@ MainForm.propTypes = {
   tempAddress: PropTypes.string,
   tempLat: PropTypes.number,
   tempLng: PropTypes.number,
-  uid: PropTypes.string.isRequired,
-  userDisplayName: PropTypes.string.isRequired,
+  uid: PropTypes.string,
+  userDisplayName: PropTypes.string,
 };
 
 MainForm.defaultProps = {
@@ -470,25 +489,28 @@ MainForm.defaultProps = {
   tempAddress: '',
   tempLat: 0,
   tempLng: 0,
+  uid: null,
+  userDisplayName: null,
 };
 
 const WrappedMainForm = Form.create({
   onFieldsChange(props, changedFields) {
-    console.log('changed fields', changedFields)
-    props.onChange(changedFields)
+    props.onChange(changedFields);
   },
   mapPropsToFields(props) {
-    const { currentTownHall } = props;
+    const {
+      currentTownHall,
+    } = props;
     return mapValues(currentTownHall, value => (
       Form.createFormField({
         value,
       })
     ));
   },
-  onValuesChange(_, values) {
-    console.log('values changed', values);
+  onValuesChange(props, values) {
+    // console.log('values changed', values);
+    // props.form.setFieldsValue(...values)
   },
 })(MainForm);
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(WrappedMainForm);

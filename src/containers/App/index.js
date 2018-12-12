@@ -3,7 +3,7 @@ import {
   Layout,
 } from 'antd';
 
-import MainForm from '../MainForm';
+import MainFormController from '../FormController';
 import SideBar from '../SideBar';
 
 const {
@@ -31,7 +31,7 @@ export default () => (
           <h3 className="text-success">Enter a new town hall event</h3>
         </Header>
         <Content style={{ margin: '0 48px 0', overflow: 'initial' }}>
-          <MainForm />
+          <MainFormController />
         </Content>
       </Layout>
     </Layout>
