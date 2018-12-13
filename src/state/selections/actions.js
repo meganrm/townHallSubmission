@@ -20,6 +20,11 @@ export const resetSelections = () => ({
   type: 'RESET_SELECTIONS',
 });
 
+export const setFormKeys = payload => ({
+  payload,
+  type: 'SET_FORM_KEYS',
+});
+
 
 export const lookUpAddress = payload => dispatch => request
   .get('https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyB868a1cMyPOQyzKoUrzbw894xeoUhx9MM')

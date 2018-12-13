@@ -1,6 +1,7 @@
 const initialState = {
   mode: 'moc',
   usState: null,
+  formKeys: [0],
 };
 
 const selectionReducer = (state = initialState, { type, payload }) => {
@@ -8,6 +9,11 @@ const selectionReducer = (state = initialState, { type, payload }) => {
   case 'RESET_SELECTIONS':
     return {
       ...initialState,
+    };
+  case 'SET_FORM_KEYS':
+    return {
+      ...state,
+      formKeys: payload,
     };
   case 'SET_SELECTED_US_STATE':
     return {

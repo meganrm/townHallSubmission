@@ -29,6 +29,18 @@ class MemberLookup extends React.Component {
     this.removeAdditionalMember = this.removeAdditionalMember.bind(this);
   }
 
+  componentDidUpdate(prevProps) {
+    const { currentTownHall, setFieldsValue } = this.props;
+    if (currentTownHall.displayName !== prevProps.currentTownHall.displayName) {
+      setFieldsValue({ 'preview-0': `${this.formatName()} ${this.formatDistrct()}` });
+    }
+    if (currentTownHall.members.length !== prevProps.currentTownHall.members.length) {
+      currentTownHall.members.map(member => {
+        
+      })
+    }
+  }
+
   onNameSelect(value, index) {
     const {
       allPeople,
@@ -41,7 +53,6 @@ class MemberLookup extends React.Component {
       nameEntered: value,
     });
     if (index > 0) {
-      console.log('index bigger than 0', index);
       return requestAdditionalPersonDataById(peopleDataUrl, person.id);
     }
     requestPersonDataById(peopleDataUrl, person.id);
@@ -83,13 +94,11 @@ class MemberLookup extends React.Component {
     switch (currentTownHall.chamber) {
     case 'lower':
       return `${currentTownHall.state}-${currentTownHall.district}`;
-
     case 'upper':
       return 'Senate';
-
     case 'statewide':
       return currentTownHall.office || 'Statewide';
-    case 'nationwide': 
+    case 'nationwide':
       return currentTownHall.office || 'President';
     }
     return '';
@@ -133,9 +142,6 @@ class MemberLookup extends React.Component {
       getFieldDecorator,
       getFieldValue,
     } = this.props;
-    getFieldDecorator('keys', {
-      initialValue: [0],
-    });
     const keys = getFieldValue('keys');
     const formItems = keys.map(k => this.renderDatabaseLookupForm(k, keys));
     return formItems;
@@ -153,8 +159,9 @@ class MemberLookup extends React.Component {
     if (selectedUSState) {
       title = `${intro + selectedUSState} state legislature information`;
     }
+    const fieldName = key > 0 ? `displayName-${key}` : 'displayName';
     return (
-      <React.Fragment>
+      <React.Fragment key={key}>
         <h4>
           {title}
           <br />
@@ -162,46 +169,57 @@ class MemberLookup extends React.Component {
             Enter their name and we will auto-fill the information
           </small>
         </h4>
-        <FormItem
-          key={key}
-        >
-          {getFieldDecorator('displayName', {
-            validateTrigger: ['onChange', 'onBlur'],
-            rules: [{ required: true, message: 'Please input a member of congress' }],
-          })(
-            <div>
-              <AutoComplete
-                style={{ width: '60%', marginRight: 8 }}
-                key={key}
-                dataSource={allNames}
-                onSelect={value => this.onNameSelect(value, key)}
-                filterOption={(inputValue, option) => option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1}
-                placeholder="Member of congress name"
-              />
-
-              {key > 0 ? (
-                <Icon
-                  className="dynamic-delete-button"
-                  type="minus-circle-o"
-                  disabled={keys.length === 1}
-                  onClick={() => this.removeAdditionalMember(key)}
+        <FormItem>
+          {
+            getFieldDecorator(fieldName, {
+              initialValue: '',
+              rules: [{
+                message: 'Please input a member of congress',
+                required: true,
+              }],
+              validateTrigger: ['onChange', 'onBlur'],
+              valuePropName: 'value',
+            })(
+              <div>
+                <AutoComplete
+                  style={{
+                    width: '60%',
+                    marginRight: 8,
+                  }}
+                  key={key}
+                  dataSource={allNames}
+                  onSelect={value => this.onNameSelect(value, key)}
+                  filterOption={(inputValue, option) => option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1}
+                  placeholder="Member of congress name"
                 />
-              ) : null}
-            </div>,
-          )}
+
+                {key > 0 ? (
+                  <Icon
+                    className="dynamic-delete-button"
+                    type="minus-circle-o"
+                    disabled={keys.length === 1}
+                    onClick={() => this.removeAdditionalMember(key)}
+                  />
+                ) : null}
+              </div>,
+            )}
 
         </FormItem>
         <FormItem
           extra="How lawmaker or candidate name will be displayed"
         >
-          <Input
-            type="text"
-            className="input-underline"
-            id="person-preview"
-            placeholder="Lawmaker/candidate info"
-            value={`${this.formatName(key)} ${this.formatDistrct(key)}`}
-            readOnly
-          />
+          {getFieldDecorator(`preview-${key}`, {
+            initialValue: '',
+          })(
+            <Input
+              type="text"
+              className="input-underline"
+              id="person-preview"
+              placeholder="Lawmaker/candidate info"
+              readOnly
+            />,
+          )
+          }
         </FormItem>
       </React.Fragment>
     );
@@ -229,7 +247,12 @@ class MemberLookup extends React.Component {
       togglePersonMode,
       currentTownHall,
       selectedUSState,
+      getFieldDecorator,
     } = this.props;
+
+    getFieldDecorator('keys', {
+      initialValue: [0],
+    });
 
     return (
       <section className="member-info">
@@ -257,15 +280,12 @@ class MemberLookup extends React.Component {
         ) : this.memberForms()}
 
         <div className="district-group federal-district-group" id="federal-district-group">
-
           <FormItem>
             <Button type="dashed" onClick={this.addMember} style={{ width: '60%' }}>
               <Icon type="plus" /> Add another lawmaker
             </Button>
           </FormItem>
         </div>
-
-
       </section>
     );
   }

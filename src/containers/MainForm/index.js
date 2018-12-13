@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {
   includes,
   mapValues,
+  map,
 } from 'lodash';
 import { connect } from 'react-redux';
 import {
@@ -53,10 +54,13 @@ import {
   submitEventForReview,
   resetTownHall,
 } from '../../state/townhall/actions';
+import { getFormKeys } from '../../state/selections/selectors';
 
 const FormItem = Form.Item;
 const { Option } = Select;
 const { TextArea } = Input;
+
+let initFieldValue;
 
 class MainForm extends React.Component {
   static shouldGetLatLng(currentTownHall, nextTownHall) {
@@ -76,11 +80,12 @@ class MainForm extends React.Component {
 
   constructor(props) {
     super(props);
-    this.handleInputBlur = this.handleInputBlur.bind(this);
-    this.onCheckBoxChecked = this.onCheckBoxChecked.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.checkSubmit = this.checkSubmit.bind(this);
     this.resetAll = this.resetAll.bind(this);
+    this.state = {
+      ...props.currentTownHall,
+    };
   }
 
   componentWillMount() {
@@ -122,7 +127,7 @@ class MainForm extends React.Component {
 
   checkSubmit(e) {
     e.preventDefault();
-    this.props.form.validateFieldsAndScroll(['meetingType'], (err, values) => {
+    this.props.form.validateFieldsAndScroll((err, values) => {
       if (err) {
         return console.log(err);
       }
@@ -173,33 +178,28 @@ class MainForm extends React.Component {
     console.log('after reset', this.props.form.getFieldsValue());
   }
 
-  onCheckBoxChecked(e) {
-    // const { setValue } = this.props;
-    // setValue({ key: e.target.id, value: e.target.checked });
-  }
-
-  handleInputBlur(e) {
-    // console.log(e.target);
-    // const { setValue } = this.props;
-    // setValue({ key: e.target.id, value: e.target.value });
-  }
-
   resetAll() {
     const {
       resetAllData,
     } = this.props;
     resetAllData();
     console.log('resetting');
+    console.log('before reset', this.props.form.getFieldsValue());
+    this.props.form.resetFields();
+
+    console.log('after reset', this.props.form.getFieldsValue());
   }
 
   render() {
     const {
       allNames,
       allPeople,
+      address,
       currentTownHall,
       peopleDataUrl,
       personMode,
       requestPersonDataById,
+      requestAdditionalPersonDataById,
       togglePersonMode,
       selectedUSState,
       geoCodeLocation,
@@ -219,9 +219,8 @@ class MainForm extends React.Component {
       getFieldValue,
       getFieldsValue,
       setFieldsValue,
-      resetFields,
     } = this.props.form;
-    console.log('notes', Notes);
+
     return (
       <div className="new-event-form">
         <Form
@@ -254,26 +253,23 @@ class MainForm extends React.Component {
             </h4>
             <FormItem>
               {getFieldDecorator('eventName', {
-                trigger: 'onBlur',
-                valuePropName: 'eventName',
-              } )(
+                trigger: 'onChange',
+                initialValue: initFieldValue,
+              })(
                 <Input
-                  type="text"
                   className="input-underline"
-                  id="eventName"
                   placeholder="Name of the event"
-                  onBlur={this.handleInputBlur}
                 />,
               )}
             </FormItem>
             <FormItem>
               {getFieldDecorator('meetingType', {
-                initialValue: null,
+                initialValue: initFieldValue,
                 rules: [{
                   message: 'Please select type of event',
                   required: true,
                 }],
-                valuePropName: 'meetingType',
+                valuePropName: 'value',
               })(
 
                 <Select
@@ -318,6 +314,7 @@ class MainForm extends React.Component {
             </FormItem>
           </section>
           <LocationForm
+            address={address}
             geoCodeLocation={geoCodeLocation}
             tempAddress={tempAddress}
             tempLat={tempLat}
@@ -326,6 +323,8 @@ class MainForm extends React.Component {
             saveAddress={setLatLng}
             handleInputBlur={this.handleInputBlur}
             getFieldDecorator={getFieldDecorator}
+            setFieldsValue={setFieldsValue}
+            getFieldValue={getFieldValue}
           />
           <DateTimeForm
             setDate={setDate}
@@ -342,11 +341,9 @@ class MainForm extends React.Component {
               <label htmlFor="link">
                 URL related to event (optional)
               </label>
-              {getFieldDecorator('link',
-                {
-                  trigger: 'onBlur',
-                  valuePropName: 'link',
-                })(
+              {getFieldDecorator('link', {
+                initialValue: initFieldValue,
+              },)(
                 <Input
                     type="url"
                     className="input-underline"
@@ -360,8 +357,7 @@ class MainForm extends React.Component {
                 Link display name (optional)
               </label>
               {getFieldDecorator('linkName', {
-                trigger: 'onBlur',
-                valuePropName: 'linkName',
+                initialValue: initFieldValue,
               })(
                 <Input
                   type="text"
@@ -374,15 +370,16 @@ class MainForm extends React.Component {
             <FormItem>
               {
                 getFieldDecorator('ada_accessible', {
-                  valuePropName: 'ada_accessible',
+                  initialValue: false,
+                  valuePropName: 'checked',
                 })(
                   <Checkbox
-                  type="checkbox"
-                  class="general-checkbox"
-                  id="ada_accessible"
-                >
+                    type="checkbox"
+                    class="general-checkbox"
+                    id="ada_accessible"
+                  >
               ADA accessible?
-                </Checkbox>,
+                  </Checkbox>,
                 )}
             </FormItem>
             <FormItem>
@@ -391,8 +388,7 @@ class MainForm extends React.Component {
               </label>
               {getFieldDecorator('Notes',
                 {
-                  trigger: 'onBlur',
-                  valuePropName: 'Notes',
+                  initialValue: initFieldValue,
                 })(
                 <TextArea
                     id="Notes"
@@ -406,8 +402,7 @@ class MainForm extends React.Component {
               Internal Notes to THP Team
               </label>
               {getFieldDecorator('Internal-Notes', {
-                valuePropName: 'Internal-Notes',
-                trigger: 'onBlur',
+                initialValue: initFieldValue,
               })(
                 <TextArea
                   rows={3}
@@ -434,6 +429,7 @@ const mapStateToProps = state => ({
   allNames: getAllNames(state),
   allPeople: getAllPeople(state),
   currentTownHall: getTownHall(state),
+  formKeys: getFormKeys(state),
   peopleDataUrl: selectionStateBranch.selectors.getPeopleDataUrl(state),
   peopleNameUrl: selectionStateBranch.selectors.getPeopleNameUrl(state),
   personMode: selectionStateBranch.selectors.getMode(state),
@@ -454,6 +450,7 @@ const mapDispatchToProps = dispatch => ({
   mergeNotes: () => dispatch(mergeNotes()),
   resetAllData: () => dispatch(resetTownHall()),
   requestPersonDataById: (peopleDataUrl, id) => dispatch(requestPersonDataById(peopleDataUrl, id)),
+  requestAdditionalPersonDataById: (peopleDataUrl, id) => dispatch(requestAdditionalPersonDataById(peopleDataUrl, id)),
   setDate: date => dispatch(setDate(date)),
   setEndTime: time => dispatch(setEndTime(time)),
   setLatLng: payload => dispatch(setLatLng(payload)),
@@ -470,7 +467,7 @@ const mapDispatchToProps = dispatch => ({
 MainForm.propTypes = {
   startSetPeople: PropTypes.func.isRequired,
   allNames: PropTypes.arrayOf(PropTypes.string).isRequired,
-  allPeople: PropTypes.arrayOf(PropTypes.string).isRequired,
+  allPeople: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   currentTownHall: PropTypes.shape({}).isRequired,
   peopleDataUrl: PropTypes.string.isRequired,
   peopleNameUrl: PropTypes.string.isRequired,
@@ -500,12 +497,19 @@ const WrappedMainForm = Form.create({
   mapPropsToFields(props) {
     const {
       currentTownHall,
+      formKeys,
     } = props;
-    return mapValues(currentTownHall, value => (
+    const townHallProps = mapValues(currentTownHall, value => (
       Form.createFormField({
         value,
       })
     ));
+    return {
+      ...townHallProps,
+      formKeys: Form.createFormField({
+        keys: formKeys,
+      }),
+    };
   },
   onValuesChange(props, values) {
     // console.log('values changed', values);

@@ -2,19 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {
   includes,
-  mapValues,
   map,
 } from 'lodash';
 import {
   connect,
 } from 'react-redux';
 import {
-  Form,
   Row,
-  Button,
-  Input,
-  Select,
-  Checkbox,
   Col,
   Affix,
   Collapse,
@@ -26,7 +20,6 @@ import {
 import {
   startSetPeople,
   requestPersonDataById,
-  requestAdditionalPersonDataById,
 } from '../../state/members-candidates/actions';
 
 import {
@@ -49,6 +42,7 @@ import {
 import {
   toggleMemberCandidate,
   lookUpAddress,
+  setFormKeys,
 } from '../../state/selections/actions';
 import {
   mergeNotes,
@@ -67,21 +61,14 @@ import {
 } from '../../state/townhall/actions';
 import MainForm from '../MainForm';
 
-const FormItem = Form.Item;
-const {
-  Option,
-} = Select;
-const {
-  TextArea,
-} = Input;
+import "./style.scss";
+
 const Panel = Collapse.Panel;
 
 const customPanelStyle = {
     marginBottom: 24,
     border: 0,
 };
-
-import "./style.scss";
 
 class FormController extends React.Component {
   static replacer(key, value) {
@@ -96,10 +83,10 @@ class FormController extends React.Component {
     super(props);
     this.handleFormChange = this.handleFormChange.bind(this);
     this.state = {
-      fields: {
-        ...props.currentTownHall,
-      },
-    };
+        fields: {
+            ...props.currentTownHall,
+        }
+    }
   }
 
 
@@ -109,12 +96,20 @@ class FormController extends React.Component {
       setMeetingType,
       clearDisclaimer,
       setValue,
+      setNumberofKeys,
     } = this.props;
+    console.log('fields changed', changedFields);
     map(changedFields, (changedField) => {
       const {
         name,
         value,
       } = changedField;
+      if (name === 'displayName' || name.split('-')[0] === 'preview') {
+          return;
+      }
+      if (name === 'keys') {
+          setNumberofKeys(value);
+      }
       if (name === 'meetingType' && value) {
         if (includes(disclaimerMeetingTypes, value)) {
           addDisclaimer();
@@ -141,29 +136,25 @@ class FormController extends React.Component {
           <Col span={12}>
             <MainForm
               onChange={this.handleFormChange}
-              {...currentTownHall}
             />
           </Col>
           <Col span={8}>
             <Affix>
-              <Collapse bordered={false}
+              <Collapse bordered={false}>
+                <Panel
+                  style={customPanelStyle}
+                  header="Data object"
                 >
-                <Panel 
-                    style={customPanelStyle}
-                    header="Data object"
-                >
-                  <pre className="language-bash" style={{overflow: 'visible'}}>
+                  <pre className="language-bash" style={{ overflow: 'visible' }}>
                     {
                       JSON.stringify(currentTownHall, FormController.replacer, 2)
                     }
                   </pre>
                 </Panel>
-            </Collapse>
+              </Collapse>
             </Affix>
           </Col>
         </Row>
-
-
       </div>
     );
   }
@@ -171,41 +162,16 @@ class FormController extends React.Component {
 
 
 const mapStateToProps = state => ({
-  allNames: getAllNames(state),
-  allPeople: getAllPeople(state),
   currentTownHall: getTownHall(state),
-  peopleDataUrl: selectionStateBranch.selectors.getPeopleDataUrl(state),
-  peopleNameUrl: selectionStateBranch.selectors.getPeopleNameUrl(state),
-  personMode: selectionStateBranch.selectors.getMode(state),
-  saveUrl: selectionStateBranch.selectors.getSaveUrl(state),
-  selectedUSState: selectionStateBranch.selectors.getSelectedUSState(state),
-  tempAddress: selectionStateBranch.selectors.getTempAddress(state),
-  tempLat: selectionStateBranch.selectors.getTempLat(state),
-  tempLng: selectionStateBranch.selectors.getTempLng(state),
-  tempState: selectionStateBranch.selectors.getTempState(state),
-  tempStateName: selectionStateBranch.selectors.getTempStateName(state),
-  uid: getUid(state),
-  userDisplayName: getUserName(state),
 });
 
 const mapDispatchToProps = dispatch => ({
   addDisclaimer: () => dispatch(addDisclaimer()),
   clearDisclaimer: () => dispatch(clearDisclaimer()),
-  geoCodeLocation: address => dispatch(lookUpAddress(address)),
-  mergeNotes: () => dispatch(mergeNotes()),
   resetAllData: () => dispatch(resetTownHall()),
-  requestPersonDataById: (peopleDataUrl, id) => dispatch(requestPersonDataById(peopleDataUrl, id)),
-  setDate: date => dispatch(setDate(date)),
-  setEndTime: time => dispatch(setEndTime(time)),
-  setLatLng: payload => dispatch(setLatLng(payload)),
   setMeetingType: payload => dispatch(setMeetingType(payload)),
-  setStartTime: time => dispatch(setStartTime(time)),
-  setTimeZone: payload => dispatch(getTimeZone(payload)),
   setValue: payload => dispatch(setValue(payload)),
-  startSetPeople: peopleNameUrl => dispatch(startSetPeople(peopleNameUrl)),
-  submitEventForReview: payload => dispatch(submitEventForReview(payload)),
-  submitMetaData: payload => dispatch(saveMetaData(payload)),
-  togglePersonMode: mode => dispatch(toggleMemberCandidate(mode)),
+  setNumberofKeys: payload => dispatch(setFormKeys(payload)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(FormController);

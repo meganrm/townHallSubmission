@@ -7,6 +7,7 @@ export const getTempLat = state => state.selections.lat;
 export const getTempLng = state => state.selections.lng;
 export const getTempState = state => state.selections.state;
 export const getTempStateName = state => state.selections.stateName;
+export const getFormKeys = state => state.selections.formKeys;
 
 export const getPeopleNameUrl = createSelector([getSelectedUSState, getMode], (usState, mode) => {
   if (mode === 'candidate') {

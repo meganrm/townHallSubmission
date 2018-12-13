@@ -18,7 +18,7 @@ class LocationForm extends React.Component {
     super(props);
     this.state = {
       data: [],
-      validating: false,
+      validating: '',
       value: undefined,
     };
     this.handleChange = this.handleChange.bind(this);
@@ -27,6 +27,15 @@ class LocationForm extends React.Component {
     this.handleSelect = this.handleSelect.bind(this);
   }
 
+  componentDidUpdate() {
+    const {
+      setFieldsValue,
+      getFieldValue,
+    } = this.props;
+    if (getFieldValue('address')){
+      // setFieldsValue('address', this.state.address)
+    }
+  }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.tempAddress) {
@@ -97,7 +106,6 @@ class LocationForm extends React.Component {
 
   render() {
     const {
-      handleInputBlur,
       style,
       getFieldDecorator,
     } = this.props;
@@ -114,13 +122,15 @@ class LocationForm extends React.Component {
     return (
       <React.Fragment>
         <FormItem class="general-inputs">
-          {getFieldDecorator('Location')(
+          {getFieldDecorator('Location', {
+            trigger: 'onBlur',
+            valuePropName: 'Location',
+          })(
             <Input
               type="text"
               className="input-underline"
               id="Location"
               placeholder="Name of location (eg. Gary Recreation Center)"
-              onBlur={handleInputBlur}
             />,
           )}
         </FormItem>
@@ -130,12 +140,13 @@ class LocationForm extends React.Component {
           hasFeedback
           validateStatus={validating}
         >
-        {getFieldDecorator('address')(
+        {getFieldDecorator('address', {
+          initialValue: '',
+        })(
           <Select
             showSearch
             combobox
             onInputKeyDown={this.onKeyDown}
-            value={value}
             placeholder="address"
             style={style}
             defaultActiveFirstOption={false}
@@ -163,7 +174,6 @@ class LocationForm extends React.Component {
 
 LocationForm.propTypes = {
   geoCodeLocation: PropTypes.func.isRequired,
-  handleInputBlur: PropTypes.func.isRequired,
   saveAddress: PropTypes.func.isRequired,
   tempAddress: PropTypes.string,
   tempLat: PropTypes.number,

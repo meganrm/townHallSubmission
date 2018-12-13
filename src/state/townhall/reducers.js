@@ -14,7 +14,7 @@ const initialState = {
   disclaimer: null,
   displayName: null,
   district: null,
-  districts: [],
+  districts: {},
   eventId: null,
   eventName: null,
   govtrack_id: null,
@@ -120,20 +120,19 @@ const townhallReducer = (state = initialState, { type, payload }) => {
       members: [
         ...state.members,
         {
-          party: payload.party,
           chamber,
-          govtrack_id: payload.govtrack_id || null,
-          thp_id: payload.thp_id || payload.thp_key || null,
-          displayName: payload.name,
-          Member: payload.name,
-          state: payload.state,
+          displayName: payload.displayName,
           district,
-          office: payload.office || payload.role || null,
+          govtrack_id: payload.govtrack_id || null,
+          office: payload.role || null,
+          party: payload.party,
+          state: payload.state,
+          thp_id: payload.thp_id || payload.thp_key || null,
 
         }],
       districts: {
         ...state.districts,
-        [payload.state]: [...state.districts[payload.state], district],
+        [payload.state]: state.districts[payload.state] ? [...state.districts[payload.state], district] : [district],
       },
     };
   case 'SET_MEETING_TYPE':
@@ -162,9 +161,7 @@ const townhallReducer = (state = initialState, { type, payload }) => {
       yearMonthDay: moment(payload).format('YYYY-MM-DD'),
       dateString: moment(payload).format('ddd, MMM D YYYY'),
     };
-
   case 'SET_LAT_LNG':
-    console.log('SET_LAT_LNG', payload)
     return {
       ...state,
       lat: payload.lat,
