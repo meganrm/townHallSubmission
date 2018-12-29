@@ -47,7 +47,7 @@ class TownHall {
         const time = Date.parse(`${newTownHall.Date} ${databaseTH.Time}`) / 1000;
         const loc = `${databaseTH.lat},${databaseTH.lng}`;
         console.log(time, loc);
-        const url = `https://maps.googleapis.com/maps/api/timezone/json?location=${loc}&timestamp=${time}&key=AIzaSyB868a1cMyPOQyzKoUrzbw894xeoUhx9MM`;
+        const url = `https://maps.googleapis.com/maps/api/timezone/json?location=${loc}&timestamp=${time}&key=AIzaSyBvs-ugD9uydf8lUBwiwvN4dB5X9lbgpLw`;
         return request
             .get(url)
             .then((r) => {
@@ -97,7 +97,7 @@ class TownHall {
         const newTownHall = this;
         console.log(address, type);
         return request
-            .get('https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyB868a1cMyPOQyzKoUrzbw894xeoUhx9MM')
+            .get('https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyDP8q2OVisSLyFyOUU6OTgGjNNQCq7Q3rE')
             .set('Accept', 'application/json')
             .query({
                 address,
