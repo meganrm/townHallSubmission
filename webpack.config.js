@@ -18,12 +18,12 @@ const { ProvidePlugin } = require('webpack');
 
 const plugins = [
   new EnvironmentPlugin({
-    FIREBASE_AUTH_DOMAIN: 'townhallproject-86312.firebaseapp.com',
-    DATABASE_URL: 'https://townhallproject-86312.firebaseio.com',
-    PROJECT_ID: 'townhallproject-86312',
-    FIREBASE_API_KEY: 'AIzaSyDwZ41RWIytGELNBnVpDr7Y_k1ox2F2Heg',
-    MESSAGING_SENDER_ID: 208752196071,
-    STORAGE_BUCKET: 'townhallproject-86312.appspot.com',
+    DATABASE_URL: devMode ? process.env.TESTING_DATABASE_URL : process.env.DATABASE_URL,
+    FIREBASE_API_KEY: devMode ? process.env.TESTING_FIREBASE_API_KEY : process.env.FIREBASE_API_KEY,
+    FIREBASE_AUTH_DOMAIN: devMode ? process.env.TESTING_FIREBASE_AUTH_DOMAIN : process.env.FIREBASE_AUTH_DOMAIN,
+    MESSAGING_SENDER_ID: devMode ? process.env.TESTING_MESSAGING_SENDER_ID : process.env.MESSAGING_SENDER_ID,
+    PROJECT_ID: devMode ? process.env.TESTING_PROJECT_ID : process.env.PROJECT_ID,
+    STORAGE_BUCKET: devMode ? process.env.TESTING_STORAGE_BUCKET : process.env.STORAGE_BUCKET,
   }),
   new ProvidePlugin({
     jQuery: 'jquery',
@@ -77,9 +77,9 @@ module.exports = {
     rules: [
       // If it's a .js file not in node_modules, use the babel-loader
       {
-        test: /\.js$/,
         exclude: /node_modules/,
         loader: 'babel-loader',
+        test: /\.js$/,
         options: {
           plugins: [
             ['import', { libraryName: 'antd', style: true }],
