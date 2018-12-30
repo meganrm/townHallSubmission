@@ -15,7 +15,7 @@ const plugins = [
     new EnvironmentPlugin({
         DATABASE_URL: process.env.TESTING_DATABASE_URL,
         FIREBASE_API_KEY: 'AIzaSyCXyjAOvBKDEX5pckTwuI7LODWKNlL21gc',
-        FIREBASE_AUTH_DOMAIN: process.env.TESTING_FIREBASE_AUTH_DOMAIN,
+        FIREBASE_AUTH_DOMAIN: 'townhallproject-86312.firebaseapp.com',
         MESSAGING_SENDER_ID: process.env.TESTING_MESSAGING_SENDER_ID,
         PROJECT_ID: process.env.TESTING_PROJECT_ID,
         STORAGE_BUCKET: process.env.TESTING_STORAGE_BUCKET,
