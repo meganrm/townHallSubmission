@@ -1,4 +1,12 @@
 require('dotenv').config();
+const path = require('path');
+const fs = require('fs');
+
+const {
+    EnvironmentPlugin,
+} = require('webpack');
+
+const devMode = process.env.NODE_ENV !== 'production';
 const HTMLPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -6,6 +14,14 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { ProvidePlugin } = require('webpack');
 
 const plugins = [
+    new EnvironmentPlugin({
+        DATABASE_URL: process.env.TESTING_DATABASE_URL,
+        FIREBASE_API_KEY: process.env.TESTING_FIREBASE_API_KEY,
+        FIREBASE_AUTH_DOMAIN: process.env.TESTING_FIREBASE_AUTH_DOMAIN,
+        MESSAGING_SENDER_ID: process.env.TESTING_MESSAGING_SENDER_ID,
+        PROJECT_ID: process.env.TESTING_PROJECT_ID,
+        STORAGE_BUCKET: process.env.TESTING_STORAGE_BUCKET,
+    }),
     new ProvidePlugin({
         jQuery: 'jquery',
         $: 'jquery',
@@ -58,34 +74,11 @@ module.exports = {
         rules: [
             // If it's a .js file not in node_modules, use the babel-loader
             {
-                test: /\.js$/,
-                exclude: /node_modules/,
-                loader: 'babel-loader',
-            },
-            {
-                test: /\.css$/,
+                test: /\.(sa|sc|c)ss$/,
                 use: [
-                    MiniCssExtractPlugin.loader,
+                    devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
                     'css-loader',
-                ],
-            },
-            // If it's a .scss file
-            {
-                test: /\.scss$/,
-                use: [
-                    {
-                        loader: 'css-loader',
-                        options: {
-                            sourceMap: true,
-                        },
-                    },
-                    'resolve-url-loader',
-                    {
-                        loader: 'sass-loader',
-                        options: {
-                            sourceMap: true,
-                        },
-                    },
+                    'sass-loader',
                 ],
             },
             {
@@ -98,6 +91,9 @@ module.exports = {
                     },
                     {
                         loader: 'less-loader',
+                        options: {
+                            javascriptEnabled: true,
+                        },
                     },
                 ],
             },
