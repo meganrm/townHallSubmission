@@ -96,6 +96,9 @@ class MainForm extends React.Component {
     startSetPeople(peopleNameUrl);
   }
 
+  componentDidMount() {
+    this.resetAll();
+  }
 
   componentWillReceiveProps(nextProps) {
     const {
@@ -162,10 +165,13 @@ class MainForm extends React.Component {
       return submitMetaData(metaData);
     }
     mergeNotes();
-    console.log(saveUrl);
     const submit = {
       currentTownHall: {
         ...currentTownHall,
+        // deleting fields that come from the antd components
+        date: null,
+        time: null,
+        endTime: null,
         lastUpdated: Date.now(),
         enteredBy: uid,
       },
@@ -183,11 +189,7 @@ class MainForm extends React.Component {
       resetAllData,
     } = this.props;
     resetAllData();
-    console.log('resetting');
-    console.log('before reset', this.props.form.getFieldsValue());
-    this.props.form.resetFields();
-
-    console.log('after reset', this.props.form.getFieldsValue());
+    // this.props.form.resetFields();
   }
 
   render() {

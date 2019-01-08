@@ -8,7 +8,6 @@ const {
 
 const devMode = process.env.NODE_ENV !== 'production';
 const themeVariables = lessToJs(fs.readFileSync(path.join(__dirname, './src/styles/ant-vars.less'), 'utf8'));
-
 const HTMLPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -18,12 +17,12 @@ const { ProvidePlugin } = require('webpack');
 
 const plugins = [
   new EnvironmentPlugin({
-    DATABASE_URL: devMode ? process.env.TESTING_DATABASE_URL : process.env.DATABASE_URL,
-    FIREBASE_API_KEY: devMode ? process.env.TESTING_FIREBASE_API_KEY : process.env.FIREBASE_API_KEY,
-    FIREBASE_AUTH_DOMAIN: devMode ? process.env.TESTING_FIREBASE_AUTH_DOMAIN : process.env.FIREBASE_AUTH_DOMAIN,
-    MESSAGING_SENDER_ID: devMode ? process.env.TESTING_MESSAGING_SENDER_ID : process.env.MESSAGING_SENDER_ID,
-    PROJECT_ID: devMode ? process.env.TESTING_PROJECT_ID : process.env.PROJECT_ID,
-    STORAGE_BUCKET: devMode ? process.env.TESTING_STORAGE_BUCKET : process.env.STORAGE_BUCKET,
+    DATABASE_URL: devMode ? process.env.TESTING_DATABASE_URL : process.env.PROD_DATABASE_URL,
+    FIREBASE_API_KEY: devMode ? process.env.TESTING_FIREBASE_API_KEY : process.env.PROD_FIREBASE_API_KEY,
+    FIREBASE_AUTH_DOMAIN: devMode ? process.env.TESTING_FIREBASE_AUTH_DOMAIN : process.env.PROD_FIREBASE_AUTH_DOMAIN,
+    MESSAGING_SENDER_ID: devMode ? process.env.TESTING_MESSAGING_SENDER_ID : process.env.PROD_MESSAGING_SENDER_ID,
+    PROJECT_ID: devMode ? process.env.TESTING_PROJECT_ID : process.env.PROD_PROJECT_ID,
+    STORAGE_BUCKET: devMode ? process.env.TESTING_STORAGE_BUCKET : process.env.PROD_STORAGE_BUCKET,
   }),
   new ProvidePlugin({
     jQuery: 'jquery',

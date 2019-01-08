@@ -17,22 +17,6 @@ import {
 import {
   disclaimerMeetingTypes,
 } from '../../constants';
-import {
-  startSetPeople,
-  requestPersonDataById,
-} from '../../state/members-candidates/actions';
-
-import {
-  getAllNames,
-  getAllPeople,
-} from '../../state/members-candidates/selectors';
-
-import selectionStateBranch from '../../state/selections';
-
-import {
-  getUid,
-  getUserName,
-} from '../../state/user/selectors';
 
 import 'antd/dist/antd.less';
 
@@ -40,34 +24,26 @@ import {
   getTownHall,
 } from '../../state/townhall/selectors';
 import {
-  toggleMemberCandidate,
-  lookUpAddress,
   setFormKeys,
 } from '../../state/selections/actions';
 import {
-  mergeNotes,
   addDisclaimer,
-  setLatLng,
-  setDate,
-  setStartTime,
   setMeetingType,
-  setEndTime,
   setValue,
-  getTimeZone,
-  saveMetaData,
-  submitEventForReview,
   clearDisclaimer,
   resetTownHall,
 } from '../../state/townhall/actions';
 import MainForm from '../MainForm';
 
-import "./style.scss";
+import './style.scss';
 
 const Panel = Collapse.Panel;
 
+const noopFieldNames = [ 'address'];
+
 const customPanelStyle = {
-    marginBottom: 24,
-    border: 0,
+  marginBottom: 24,
+  border: 0,
 };
 
 class FormController extends React.Component {
@@ -83,10 +59,10 @@ class FormController extends React.Component {
     super(props);
     this.handleFormChange = this.handleFormChange.bind(this);
     this.state = {
-        fields: {
-            ...props.currentTownHall,
-        }
-    }
+      fields: {
+        ...props.currentTownHall,
+      },
+    };
   }
 
 
@@ -104,23 +80,22 @@ class FormController extends React.Component {
         name,
         value,
       } = changedField;
-      if (name === 'displayName' || name.split('-')[0] === 'preview') {
+      if (includes(noopFieldNames, name) || name.split('-')[0] === 'preview') {
         return;
       }
-      if (name === 'address') {
-        return;
-      }
-      if (name === 'keys') {
+      switch (name) {
+      case 'keys':
         setNumberofKeys(value);
-      }
-      if (name === 'meetingType' && value) {
+        break;
+      case 'meetingType':
         if (includes(disclaimerMeetingTypes, value)) {
           addDisclaimer();
         } else {
           clearDisclaimer();
         }
         setMeetingType(value);
-      } else {
+        break;
+      default:
         setValue({
           key: name,
           value,

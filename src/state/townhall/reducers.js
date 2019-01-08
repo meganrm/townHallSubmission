@@ -25,7 +25,7 @@ const initialState = {
   members: [],
   office: null,
   party: null,
-  repeatingEvent: false,
+  repeatingEvent: null,
   state: null,
   stateName: null,
   thp_id: null,
@@ -146,14 +146,14 @@ const townhallReducer = (state = initialState, { type, payload }) => {
       ...state,
       timeStart24: moment(payload, timeFormats).format('HH:mm:ss'),
       Time: moment(payload, timeFormats).format('h:mm A'),
-      timeEnd24: moment(tempEnd).format('HH:mm:ss'),
-      timeEnd: moment(tempEnd).format('h:mm A'),
+      timeEnd24: moment(payload, timeFormats).add(2, 'h').format('HH:mm:ss'),
+      timeEnd: moment(payload, timeFormats).add(2, 'h').format('h:mm A'),
     };
   case 'SET_END_TIME':
     return {
       ...state,
-      timeEnd24: moment(payload).format('HH:mm:ss'),
-      timeEnd: moment(payload).format('h:mm A'),
+      timeEnd24: moment(payload, timeFormats).format('HH:mm:ss'),
+      timeEnd: moment(payload, timeFormats).format('h:mm A'),
     };
   case 'SET_DATE':
     return {

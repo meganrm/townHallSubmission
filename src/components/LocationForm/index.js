@@ -124,7 +124,6 @@ class LocationForm extends React.Component {
         <FormItem class="general-inputs">
           {getFieldDecorator('Location', {
             trigger: 'onBlur',
-            valuePropName: 'Location',
           })(
             <Input
               type="text"

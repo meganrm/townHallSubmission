@@ -30,7 +30,10 @@ class MemberLookup extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { currentTownHall, setFieldsValue } = this.props;
+    const {
+      currentTownHall,
+      setFieldsValue,
+    } = this.props;
     if (currentTownHall.displayName !== prevProps.currentTownHall.displayName) {
       setFieldsValue({ 'preview-0': `${this.formatName()} ${this.formatDistrct()}` });
     }
@@ -38,6 +41,10 @@ class MemberLookup extends React.Component {
       currentTownHall.members.map(member => {
         
       })
+    }
+    if (!currentTownHall.Member && document.querySelector('.ant-select-selection__clear')) {
+      // manually clear the autocomplete form since it won't reset
+      document.querySelector('.ant-select-selection__clear').click();
     }
   }
 
@@ -186,6 +193,7 @@ class MemberLookup extends React.Component {
                     width: '60%',
                     marginRight: 8,
                   }}
+                  allowClear
                   key={key}
                   dataSource={allNames}
                   onSelect={value => this.onNameSelect(value, key)}

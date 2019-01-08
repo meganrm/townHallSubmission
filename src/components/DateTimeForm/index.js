@@ -23,7 +23,6 @@ class DateTimeForm extends React.Component {
   }
 
   onRepeatingEventCheckboxChanged(e) {
-    console.log(`checked = ${e.target.checked}`);
     this.setState({ repeatingEvent: e.target.checked });
   }
 
@@ -35,10 +34,8 @@ class DateTimeForm extends React.Component {
   onChangeStartTime(time, timeString) {
     const {
       setStartTime,
-      setEndTime,
     } = this.props;
     setStartTime(timeString);
-    setEndTime(moment(timeString).add(2, 'h'));
   }
 
   onChangeEndTime(time, timeString) {
@@ -49,23 +46,35 @@ class DateTimeForm extends React.Component {
   }
 
   renderReatingEvent() {
+    const {
+      getFieldDecorator,
+    } = this.props;
     const { repeatingEvent } = this.state;
     return repeatingEvent ? (
       <FormItem className="repeating">
         <label htmlFor="repeatingEvent">
           Repeating Event
         </label>
-        <Input
-          type="text"
-          className="input-underline"
-          id="repeatingEvent"
-          placeholder="Eg. First Tuesday of the month"
-        />
+        {getFieldDecorator('repeatingEvent', {
+            initialValue: '',
+        })(
+          <Input
+            type="text"
+            className="input-underline"
+            id="repeatingEvent"
+            placeholder="Eg. First Tuesday of the month"
+          />
+        )}
       </FormItem>
     )
       : (
         <FormItem>
+        {
+          getFieldDecorator('date', {
+              initialValue: '',
+            })(
           <DatePicker onChange={this.onChangeDate} />
+            )}
           <span id="yearMonthDay-error" className="help-block error-message hidden">
           Please enter a valid date
           </span>
@@ -74,6 +83,9 @@ class DateTimeForm extends React.Component {
   }
 
   render() {
+    const {
+      getFieldDecorator,
+    } = this.props;
     return (
       <React.Fragment>
         <FormItem className="checkbox">
@@ -88,11 +100,19 @@ class DateTimeForm extends React.Component {
           <label htmlFor="Time">
           Start Time
           </label>
-          <TimePicker
-            use12Hours
-            format="h:mm a"
-            onChange={this.onChangeStartTime}
-          />
+          {
+            getFieldDecorator(
+              'time', {
+                initialValue: '',
+              },
+            )(
+              <TimePicker
+                use12Hours
+                minuteStep={15}
+                format="h:mm A"
+                defaultOpenValue={moment().minute(0)}
+                onChange={this.onChangeStartTime}
+              />)}
           <span id="timeStart24-error" className="help-block error-message hidden">
           Please enter a valid time
           </span>
@@ -101,11 +121,16 @@ class DateTimeForm extends React.Component {
           <label htmlFor="endTime">
           End Time
           </label>
+        {getFieldDecorator(
+            'endTime', {
+              initialValue: '',
+            })(
           <TimePicker
             use12Hours
-            format="h:mm a"
+            minuteStep={15}
+            format="h:mm A"
             onChange={this.onChangeEndTime}
-          />
+          />)}
         </FormItem>
       </React.Fragment>
     );

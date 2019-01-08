@@ -1,4 +1,8 @@
 import request from 'superagent';
+import {
+  mapValues,
+  isUndefined,
+} from 'lodash';
 
 import { firebasedb } from '../../scripts/util/setupFirebase';
 
@@ -174,7 +178,16 @@ export const saveMetaData = payload => (dispatch) => {
     });
 };
 
-export const submitEventForReview = payload => dispatch => firebasedb.ref(`${payload.saveUrl}/${payload.currentTownHall.eventId}`).update(payload.currentTownHall)
+function cleanTownHall(townHall) {
+  return mapValues(townHall, (value) => {
+    if (isUndefined(value)) {
+      return null;
+    }
+    return value;
+  });
+}
+
+export const submitEventForReview = payload => dispatch => firebasedb.ref(`${payload.saveUrl}/${payload.currentTownHall.eventId}`).update(cleanTownHall(payload.currentTownHall))
   .then(() => dispatch(saveMetaData(payload.metaData)))
   .catch(console.log);
 
