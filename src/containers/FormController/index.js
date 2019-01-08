@@ -39,7 +39,7 @@ import './style.scss';
 
 const Panel = Collapse.Panel;
 
-const noopFieldNames = [ 'address'];
+const noopFieldNames = ['displayName', 'address'];
 
 const customPanelStyle = {
   marginBottom: 24,

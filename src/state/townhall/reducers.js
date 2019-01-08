@@ -73,10 +73,10 @@ const townhallReducer = (state = initialState, { type, payload }) => {
     };
 
   case 'SET_DATA_FROM_PERSON':
-    if (payload.type === 'sen' || payload.chamber === 'upper') {
+    if (payload.type === 'sen' || payload.chamber === 'upper' || payload.chamber.toLowerCase() === 'senate') {
       district = null;
       chamber = 'upper';
-    } else if (payload.type === 'rep' || payload.chamber === 'lower') {
+    } else if (payload.type === 'rep' || payload.chamber === 'lower' || payload.chamber.toLowerCase() === 'house') {
       chamber = 'lower';
       const zeropadding = '00';
       const updatedDistrict = zeropadding.slice(0, zeropadding.length - payload.district.length) + payload.district;

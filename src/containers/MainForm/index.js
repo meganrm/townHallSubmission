@@ -104,8 +104,6 @@ class MainForm extends React.Component {
     const {
       startSetPeople,
       peopleNameUrl,
-      currentTownHall,
-      form,
     } = this.props;
     if (peopleNameUrl !== nextProps.peopleNameUrl) {
       startSetPeople(nextProps.peopleNameUrl);
@@ -214,7 +212,6 @@ class MainForm extends React.Component {
       tempLng,
       tempStateName,
       tempState,
-      Notes,
     } = this.props;
     const {
       getFieldDecorator,

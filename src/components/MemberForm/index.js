@@ -38,9 +38,9 @@ class MemberLookup extends React.Component {
       setFieldsValue({ 'preview-0': `${this.formatName()} ${this.formatDistrct()}` });
     }
     if (currentTownHall.members.length !== prevProps.currentTownHall.members.length) {
-      currentTownHall.members.map(member => {
-        
-      })
+      currentTownHall.members.map((member) => {
+
+      });
     }
     if (!currentTownHall.Member && document.querySelector('.ant-select-selection__clear')) {
       // manually clear the autocomplete form since it won't reset
@@ -81,6 +81,7 @@ class MemberLookup extends React.Component {
       lower: 'Rep.',
       nationwide: 'President',
     };
+    console.log(personMode, currentTownHall.party);
     if (currentTownHall.displayName && personMode === 'moc') {
       return `${prefixMapping[currentTownHall.chamber]} ${currentTownHall.displayName} (${currentTownHall.party})`;
     }
@@ -96,7 +97,16 @@ class MemberLookup extends React.Component {
       selectedUSState,
     } = this.props;
     if (selectedUSState) {
-      return currentTownHall.district;
+      switch (currentTownHall.chamber) {
+      case 'lower':
+        return currentTownHall.district;
+      case 'upper':
+        return 'State Senate';
+      case 'statewide':
+        return currentTownHall.office || 'Statewide';
+      default:
+        return '';
+      }
     }
     switch (currentTownHall.chamber) {
     case 'lower':
@@ -107,8 +117,9 @@ class MemberLookup extends React.Component {
       return currentTownHall.office || 'Statewide';
     case 'nationwide':
       return currentTownHall.office || 'President';
+    default:
+      return '';
     }
-    return '';
   }
 
   addMember() {
@@ -146,7 +157,6 @@ class MemberLookup extends React.Component {
 
   memberForms() {
     const {
-      getFieldDecorator,
       getFieldValue,
     } = this.props;
     const keys = getFieldValue('keys');
