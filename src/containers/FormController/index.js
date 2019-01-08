@@ -86,7 +86,7 @@ class FormController extends React.Component {
         return;
       }
       switch (name) {
-      case 'keys':
+      case 'formKeys':
         setNumberofKeys(value);
         break;
       case 'meetingType':
@@ -99,7 +99,7 @@ class FormController extends React.Component {
         break;
       case 'state':
         setUsState(value);
-       break;
+        break;
       default:
         setValue({
           key: name,

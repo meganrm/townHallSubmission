@@ -1,7 +1,7 @@
 const initialState = {
+  formKeys: [0],
   mode: 'moc',
   usState: null,
-  formKeys: [0],
 };
 
 const selectionReducer = (state = initialState, { type, payload }) => {

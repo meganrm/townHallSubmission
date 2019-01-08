@@ -129,14 +129,14 @@ class MemberLookup extends React.Component {
       setFieldsValue,
     } = this.props;
     // can use data-binding to get
-    const keys = getFieldValue('keys');
+    const keys = getFieldValue('formKeys') || [0];
     const nextKeys = keys.concat(uuid);
     // eslint-disable-next-line no-plusplus
     uuid++;
     // can use data-binding to set
     // important! notify form to detect changes
     setFieldsValue({
-      keys: nextKeys,
+      formKeys: nextKeys,
     });
   }
 
@@ -146,14 +146,14 @@ class MemberLookup extends React.Component {
       setFieldsValue,
     } = this.props;
     // can use data-binding to get
-    const keys = getFieldValue('keys');
+    const keys = getFieldValue('formKeys') || [0];
     // We need at least one member
     if (keys.length === 1) {
       return;
     }
     // can use data-binding to set
     setFieldsValue({
-      keys: keys.filter(key => key !== k),
+      formKeys: keys.filter(key => key !== k),
     });
   }
 
@@ -161,7 +161,7 @@ class MemberLookup extends React.Component {
     const {
       getFieldValue,
     } = this.props;
-    const keys = getFieldValue('keys');
+    const keys = getFieldValue('formKeys') || [0];
     const formItems = keys.map(k => this.renderDatabaseLookupForm(k, keys));
     return formItems;
   }
@@ -185,11 +185,10 @@ class MemberLookup extends React.Component {
         <h4>
           {title}
           <br />
-          <small>
-            Enter their name and we will auto-fill the information
-          </small>
         </h4>
-        <FormItem>
+        <FormItem
+          extra="Enter their name and we will auto-fill the information"
+        >
           {
             getFieldDecorator(fieldName, {
               initialValue: '',
@@ -273,7 +272,7 @@ class MemberLookup extends React.Component {
       setGenericTownHallValue,
     } = this.props;
 
-    getFieldDecorator('keys', {
+    getFieldDecorator('formKeys', {
       initialValue: [0],
     });
 

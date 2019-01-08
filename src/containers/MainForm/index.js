@@ -59,7 +59,7 @@ const FormItem = Form.Item;
 const { Option } = Select;
 const { TextArea } = Input;
 
-let initFieldValue =[];
+const initFieldValue
 
 class MainForm extends React.Component {
   static shouldGetLatLng(currentTownHall, nextTownHall) {
@@ -141,11 +141,11 @@ class MainForm extends React.Component {
 
   checkSubmit(e) {
     e.preventDefault();
-    this.props.form.validateFieldsAndScroll((err, values) => {
+    this.props.form.validateFieldsAndScroll((err) => {
       if (err) {
         return console.log(err);
       }
-      this.handleSubmit();
+      return this.handleSubmit();
     });
   }
 
@@ -359,7 +359,7 @@ class MainForm extends React.Component {
               </label>
               {getFieldDecorator('link', {
                 initialValue: initFieldValue,
-              } )(
+              })(
                 <Input
                   type="url"
                   className="input-underline"
@@ -520,10 +520,11 @@ const WrappedMainForm = Form.create({
         value,
       })
     ));
+    console.log('form keys from props', formKeys);
     return {
       ...townHallProps,
       formKeys: Form.createFormField({
-        keys: formKeys,
+        value: formKeys,
       }),
     };
   },
