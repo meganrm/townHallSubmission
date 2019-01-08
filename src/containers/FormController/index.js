@@ -105,10 +105,13 @@ class FormController extends React.Component {
         value,
       } = changedField;
       if (name === 'displayName' || name.split('-')[0] === 'preview') {
-          return;
+        return;
+      }
+      if (name === 'address') {
+        return;
       }
       if (name === 'keys') {
-          setNumberofKeys(value);
+        setNumberofKeys(value);
       }
       if (name === 'meetingType' && value) {
         if (includes(disclaimerMeetingTypes, value)) {
