@@ -33,6 +33,7 @@ class MemberLookup extends React.Component {
     const {
       currentTownHall,
       setFieldsValue,
+      getFieldValue
     } = this.props;
     if (currentTownHall.displayName !== prevProps.currentTownHall.displayName) {
       setFieldsValue({ 'preview-0': `${this.formatName()} ${this.formatDistrct()}` });
@@ -42,7 +43,7 @@ class MemberLookup extends React.Component {
 
       });
     }
-    if (!currentTownHall.Member && document.querySelector('.ant-select-selection__clear')) {
+    if (!getFieldValue('displayName') && document.querySelector('.ant-select-selection__clear')) {
       // manually clear the autocomplete form since it won't reset
       document.querySelector('.ant-select-selection__clear').click();
     }
@@ -177,6 +178,9 @@ class MemberLookup extends React.Component {
       title = `${intro + selectedUSState} state legislature information`;
     }
     const fieldName = key > 0 ? `displayName-${key}` : 'displayName';
+    const filterFunction = (inputValue, option) => {
+      return option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
+    }
     return (
       <React.Fragment key={key}>
         <h4>
@@ -207,7 +211,7 @@ class MemberLookup extends React.Component {
                   key={key}
                   dataSource={allNames}
                   onSelect={value => this.onNameSelect(value, key)}
-                  filterOption={(inputValue, option) => option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1}
+                  filterOption={filterFunction}
                   placeholder="Member of congress name"
                 />
 
