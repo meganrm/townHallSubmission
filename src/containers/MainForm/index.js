@@ -222,6 +222,7 @@ class MainForm extends React.Component {
       tempLng,
       tempStateName,
       tempState,
+      setValue,
     } = this.props;
     const {
       getFieldDecorator,
@@ -254,6 +255,7 @@ class MainForm extends React.Component {
             togglePersonMode={togglePersonMode}
             getFieldDecorator={getFieldDecorator}
             personMode={personMode}
+            setGenericTownHallValue={setValue}
             getFieldValue={getFieldValue}
             setFieldsValue={setFieldsValue}
             fields={getFieldsValue()}
@@ -280,7 +282,7 @@ class MainForm extends React.Component {
                   message: 'Please select type of event',
                   required: true,
                 }],
-                valuePropName: 'value',
+                valuePropName: 'option',
               })(
 
                 <Select

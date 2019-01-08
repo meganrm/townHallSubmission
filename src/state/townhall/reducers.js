@@ -67,8 +67,8 @@ const townhallReducer = (state = initialState, { type, payload }) => {
   case 'SET_US_STATE':
     return {
       ...state,
-      state: payload.state,
-      stateName: statesAb[payload.state],
+      state: payload,
+      stateName: statesAb[payload],
     };
 
   case 'SET_DATA_FROM_PERSON':

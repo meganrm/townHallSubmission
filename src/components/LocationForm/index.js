@@ -130,6 +130,7 @@ class LocationForm extends React.Component {
         >
           {getFieldDecorator('address', {
             initialValue: '',
+            valuePropName: 'option',
           })(
             <Select
               showSearch

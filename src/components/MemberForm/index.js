@@ -35,6 +35,7 @@ class MemberLookup extends React.Component {
       currentTownHall,
       setFieldsValue,
       getFieldValue,
+      personMode,
     } = this.props;
     if (currentTownHall.displayName !== prevProps.currentTownHall.displayName) {
       setFieldsValue({ 'preview-0': `${this.formatName()} ${this.formatDistrct()}` });
@@ -44,7 +45,7 @@ class MemberLookup extends React.Component {
         console.log(member);
       });
     }
-    if (!getFieldValue('displayName') && document.querySelector('.ant-select-selection__clear')) {
+    if (!getFieldValue('displayName') && personMode !== MANUAL_MODE && document.querySelector('.ant-select-selection__clear')) {
       // manually clear the autocomplete form since it won't reset
       document.querySelector('.ant-select-selection__clear').click();
     }
@@ -268,6 +269,7 @@ class MemberLookup extends React.Component {
       currentTownHall,
       selectedUSState,
       getFieldDecorator,
+      setGenericTownHallValue,
     } = this.props;
 
     getFieldDecorator('keys', {
@@ -293,8 +295,10 @@ class MemberLookup extends React.Component {
         </Radio.Group>
         {personMode === 'manual' ? renderCustomPersonForm(
           {
+            getFieldDecorator,
             currentTownHall,
             selectedUSState,
+            setGenericTownHallValue,
           },
         ) : this.memberForms()}
 

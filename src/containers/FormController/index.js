@@ -32,6 +32,7 @@ import {
   setValue,
   clearDisclaimer,
   resetTownHall,
+  setUsState,
 } from '../../state/townhall/actions';
 import MainForm from '../MainForm';
 
@@ -72,6 +73,7 @@ class FormController extends React.Component {
       setMeetingType,
       clearDisclaimer,
       setValue,
+      setUsState,
       setNumberofKeys,
     } = this.props;
     console.log('fields changed', changedFields);
@@ -95,6 +97,9 @@ class FormController extends React.Component {
         }
         setMeetingType(value);
         break;
+      case 'state':
+        setUsState(value);
+       break;
       default:
         setValue({
           key: name,
@@ -149,6 +154,7 @@ const mapDispatchToProps = dispatch => ({
   resetAllData: () => dispatch(resetTownHall()),
   setMeetingType: payload => dispatch(setMeetingType(payload)),
   setNumberofKeys: payload => dispatch(setFormKeys(payload)),
+  setUsState: payload => dispatch(setUsState(payload)),
   setValue: payload => dispatch(setValue(payload)),
 });
 
