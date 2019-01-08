@@ -13,6 +13,7 @@ import { find } from 'lodash';
 import renderCustomPersonForm from './customMemberForm';
 
 import './style.scss';
+import { MOC_MODE, CANDIDATE_MODE, MANUAL_MODE } from '../../constants';
 
 const FormItem = Form.Item;
 
@@ -33,14 +34,14 @@ class MemberLookup extends React.Component {
     const {
       currentTownHall,
       setFieldsValue,
-      getFieldValue
+      getFieldValue,
     } = this.props;
     if (currentTownHall.displayName !== prevProps.currentTownHall.displayName) {
       setFieldsValue({ 'preview-0': `${this.formatName()} ${this.formatDistrct()}` });
     }
     if (currentTownHall.members.length !== prevProps.currentTownHall.members.length) {
       currentTownHall.members.map((member) => {
-
+        console.log(member);
       });
     }
     if (!getFieldValue('displayName') && document.querySelector('.ant-select-selection__clear')) {
@@ -63,14 +64,13 @@ class MemberLookup extends React.Component {
     if (index > 0) {
       return requestAdditionalPersonDataById(peopleDataUrl, person.id);
     }
-    requestPersonDataById(peopleDataUrl, person.id);
+    return requestPersonDataById(peopleDataUrl, person.id);
   }
 
   formatName() {
     const {
       currentTownHall,
       personMode,
-      fields,
     } = this.props;
     const prefixMapping = {
       HD: 'House District',
@@ -82,7 +82,6 @@ class MemberLookup extends React.Component {
       lower: 'Rep.',
       nationwide: 'President',
     };
-    console.log(personMode, currentTownHall.party);
     if (currentTownHall.displayName && personMode === 'moc') {
       return `${prefixMapping[currentTownHall.chamber]} ${currentTownHall.displayName} (${currentTownHall.party})`;
     }
@@ -131,6 +130,7 @@ class MemberLookup extends React.Component {
     // can use data-binding to get
     const keys = getFieldValue('keys');
     const nextKeys = keys.concat(uuid);
+    // eslint-disable-next-line no-plusplus
     uuid++;
     // can use data-binding to set
     // important! notify form to detect changes
@@ -178,9 +178,7 @@ class MemberLookup extends React.Component {
       title = `${intro + selectedUSState} state legislature information`;
     }
     const fieldName = key > 0 ? `displayName-${key}` : 'displayName';
-    const filterFunction = (inputValue, option) => {
-      return option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
-    }
+    const filterFunction = (inputValue, option) => option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1;
     return (
       <React.Fragment key={key}>
         <h4>
@@ -278,19 +276,18 @@ class MemberLookup extends React.Component {
 
     return (
       <section className="member-info">
-
         <Radio.Group
-          defaultValue="moc"
+          defaultValue={personMode}
           buttonStyle="solid"
           onChange={event => togglePersonMode(event.target.value)}
         >
-          <Radio.Button value="moc">
+          <Radio.Button value={MOC_MODE}>
             In office (Moc or Gov)
           </Radio.Button>
-          <Radio.Button value="candidate">
+          <Radio.Button value={CANDIDATE_MODE}>
             Candidate
           </Radio.Button>
-          <Radio.Button value="manual">
+          <Radio.Button value={MANUAL_MODE}>
             Manually Enter
           </Radio.Button>
         </Radio.Group>
@@ -314,33 +311,27 @@ class MemberLookup extends React.Component {
 }
 
 MemberLookup.propTypes = {
+  allNames: PropTypes.arrayOf(PropTypes.string).isRequired,
   allPeople: PropTypes.arrayOf(PropTypes.shape(
     {
-      id: PropTypes.number || PropTypes.string,
+      id: PropTypes.string,
       nameEntered: PropTypes.string,
     },
   )).isRequired,
-  allNames: PropTypes.arrayOf(PropTypes.string).isRequired,
   currentTownHall: PropTypes.shape({}).isRequired,
+  getFieldDecorator: PropTypes.func.isRequired,
+  getFieldValue: PropTypes.func.isRequired,
   peopleDataUrl: PropTypes.string.isRequired,
+  personMode: PropTypes.string.isRequired,
+  requestAdditionalPersonDataById: PropTypes.func.isRequired,
   requestPersonDataById: PropTypes.func.isRequired,
+  selectedUSState: PropTypes.string,
+  setFieldsValue: PropTypes.func.isRequired,
+  togglePersonMode: PropTypes.func.isRequired,
 };
 
-// const WrappedMemberLookup = Form.create({
-//   onFieldsChange(props, changedFields) {
-//     // console.log(changedFields)
-//   },
-//   mapPropsToFields(props) {
-//     const {
-//       currentTownHall,
-//     } = props;
-//     return Form.createFormField({
-//       displayName: currentTownHall.displayName,
-//     })
-//   },
-//   onValuesChange(_, values) {
-//     console.log(values);
-//   },
-// })(MemberLookup);
-// export default WrappedMemberLookup;
+MemberLookup.defaultProps = {
+  selectedUSState: undefined,
+};
+
 export default MemberLookup;

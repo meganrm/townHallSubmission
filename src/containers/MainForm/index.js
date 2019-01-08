@@ -1,12 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  includes,
   mapValues,
-  map,
 } from 'lodash';
 import { connect } from 'react-redux';
 import {
+  BackTop,
   Form,
   Button,
   Input,
@@ -14,7 +13,6 @@ import {
   Checkbox,
 } from 'antd';
 
-import { disclaimerMeetingTypes } from '../../constants';
 import {
   startSetPeople,
   requestPersonDataById,
@@ -76,6 +74,20 @@ class MainForm extends React.Component {
       return true;
     }
     return false;
+  }
+
+  static scrollToTop() {
+    let intervalId = 0;
+    function scrollStep() {
+      // Check if we're at the top already. If so, stop scrolling by clearing the interval
+      if (window.pageYOffset === 0) {
+        clearInterval(intervalId);
+      }
+      window.scroll(0, window.pageYOffset - 50);
+    }
+
+    // Call the function scrollStep() every 16.66 millisecons
+    intervalId = setInterval(scrollStep, 16.66);
   }
 
   constructor(props) {
@@ -143,7 +155,6 @@ class MainForm extends React.Component {
       submitMetaData,
       peopleDataUrl,
       mergeNotes,
-      updateUserSubmission,
       submitEventForReview,
       memberId,
       userDisplayName,
@@ -177,9 +188,8 @@ class MainForm extends React.Component {
       saveUrl,
     };
     submitEventForReview(submit);
-    console.log('before reset', this.props.form.getFieldsValue());
     this.props.form.resetFields();
-    console.log('after reset', this.props.form.getFieldsValue());
+    document.body.scrollTop = 0;
   }
 
   resetAll() {
@@ -187,7 +197,7 @@ class MainForm extends React.Component {
       resetAllData,
     } = this.props;
     resetAllData();
-    // this.props.form.resetFields();
+    MainForm.scrollToTop();
   }
 
   render() {
@@ -222,6 +232,8 @@ class MainForm extends React.Component {
 
     return (
       <div className="new-event-form">
+        <BackTop />
+
         <Form
           onSubmit={this.checkSubmit}
           id="new-event-form-element"
@@ -342,13 +354,13 @@ class MainForm extends React.Component {
               </label>
               {getFieldDecorator('link', {
                 initialValue: initFieldValue,
-              },)(
+              } )(
                 <Input
-                    type="url"
-                    className="input-underline"
-                    id="link"
-                    placeholder="Link"
-                  />,
+                  type="url"
+                  className="input-underline"
+                  id="link"
+                  placeholder="Link"
+                />,
               )}
             </FormItem>
             <FormItem>
@@ -389,7 +401,7 @@ class MainForm extends React.Component {
                 {
                   initialValue: initFieldValue,
                 })(
-                <TextArea
+                  <TextArea
                     id="Notes"
                     rows={3}
                     placeholder="Notes about event that cannot be entered anywhere else."
@@ -464,7 +476,6 @@ const mapDispatchToProps = dispatch => ({
 });
 
 MainForm.propTypes = {
-  startSetPeople: PropTypes.func.isRequired,
   allNames: PropTypes.arrayOf(PropTypes.string).isRequired,
   allPeople: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   currentTownHall: PropTypes.shape({}).isRequired,
@@ -473,6 +484,7 @@ MainForm.propTypes = {
   personMode: PropTypes.string.isRequired,
   saveUrl: PropTypes.string.isRequired,
   selectedUSState: PropTypes.string,
+  startSetPeople: PropTypes.func.isRequired,
   tempAddress: PropTypes.string,
   tempLat: PropTypes.number,
   tempLng: PropTypes.number,
@@ -510,7 +522,7 @@ const WrappedMainForm = Form.create({
       }),
     };
   },
-  onValuesChange(props, values) {
+  onValuesChange() {
     // console.log('values changed', values);
     // props.form.setFieldsValue(...values)
   },

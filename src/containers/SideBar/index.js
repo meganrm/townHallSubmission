@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
@@ -6,34 +7,30 @@ import {
 import {
   Menu,
 } from 'antd';
+import page from '../../vendor/scripts/page';
 
 import {
   setUsState,
 } from '../../state/selections/actions';
+import { getSelectedUSState } from '../../state/selections/selectors';
 
 const MenuItemGroup = Menu.ItemGroup;
 
 class SideBar extends React.Component {
-  constructor(props) {
-    super(props);
-    this.handleClick = this.handleClick.bind(this);
-  }
-
-  handleClick(e) {
-    const {
-      handleSetUSState,
-    } = this.props;
+  static handleClick(e) {
     const {
       key,
     } = e;
     if (key === 'federal') {
-      handleSetUSState(null);
+      page('/');
     } else {
-      handleSetUSState(key);
+      page(`/${key}`);
     }
   }
 
   render() {
+    const { currentUsState } = this.props;
+    const selectedKey = currentUsState || 'federal';
     return (
       <section className="session-data">
         <h4>Welcome</h4>
@@ -42,9 +39,9 @@ class SideBar extends React.Component {
         <p id="submit-success" className="hidden text-success">Thank you for submitting an event!</p>
         <ul id="submitted" className="list-group events-table" />
         <Menu
-          onClick={this.handleClick}
+          onClick={SideBar.handleClick}
           defaultSelectedKeys={
-            ['federal']
+            [selectedKey]
           }
           mode="inline"
         >
@@ -56,7 +53,6 @@ class SideBar extends React.Component {
             <Menu.Item key="VA">Virginia</Menu.Item>
             <Menu.Item key="NC">North Carolina</Menu.Item>
             <Menu.Item key="CO">Colorado</Menu.Item>
-
           </MenuItemGroup>
         </Menu>
       </section>
@@ -64,9 +60,8 @@ class SideBar extends React.Component {
   }
 }
 
-const mapStateToProps = () => ({
-
-
+const mapStateToProps = state => ({
+  currentUsState: getSelectedUSState(state),
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -74,7 +69,11 @@ const mapDispatchToProps = dispatch => ({
 });
 
 SideBar.propTypes = {
-  handleSetUSState: PropTypes.func.isRequired,
+  currentUsState: PropTypes.string,
+};
+
+SideBar.defaultProps = {
+  currentUsState: null,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(SideBar);

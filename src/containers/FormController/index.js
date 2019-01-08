@@ -37,7 +37,7 @@ import MainForm from '../MainForm';
 
 import './style.scss';
 
-const Panel = Collapse.Panel;
+const { Panel } = Collapse;
 
 const noopFieldNames = ['displayName', 'address'];
 
@@ -148,8 +148,16 @@ const mapDispatchToProps = dispatch => ({
   clearDisclaimer: () => dispatch(clearDisclaimer()),
   resetAllData: () => dispatch(resetTownHall()),
   setMeetingType: payload => dispatch(setMeetingType(payload)),
-  setValue: payload => dispatch(setValue(payload)),
   setNumberofKeys: payload => dispatch(setFormKeys(payload)),
+  setValue: payload => dispatch(setValue(payload)),
 });
+
+FormController.propTypes = {
+  addDisclaimer: PropTypes.func.isRequired,
+  clearDisclaimer: PropTypes.func.isRequired,
+  setMeetingType: PropTypes.func.isRequired,
+  setNumberofKeys: PropTypes.func.isRequired,
+  setValue: PropTypes.func.isRequired,
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(FormController);

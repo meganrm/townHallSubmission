@@ -5,12 +5,10 @@ import { Provider } from 'react-redux';
 
 import {
   firebase,
-  firebasedb,
   firebaseauth,
 } from './scripts/util/setupFirebase';
 
-import newEventView from './scripts/views/newEventView';
-import './scripts/views/memberUpdatingView';
+import { showUserEvents } from './scripts/views/newEventView';
 import './scripts/controllers/routes';
 import {
   writeUserData,
@@ -20,14 +18,13 @@ import './vendor/styles/normalize.css';
 import './styles/customboot.less';
 import App from './containers/App';
 
-import configureStore from './store/configureStore';
+import store from './store/configureStore';
 
 const provider = new firebase.auth.GoogleAuthProvider();
-const store = configureStore();
 
 const jsx = (
   <Provider store={store}>
-      <App />
+    <App />
   </Provider>
 );
 
@@ -53,7 +50,7 @@ firebase.auth().onAuthStateChanged((user) => {
     // User is signed in.
     console.log(user.displayName, ' is signed in');
     // eventHandler.readData();
-    newEventView.showUserEvents();
+    showUserEvents();
 
     store.dispatch(writeUserData(user));
   } else {

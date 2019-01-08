@@ -27,16 +27,6 @@ class LocationForm extends React.Component {
     this.handleSelect = this.handleSelect.bind(this);
   }
 
-  componentDidUpdate() {
-    const {
-      setFieldsValue,
-      getFieldValue,
-    } = this.props;
-    if (getFieldValue('address')){
-      // setFieldsValue('address', this.state.address)
-    }
-  }
-
   componentWillReceiveProps(nextProps) {
     if (nextProps.tempAddress) {
       this.setState(prevState => ({
@@ -112,7 +102,6 @@ class LocationForm extends React.Component {
     const {
       validating,
       data,
-      value,
     } = this.state;
     const options = data.map(d => (
       <Option key={d}>
@@ -139,33 +128,31 @@ class LocationForm extends React.Component {
           hasFeedback
           validateStatus={validating}
         >
-        {getFieldDecorator('address', {
-          initialValue: '',
-        })(
-          <Select
-            showSearch
-            combobox
-            onInputKeyDown={this.onKeyDown}
-            placeholder="address"
-            style={style}
-            defaultActiveFirstOption={false}
-            showArrow={false}
-            filterOption={false}
-            onSearch={this.handleChange}
-            onSelect={this.handleSelect}
-            notFoundContent={null}
+          {getFieldDecorator('address', {
+            initialValue: '',
+          })(
+            <Select
+              showSearch
+              combobox
+              onInputKeyDown={this.onKeyDown}
+              placeholder="address"
+              style={style}
+              defaultActiveFirstOption={false}
+              showArrow={false}
+              filterOption={false}
+              onSearch={this.handleChange}
+              onSelect={this.handleSelect}
+              notFoundContent={null}
 
-          >
-            {options}
-            <Option value="disabled" disabled>
+            >
+              {options}
+              <Option value="disabled" disabled>
             Hit enter to geocode address, then select address from dropdown
-            </Option>
-          </Select>)
-        }
+              </Option>
+            </Select>,
+          )
+          }
         </FormItem>
-        <span id="address-feedback" className="help-block">
-          Enter a valid street address, if there isn't one, leave this blank
-        </span>
       </React.Fragment>
     );
   }
@@ -173,14 +160,19 @@ class LocationForm extends React.Component {
 
 LocationForm.propTypes = {
   geoCodeLocation: PropTypes.func.isRequired,
+  getFieldDecorator: PropTypes.func.isRequired,
   saveAddress: PropTypes.func.isRequired,
+  style: PropTypes.shape({}),
   tempAddress: PropTypes.string,
   tempLat: PropTypes.number,
   tempLng: PropTypes.number,
+  tempStateInfo: PropTypes.shape({}),
 };
 
 LocationForm.defaultProps = {
+  style: null,
   tempAddress: null,
+  tempStateInfo: null,
   tempLat: 0,
   tempLng: 0,
 };

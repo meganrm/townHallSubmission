@@ -1,28 +1,34 @@
 import page from '../../vendor/scripts/page';
-import newEventController from './newEventController';
+import {
+  switchStateTab,
+  selectDefaultMode,
+  selectCandidateMode,
+  selectManualMode,
+} from './controller';
+
 
 page('/',
-    newEventController.switchTab,
-    newEventController.resetModeButton,
-    newEventController.loadFederal,
-    newEventController.index);
+  switchStateTab,
+  selectDefaultMode);
 
 page('/candidate',
-    newEventController.switchTab,
-    newEventController.selectCandidateMode,
-    newEventController.loadFederalCandidates,
-    newEventController.index);
+  switchStateTab,
+  selectCandidateMode);
 
-page('/:state/candidate',
-    newEventController.switchTab,
-    newEventController.selectCandidateMode,
-    newEventController.loadByState,
-    newEventController.index);
+page('/manual',
+  switchStateTab,
+  selectManualMode);
 
 page('/:state',
-    newEventController.switchTab,
-    newEventController.resetModeButton,
-    newEventController.loadByState,
-    newEventController.index);
+  switchStateTab,
+  selectDefaultMode);
+
+page('/:state/candidate',
+  switchStateTab,
+  selectCandidateMode);
+
+page('/:state/manual',
+  switchStateTab,
+  selectManualMode);
 
 page();

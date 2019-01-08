@@ -54,7 +54,6 @@ const townhallReducer = (state = initialState, { type, payload }) => {
   let district;
   let chamber;
   const timeFormats = ['hh:mm A', 'h:mm A'];
-  const tempEnd = moment(payload, timeFormats).add(2, 'h');
   switch (type) {
   case 'RESET_TOWNHALL':
     return initialState;
@@ -73,10 +72,10 @@ const townhallReducer = (state = initialState, { type, payload }) => {
     };
 
   case 'SET_DATA_FROM_PERSON':
-    if (payload.type === 'sen' || payload.chamber === 'upper' || payload.chamber.toLowerCase() === 'senate') {
+    if (payload.type === 'sen' || payload.chamber === 'upper' || payload.chamber === 'Senate') {
       district = null;
       chamber = 'upper';
-    } else if (payload.type === 'rep' || payload.chamber === 'lower' || payload.chamber.toLowerCase() === 'house') {
+    } else if (payload.type === 'rep' || payload.chamber === 'lower' || payload.chamber === 'House') {
       chamber = 'lower';
       const zeropadding = '00';
       const updatedDistrict = zeropadding.slice(0, zeropadding.length - payload.district.length) + payload.district;

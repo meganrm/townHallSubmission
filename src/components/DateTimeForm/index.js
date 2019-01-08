@@ -1,5 +1,6 @@
 import React from 'react';
 import moment from 'moment';
+import PropTypes from 'prop-types';
 import {
   Checkbox,
   Input,
@@ -56,24 +57,24 @@ class DateTimeForm extends React.Component {
           Repeating Event
         </label>
         {getFieldDecorator('repeatingEvent', {
-            initialValue: '',
+          initialValue: '',
         })(
           <Input
             type="text"
             className="input-underline"
             id="repeatingEvent"
             placeholder="Eg. First Tuesday of the month"
-          />
+          />,
         )}
       </FormItem>
     )
       : (
         <FormItem>
-        {
-          getFieldDecorator('date', {
-              initialValue: '',
+          {
+            getFieldDecorator('date', {
+              initialValue: undefined,
             })(
-          <DatePicker onChange={this.onChangeDate} />
+              <DatePicker onChange={this.onChangeDate} />,
             )}
           <span id="yearMonthDay-error" className="help-block error-message hidden">
           Please enter a valid date
@@ -103,7 +104,7 @@ class DateTimeForm extends React.Component {
           {
             getFieldDecorator(
               'time', {
-                initialValue: '',
+                initialValue: undefined,
               },
             )(
               <TimePicker
@@ -112,7 +113,8 @@ class DateTimeForm extends React.Component {
                 format="h:mm A"
                 defaultOpenValue={moment().minute(0)}
                 onChange={this.onChangeStartTime}
-              />)}
+              />,
+            )}
           <span id="timeStart24-error" className="help-block error-message hidden">
           Please enter a valid time
           </span>
@@ -121,20 +123,29 @@ class DateTimeForm extends React.Component {
           <label htmlFor="endTime">
           End Time
           </label>
-        {getFieldDecorator(
+          {getFieldDecorator(
             'endTime', {
-              initialValue: '',
-            })(
-          <TimePicker
-            use12Hours
-            minuteStep={15}
-            format="h:mm A"
-            onChange={this.onChangeEndTime}
-          />)}
+              initialValue: undefined,
+            },
+          )(
+            <TimePicker
+              use12Hours
+              minuteStep={15}
+              format="h:mm A"
+              onChange={this.onChangeEndTime}
+            />,
+          )}
         </FormItem>
       </React.Fragment>
     );
   }
 }
+
+DateTimeForm.propTypes = {
+  getFieldDecorator: PropTypes.func.isRequired,
+  setDate: PropTypes.func.isRequired,
+  setEndTime: PropTypes.func.isRequired,
+  setStartTime: PropTypes.func.isRequired,
+};
 
 export default DateTimeForm;
