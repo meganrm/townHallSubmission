@@ -8,10 +8,10 @@ import {
 } from 'antd';
 
 import states from '../../data/states';
+import { formItemLayout } from '../../constants';
 
 const { Option } = Select;
 const FormItem = Form.Item;
-
 
 const customMemberForm = (props) => {
   const {
@@ -28,18 +28,21 @@ const customMemberForm = (props) => {
     });
   };
 
-  const renderDistrict = () => {
-    return selectedUSState ? (
+  const renderDistrict = () => selectedUSState ? (
         <FormItem
           className="district-group"
           id="state-district-group"
           extra="ex HD-02 or SD-02"
+          label="District"
+          {...formItemLayout}
         >
           <Input
             type="text"
             className="input-underline"
             id="district"
             placeholder="District"
+            {...formItemLayout}
+
           />
         </FormItem>)
         : (
@@ -47,11 +50,9 @@ const customMemberForm = (props) => {
             className="district-group federal-district-group"
             id="federal-district-group"
             extra="Zero padded number, ex '09', leave blank for senated"
-
+            label="District"
+            {...formItemLayout}
           >
-            <label htmlFor="district" className="sr-only">
-            District
-            </label>
             {
               getFieldDecorator('district', {
                 initialValue: '',
@@ -64,8 +65,7 @@ const customMemberForm = (props) => {
                 />,
               )}
           </FormItem>
-        )
-  }
+        );
 
   return (
     <React.Fragment>
@@ -87,7 +87,11 @@ const customMemberForm = (props) => {
             />,
           )}
       </FormItem>
-      <FormItem className="chamber">
+      <FormItem 
+        className="chamber"
+        label="Chamber"
+        {...formItemLayout}
+      >
         {
           getFieldDecorator('chamber', {
             initialValue: 'undefined',
@@ -109,8 +113,11 @@ const customMemberForm = (props) => {
           )}
       </FormItem>
       {
-        getFieldValue('chamber') === "lower" ? renderDistrict () : null}
-      <FormItem>
+        getFieldValue('chamber') === 'lower' ? renderDistrict() : null}
+      <FormItem
+        label="State"
+        {...formItemLayout}
+      >
         {getFieldDecorator('state', {
           initialValue: '',
           rules: [{
@@ -129,10 +136,12 @@ const customMemberForm = (props) => {
         }
 
       </FormItem>
-   
-      <FormItem>
+
+      <FormItem
+        label="Party"
+        {...formItemLayout}
+      >
         {getFieldDecorator('party', {
-          initialValue: '',
         })(
           <Select
             placeholder="Party"

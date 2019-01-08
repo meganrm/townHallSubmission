@@ -53,6 +53,7 @@ import {
   resetTownHall,
 } from '../../state/townhall/actions';
 import { getFormKeys } from '../../state/selections/selectors';
+import { formItemLayout } from '../../constants';
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -275,7 +276,10 @@ class MainForm extends React.Component {
                 />,
               )}
             </FormItem>
-            <FormItem>
+            <FormItem
+              label="Event type"
+              {...formItemLayout}
+            >
               {getFieldDecorator('meetingType', {
                 initialValue: initFieldValue,
                 rules: [{

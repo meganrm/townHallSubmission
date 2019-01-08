@@ -9,6 +9,8 @@ import {
   TimePicker,
 } from 'antd';
 
+import { formItemLayout } from '../../constants';
+
 const FormItem = Form.Item;
 
 class DateTimeForm extends React.Component {
@@ -52,10 +54,11 @@ class DateTimeForm extends React.Component {
     } = this.props;
     const { repeatingEvent } = this.state;
     return repeatingEvent ? (
-      <FormItem className="repeating">
-        <label htmlFor="repeatingEvent">
-          Repeating Event
-        </label>
+      <FormItem 
+        className="repeating"
+        label="Repeating Event"
+        {...formItemLayout}
+      >
         {getFieldDecorator('repeatingEvent', {
           initialValue: '',
         })(
@@ -73,12 +76,13 @@ class DateTimeForm extends React.Component {
           {
             getFieldDecorator('date', {
               initialValue: undefined,
+              rules: [{
+                message: 'Please enter a valid date',
+                required: true,
+              }],
             })(
               <DatePicker onChange={this.onChangeDate} />,
             )}
-          <span id="yearMonthDay-error" className="help-block error-message hidden">
-          Please enter a valid date
-          </span>
         </FormItem>
       );
   }
@@ -97,14 +101,18 @@ class DateTimeForm extends React.Component {
           </Checkbox>
         </FormItem>
         {this.renderReatingEvent()}
-        <FormItem>
-          <label htmlFor="Time">
-          Start Time
-          </label>
+        <FormItem
+          label="Start time"
+          {...formItemLayout}
+        >
           {
             getFieldDecorator(
               'time', {
                 initialValue: undefined,
+                rules: [{
+                  message: 'Please enter a valid time',
+                  required: true,
+                }],
               },
             )(
               <TimePicker
@@ -115,14 +123,11 @@ class DateTimeForm extends React.Component {
                 onChange={this.onChangeStartTime}
               />,
             )}
-          <span id="timeStart24-error" className="help-block error-message hidden">
-          Please enter a valid time
-          </span>
         </FormItem>
-        <FormItem>
-          <label htmlFor="endTime">
-          End Time
-          </label>
+        <FormItem
+          label = "End time"
+          {...formItemLayout}
+        >
           {getFieldDecorator(
             'endTime', {
               initialValue: undefined,

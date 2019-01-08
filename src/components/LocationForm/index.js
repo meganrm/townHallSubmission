@@ -7,6 +7,7 @@ import {
   Form,
   Select,
 } from 'antd';
+import { formItemLayout } from '../../constants';
 
 const {
   Option,
@@ -127,6 +128,8 @@ class LocationForm extends React.Component {
           id="location-form-group"
           hasFeedback
           validateStatus={validating}
+          label="Address"
+          {...formItemLayout}
         >
           {getFieldDecorator('address', {
             initialValue: '',
