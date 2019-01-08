@@ -130,7 +130,6 @@ class LocationForm extends React.Component {
         >
           {getFieldDecorator('address', {
             initialValue: '',
-            valuePropName: 'option',
           })(
             <Select
               showSearch
@@ -144,7 +143,6 @@ class LocationForm extends React.Component {
               onSearch={this.handleChange}
               onSelect={this.handleSelect}
               notFoundContent={null}
-
             >
               {options}
               <Option value="disabled" disabled>

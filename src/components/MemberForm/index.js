@@ -268,6 +268,7 @@ class MemberLookup extends React.Component {
       togglePersonMode,
       currentTownHall,
       selectedUSState,
+      getFieldValue,
       getFieldDecorator,
       setGenericTownHallValue,
     } = this.props;
@@ -297,6 +298,7 @@ class MemberLookup extends React.Component {
           {
             getFieldDecorator,
             currentTownHall,
+            getFieldValue,
             selectedUSState,
             setGenericTownHallValue,
           },

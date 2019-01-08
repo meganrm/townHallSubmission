@@ -15,14 +15,11 @@ const FormItem = Form.Item;
 
 const customMemberForm = (props) => {
   const {
-    currentTownHall,
     selectedUSState,
+    getFieldValue,
     getFieldDecorator,
     setGenericTownHallValue,
   } = props;
-  getFieldDecorator('displayName', {
-    initialValue: '',
-  });
   const onNameChange = (e) => {
     const { value } = e.target;
     setGenericTownHallValue({
@@ -30,12 +27,49 @@ const customMemberForm = (props) => {
       value,
     });
   };
+
+  const renderDistrict = () => {
+    return selectedUSState ? (
+        <FormItem
+          className="district-group"
+          id="state-district-group"
+          extra="ex HD-02 or SD-02"
+        >
+          <Input
+            type="text"
+            className="input-underline"
+            id="district"
+            placeholder="District"
+          />
+        </FormItem>)
+        : (
+          <FormItem
+            className="district-group federal-district-group"
+            id="federal-district-group"
+            extra="Zero padded number, ex '09', leave blank for senated"
+
+          >
+            <label htmlFor="district" className="sr-only">
+            District
+            </label>
+            {
+              getFieldDecorator('district', {
+                initialValue: '',
+              })(
+                <Input
+                  type="text"
+                  className="input-underline"
+                  id="district"
+                  placeholder="District"
+                />,
+              )}
+          </FormItem>
+        )
+  }
+
   return (
     <React.Fragment>
       <FormItem>
-        <label htmlFor="displayName" className="sr-only">
-            Host's name
-        </label>
         {
           getFieldDecorator('displayName', {
             initialValue: '',
@@ -53,99 +87,10 @@ const customMemberForm = (props) => {
             />,
           )}
       </FormItem>
-      <FormItem>
-        <label htmlFor="state" className="sr-only">
-            State (abbrivation)
-        </label>
-        {getFieldDecorator('state', {
-          initialValue: '',
-          rules: [{
-            message: 'Please select a state',
-            required: true,
-          }],
-          valuePropName: 'option',
-        })(
-          <Select
-            placeholder="State (abbrivation)"
-            style={{ width: '100%' }}
-          >
-            {map(states, (stateAb, key) => (<Option value={key} key={key}>{stateAb}</Option>))}
-          </Select>
-          ,
-        )
-        }
-
-      </FormItem>
-      {selectedUSState ? (
-        <FormItem
-          className="district-group"
-          id="state-district-group"
-        >
-          <label htmlFor="district" className="sr-only">
-            District
-          </label>
-          <Input
-            type="text"
-            className="input-underline"
-            id="district"
-            placeholder="District"
-          />
-          <span id="helpBlock" className="help-block">
-            ex HD-02 or SD-02
-          </span>
-        </FormItem>)
-        : (
-          <FormItem
-            className="district-group federal-district-group"
-            id="federal-district-group"
-          >
-            <label htmlFor="district" className="sr-only">
-            District
-            </label>
-            {
-              getFieldDecorator('district', {
-                initialValue: '',
-              })(
-                <Input
-                  type="text"
-                  className="input-underline"
-                  id="district"
-                  placeholder="District"
-                />,
-              )}
-            <span id="helpBlock" className="help-block">
-            Zero padded number, ex '09', leave blank for senate
-            </span>
-          </FormItem>
-        )}
-      <FormItem>
-        {getFieldDecorator('party', {
-          initialValue: '',
-          valuePropName: 'option',
-        })(
-          <Select
-            placeholder="Party"
-          >
-            <Option value="Democratic">
-              Democratic
-            </Option>
-            <Option value="Republican">
-              Republican
-            </Option>
-            <Option value="Independent">
-              Independent
-            </Option>
-          </Select>,
-        )}
-      </FormItem>
       <FormItem className="chamber">
-        <label className="" htmlFor="chamber">
-            Chamber
-        </label>
         {
           getFieldDecorator('chamber', {
             initialValue: 'undefined',
-            valuePropName: 'option',
           })(
 
             <Select
@@ -162,6 +107,47 @@ const customMemberForm = (props) => {
               </Option>
             </Select>,
           )}
+      </FormItem>
+      {
+        getFieldValue('chamber') === "lower" ? renderDistrict () : null}
+      <FormItem>
+        {getFieldDecorator('state', {
+          initialValue: '',
+          rules: [{
+            message: 'Please select a state',
+            required: true,
+          }],
+        })(
+          <Select
+            placeholder="State (abbrivation)"
+            style={{ width: '100%' }}
+          >
+            {map(states, (stateAb, key) => (<Option value={key} key={key}>{stateAb}</Option>))}
+          </Select>
+          ,
+        )
+        }
+
+      </FormItem>
+   
+      <FormItem>
+        {getFieldDecorator('party', {
+          initialValue: '',
+        })(
+          <Select
+            placeholder="Party"
+          >
+            <Option value="Democratic">
+              Democratic
+            </Option>
+            <Option value="Republican">
+              Republican
+            </Option>
+            <Option value="Independent">
+              Independent
+            </Option>
+          </Select>,
+        )}
       </FormItem>
     </React.Fragment>
 

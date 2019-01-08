@@ -126,7 +126,7 @@ class FormController extends React.Component {
               <Collapse bordered={false}>
                 <Panel
                   style={customPanelStyle}
-                  header="Data object"
+                  header="Data object (click to see data you've entered"
                 >
                   <pre className="language-bash" style={{ overflow: 'visible' }}>
                     {
