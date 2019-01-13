@@ -40,7 +40,7 @@ import './style.scss';
 
 const { Panel } = Collapse;
 
-const noopFieldNames = ['displayName', 'address'];
+const noopFieldNames = ['displayName', 'address', 'preview'];
 
 const customPanelStyle = {
   marginBottom: 24,
@@ -82,7 +82,7 @@ class FormController extends React.Component {
         name,
         value,
       } = changedField;
-      if (includes(noopFieldNames, name) || name.split('-')[0] === 'preview') {
+      if (includes(noopFieldNames, name) || includes(noopFieldNames, name.split('-')[0])) {
         return;
       }
       switch (name) {
