@@ -229,6 +229,14 @@ newEventView.meetingTypeChanged = function meetingTypeChanged(event) {
         TownHall.currentEvent.iconFlag = 'in-person';
         $('.general-inputs').removeClass('hidden');
         break;
+    case 'H.R. 1 Town Hall':
+        TownHall.currentEvent.iconFlag = 'hr-one';
+        $('.general-inputs').removeClass('hidden');
+        break;
+    case 'H.R. 1 Activist Event':
+        TownHall.currentEvent.iconFlag = 'hr-one';
+        $('.general-inputs').removeClass('hidden');
+        break;
     case 'Campaign Town Hall':
         addDisclaimer();
         TownHall.currentEvent.iconFlag = 'campaign';
