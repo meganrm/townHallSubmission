@@ -1,5 +1,8 @@
 import moment from 'moment';
+import { find } from 'lodash';
+
 import statesAb from '../../data/states';
+import { EVENT_TYPES } from '../../constants';
 
 const initialState = {
   Location: null,
@@ -36,18 +39,6 @@ const initialState = {
   userID: null,
   yearMonthDay: null,
   zoneString: null,
-};
-
-const iconFlagMap = {
-  'Tele-Town Hall': 'tele',
-  'Adopt-A-District/State': 'activism',
-  'Ticketed Event': 'in-person',
-  'Office Hours': 'staff',
-  'Town Hall': 'in-person',
-  'Campaign Town Hall': 'campaign',
-  Hearing: null,
-  'DC Event': null,
-  'Empty Chair Town Hall': 'activism',
 };
 
 const townhallReducer = (state = initialState, { type, payload }) => {
@@ -138,7 +129,11 @@ const townhallReducer = (state = initialState, { type, payload }) => {
     return {
       ...state,
       meetingType: payload,
-      iconFlag: iconFlagMap[payload],
+      iconFlag: find(EVENT_TYPES, {
+        name: payload,
+      }) ? find(EVENT_TYPES, {
+          name: payload,
+        }).iconFlag : null,
     };
   case 'SET_START_TIME':
     return {

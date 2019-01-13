@@ -59,7 +59,7 @@ const FormItem = Form.Item;
 const { Option } = Select;
 const { TextArea } = Input;
 
-const initFieldValue
+let initFieldValue;
 
 class MainForm extends React.Component {
   static shouldGetLatLng(currentTownHall, nextTownHall) {
@@ -294,6 +294,12 @@ class MainForm extends React.Component {
                 >
                   <Option value="Town Hall">
                   Town Hall
+                  </Option>              
+                  <Option value="H.R. 1 Town Hall">
+                  H.R. 1 Town Hall
+                  </Option>
+                  <Option value="H.R. 1 Activist Event">
+                  H.R. 1 Activist Event
                   </Option>
                   <Option value="Tele-Town Hall">
                   Tele-Town Hall
