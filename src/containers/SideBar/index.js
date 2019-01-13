@@ -50,9 +50,10 @@ class SideBar extends React.Component {
           </MenuItemGroup>
           <MenuItemGroup key="state-title" title="Enter events for state legislators">
             <Menu.Item key="AZ">Arizona</Menu.Item>
-            <Menu.Item key="VA">Virginia</Menu.Item>
-            <Menu.Item key="NC">North Carolina</Menu.Item>
             <Menu.Item key="CO">Colorado</Menu.Item>
+            <Menu.Item key="OR">Oregon</Menu.Item>
+            <Menu.Item key="NC">North Carolina</Menu.Item>
+            <Menu.Item key="VA">Virginia</Menu.Item>
           </MenuItemGroup>
         </Menu>
       </section>
