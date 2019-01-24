@@ -113,7 +113,7 @@ class LocationForm extends React.Component {
       <React.Fragment>
         <FormItem class="general-inputs">
           {getFieldDecorator('Location', {
-            trigger: 'onBlur',
+            initialValue: '',
           })(
             <Input
               type="text"
