@@ -23,7 +23,7 @@ class MemberLookup extends React.Component {
   constructor(props) {
     super(props);
     this.onNameSelect = this.onNameSelect.bind(this);
-    this.formatDistrct = this.formatDistrct.bind(this);
+    this.formatDistrict = this.formatDistrict.bind(this);
     this.renderDatabaseLookupForm = this.renderDatabaseLookupForm.bind(this);
     this.memberForms = this.memberForms.bind(this);
     this.addMember = this.addMember.bind(this);
@@ -38,7 +38,7 @@ class MemberLookup extends React.Component {
       personMode,
     } = this.props;
     if (currentTownHall.displayName !== prevProps.currentTownHall.displayName) {
-      setFieldsValue({ 'preview-0': `${this.formatName()} ${this.formatDistrct()}` });
+      setFieldsValue({ 'preview-0': `${this.formatName()} ${this.formatDistrict()}` });
     }
     if (currentTownHall.members.length !== prevProps.currentTownHall.members.length) {
       currentTownHall.members.map((member) => {
@@ -92,11 +92,12 @@ class MemberLookup extends React.Component {
     return '';
   }
 
-  formatDistrct() {
+  formatDistrict() {
     const {
       currentTownHall,
       selectedUSState,
     } = this.props;
+    console.log(currentTownHall.chamber)
     if (selectedUSState) {
       switch (currentTownHall.chamber) {
       case 'lower':
@@ -105,6 +106,8 @@ class MemberLookup extends React.Component {
         return 'State Senate';
       case 'statewide':
         return currentTownHall.office || 'Statewide';
+      case 'citywide':
+        return currentTownHall.office || 'Citywide';
       default:
         return '';
       }
@@ -118,6 +121,8 @@ class MemberLookup extends React.Component {
       return currentTownHall.office || 'Statewide';
     case 'nationwide':
       return currentTownHall.office || 'President';
+    case 'citywide':
+      return currentTownHall.office || 'Citywide';
     default:
       return '';
     }

@@ -63,6 +63,8 @@ const townhallReducer = (state = initialState, { type, payload }) => {
     };
 
   case 'SET_DATA_FROM_PERSON':
+    chamber = payload.chamber;
+
     if (payload.type === 'sen' || payload.chamber === 'upper' || payload.chamber === 'Senate') {
       district = null;
       chamber = 'upper';
@@ -84,6 +86,7 @@ const townhallReducer = (state = initialState, { type, payload }) => {
       district,
       state: payload.state || null,
       displayName: payload.displayName,
+      city: payload.city || null,
       Member: payload.displayName,
       govtrack_id: payload.govtrack_id || null,
       thp_id: payload.thp_id || payload.thp_key || null,
