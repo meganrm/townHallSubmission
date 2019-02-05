@@ -97,7 +97,6 @@ class MemberLookup extends React.Component {
       currentTownHall,
       selectedUSState,
     } = this.props;
-    console.log(currentTownHall.chamber)
     if (selectedUSState) {
       switch (currentTownHall.chamber) {
       case 'lower':
