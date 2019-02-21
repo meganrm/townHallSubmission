@@ -3,6 +3,7 @@ import { find } from 'lodash';
 
 import statesAb from '../../data/states';
 import { EVENT_TYPES } from '../../constants';
+import { sanitizeDistrict } from '../../scripts/util';
 
 const initialState = {
   Location: null,
@@ -43,7 +44,6 @@ const initialState = {
 
 const townhallReducer = (state = initialState, { type, payload }) => {
   let district;
-  let chamber;
   const timeFormats = ['hh:mm A', 'h:mm A'];
   switch (type) {
   case 'RESET_TOWNHALL':
@@ -63,27 +63,11 @@ const townhallReducer = (state = initialState, { type, payload }) => {
     };
 
   case 'SET_DATA_FROM_PERSON':
-    chamber = payload.chamber;
-
-    if (payload.type === 'sen' || payload.chamber === 'upper' || payload.chamber === 'Senate') {
-      district = null;
-      chamber = 'upper';
-    } else if (payload.type === 'rep' || payload.chamber === 'lower' || payload.chamber === 'House') {
-      chamber = 'lower';
-      const zeropadding = '00';
-      const updatedDistrict = zeropadding.slice(0, zeropadding.length - payload.district.length) + payload.district;
-      district = updatedDistrict;
-    } else if (payload.role === 'Gov') {
-      chamber = 'statewide';
-      district = null;
-    } else if (payload.role === 'Pres') {
-      chamber = 'nationwide';
-      district = null;
-    }
+    district = sanitizeDistrict(payload.district);
     return {
       ...state,
-      chamber,
       district,
+      chamber: payload.chamber,
       state: payload.state || null,
       displayName: payload.displayName,
       city: payload.city || null,
@@ -96,24 +80,14 @@ const townhallReducer = (state = initialState, { type, payload }) => {
       eventId: payload.eventId,
     };
   case 'SET_ADDITIONAL_MEMBER':
-    if (payload.type === 'sen' || payload.chamber === 'upper') {
-      district = null;
-      chamber = 'upper';
-    } else if (payload.type === 'rep' || payload.chamber === 'lower') {
-      chamber = 'lower';
-      const zeropadding = '00';
-      const updatedDistrict = zeropadding.slice(0, zeropadding.length - payload.district.length) + payload.district;
-      district = updatedDistrict;
-    } else if (payload.role === 'Gov') {
-      chamber = 'statewide';
-      district = null;
-    }
+    
+    district = sanitizeDistrict(payload.district);
     return {
       ...state,
       members: [
         ...state.members,
         {
-          chamber,
+          chamber: payload.chamber,
           displayName: payload.displayName,
           district,
           govtrack_id: payload.govtrack_id || null,
@@ -125,7 +99,7 @@ const townhallReducer = (state = initialState, { type, payload }) => {
         }],
       districts: {
         ...state.districts,
-        [payload.state]: state.districts[payload.state] ? [...state.districts[payload.state], district] : [district],
+        [payload.state]: state.districts[payload.state] && district ? [...state.districts[payload.state], district] : [district],
       },
     };
   case 'SET_MEETING_TYPE':
