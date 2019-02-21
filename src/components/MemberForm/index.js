@@ -102,11 +102,11 @@ class MemberLookup extends React.Component {
       case 'lower':
         return currentTownHall.district;
       case 'upper':
-        return 'State Senate';
+        return currentTownHall.district;
       case 'statewide':
-        return currentTownHall.office || 'Statewide';
+        return currentTownHall.office || 'State-wide';
       case 'citywide':
-        return currentTownHall.office || 'Citywide';
+        return currentTownHall.office || 'City-wide';
       default:
         return '';
       }
@@ -179,9 +179,12 @@ class MemberLookup extends React.Component {
     } = this.props;
     const intro = personMode === 'candidate' ? 'Candidate for ' : 'Member of ';
     let title = `${intro}Congress Information `;
+    let placeHolderText = personMode === 'candidate' ? 'Candidate\'s name' : 'Member of congress name' ;
     if (selectedUSState) {
       title = `${intro + selectedUSState} state legislature information`;
+      placeHolderText = 'State lawmaker\'s name';
     }
+    
     const fieldName = key > 0 ? `displayName-${key}` : 'displayName';
     const filterFunction = (inputValue, option) => option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1;
     return (
@@ -197,7 +200,7 @@ class MemberLookup extends React.Component {
             getFieldDecorator(fieldName, {
               initialValue: '',
               rules: [{
-                message: 'Please input a member of congress',
+                message: 'Please input a lawmaker',
                 required: true,
               }],
               validateTrigger: ['onChange', 'onBlur'],
@@ -214,7 +217,7 @@ class MemberLookup extends React.Component {
                   dataSource={allNames}
                   onSelect={value => this.onNameSelect(value, key)}
                   filterOption={filterFunction}
-                  placeholder="Member of congress name"
+                  placeholder={placeHolderText}
                 />
 
                 {key > 0 ? (
