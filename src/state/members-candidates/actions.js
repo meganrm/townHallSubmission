@@ -1,5 +1,10 @@
 import { firebasedb } from '../../scripts/util/setupFirebase';
-import { setDataFromPersonInDatabase, setAdditionalMember } from '../townhall/actions';
+import {
+  setDataFromPersonInDatabase,
+  setAdditionalMember,
+  updateAdditionalMember,
+} from '../townhall/actions';
+import { sanitizeDistrict } from '../../scripts/util';
 
 export const setPeople = people => ({
   payload: people,
@@ -21,13 +26,29 @@ export const requestPersonDataById = (peopleDataUrl, id) => dispatch => firebase
   .once('value')
   .then((result) => {
     const personData = result.val();
+    personData.district = sanitizeDistrict(personData.district);
     return (dispatch(setDataFromPersonInDatabase(personData)));
   });
 
-export const requestAdditionalPersonDataById = (peopleDataUrl, id) => dispatch => firebasedb.ref(`${peopleDataUrl}/${id}`)
+export const requestAdditionalPersonDataById = (peopleDataUrl, id, index) => dispatch => firebasedb.ref(`${peopleDataUrl}/${id}`)
   .once('value')
   .then((result) => {
     const personData = result.val();
-    (dispatch(setAdditionalMember(personData)));
+    personData.district = sanitizeDistrict(personData.district);
+    const member = {
+      chamber: personData.chamber,
+      displayName: personData.displayName,
+      district: personData.district,
+      govtrack_id: personData.govtrack_id || null,
+      office: personData.role || null,
+      party: personData.party,
+      state: personData.state,
+      thp_id: personData.thp_id || personData.thp_key || null,
+    };
+    if (index) {
+      member.index = index;
+      return dispatch(updateAdditionalMember(member));
+    }
+    return dispatch(setAdditionalMember(member));
   })
   .catch(console.log);

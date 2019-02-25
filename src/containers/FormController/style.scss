@@ -6,3 +6,10 @@
     background-color: white; 
     border: none;
 }
+
+.form-container {
+    .ant-affix {
+        overflow: scroll;
+        height: 100%;
+    }
+}

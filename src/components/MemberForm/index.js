@@ -37,12 +37,13 @@ class MemberLookup extends React.Component {
       getFieldValue,
       personMode,
     } = this.props;
-    if (currentTownHall.displayName !== prevProps.currentTownHall.displayName) {
-      setFieldsValue({ 'preview-0': `${this.formatName()} ${this.formatDistrict()}` });
-    }
+  
     if (currentTownHall.members.length !== prevProps.currentTownHall.members.length) {
-      currentTownHall.members.map((member) => {
-        console.log(member);
+      currentTownHall.members.forEach((member, index) => {
+        const key = `preview-${index}`;
+        setFieldsValue({
+          [key]: `${this.formatName(member)} ${this.formatDistrict(member)}`,
+        });
       });
     }
     if (!getFieldValue('displayName') && personMode !== MANUAL_MODE && document.querySelector('.ant-select-selection__clear')) {
@@ -54,6 +55,7 @@ class MemberLookup extends React.Component {
   onNameSelect(value, index) {
     const {
       allPeople,
+      currentTownHall,
       peopleDataUrl,
       requestPersonDataById,
       requestAdditionalPersonDataById,
@@ -62,13 +64,16 @@ class MemberLookup extends React.Component {
     const person = find(allPeople, {
       nameEntered: value,
     });
-    if (index > 0) {
-      return requestAdditionalPersonDataById(peopleDataUrl, person.id);
+    if (index === 0) {
+      return requestPersonDataById(peopleDataUrl, person.id);
     }
-    return requestPersonDataById(peopleDataUrl, person.id);
+    if (index + 1 <= currentTownHall.members.length) {
+      return requestAdditionalPersonDataById(peopleDataUrl, person.id, index);
+    }
+    return requestAdditionalPersonDataById(peopleDataUrl, person.id);
   }
 
-  formatName() {
+  formatName(member) {
     const {
       currentTownHall,
       personMode,
@@ -83,11 +88,11 @@ class MemberLookup extends React.Component {
       lower: 'Rep.',
       nationwide: 'President',
     };
-    if (currentTownHall.displayName && personMode === 'moc') {
-      return `${prefixMapping[currentTownHall.chamber]} ${currentTownHall.displayName} (${currentTownHall.party})`;
+    if (member.displayName && personMode === 'moc') {
+      return `${prefixMapping[member.chamber]} ${member.displayName} (${member.party})`;
     }
     if (currentTownHall.displayName && personMode === 'candidate') {
-      return `${currentTownHall.displayName} (${currentTownHall.party}), Running for: `;
+      return `${member.displayName} (${member.party}), Running for: `;
     }
     return '';
   }
@@ -179,12 +184,11 @@ class MemberLookup extends React.Component {
     } = this.props;
     const intro = personMode === 'candidate' ? 'Candidate for ' : 'Member of ';
     let title = `${intro}Congress Information `;
-    let placeHolderText = personMode === 'candidate' ? 'Candidate\'s name' : 'Member of congress name' ;
+    let placeHolderText = personMode === 'candidate' ? 'Candidate\'s name' : 'Member of congress name';
     if (selectedUSState) {
       title = `${intro + selectedUSState} state legislature information`;
       placeHolderText = 'State lawmaker\'s name';
     }
-    
     const fieldName = key > 0 ? `displayName-${key}` : 'displayName';
     const filterFunction = (inputValue, option) => option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1;
     return (

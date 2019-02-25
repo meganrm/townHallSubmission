@@ -30,6 +30,11 @@ export const setAdditionalMember = payload => ({
   type: 'SET_ADDITIONAL_MEMBER',
 });
 
+export const updateAdditionalMember = payload => ({
+  payload,
+  type: 'UPDATE_ADDITIONAL_MEMBER',
+});
+
 export const setMeetingType = payload => ({
   payload,
   type: 'SET_MEETING_TYPE',

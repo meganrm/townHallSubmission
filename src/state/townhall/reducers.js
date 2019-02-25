@@ -1,9 +1,8 @@
 import moment from 'moment';
-import { find } from 'lodash';
+import { find, map } from 'lodash';
 
 import statesAb from '../../data/states';
 import { EVENT_TYPES } from '../../constants';
-import { sanitizeDistrict } from '../../scripts/util';
 
 const initialState = {
   Location: null,
@@ -43,7 +42,6 @@ const initialState = {
 };
 
 const townhallReducer = (state = initialState, { type, payload }) => {
-  let district;
   const timeFormats = ['hh:mm A', 'h:mm A'];
   switch (type) {
   case 'RESET_TOWNHALL':
@@ -63,10 +61,9 @@ const townhallReducer = (state = initialState, { type, payload }) => {
     };
 
   case 'SET_DATA_FROM_PERSON':
-    district = sanitizeDistrict(payload.district);
     return {
       ...state,
-      district,
+      district: payload.district,
       chamber: payload.chamber,
       state: payload.state || null,
       displayName: payload.displayName,
@@ -78,28 +75,53 @@ const townhallReducer = (state = initialState, { type, payload }) => {
       party: payload.party,
       office: payload.role || null,
       eventId: payload.eventId,
-    };
-  case 'SET_ADDITIONAL_MEMBER':
-    
-    district = sanitizeDistrict(payload.district);
-    return {
-      ...state,
-      members: [
-        ...state.members,
+      members: state.members.length ? map(
+        state.members, (ele, index) => ((index === 0)
+          ? {
+            chamber: payload.chamber,
+            displayName: payload.displayName,
+            district: payload.district,
+            govtrack_id: payload.govtrack_id || null,
+            office: payload.role || null,
+            party: payload.party,
+            state: payload.state,
+            thp_id: payload.thp_id || payload.thp_key || null,
+          } : ele),
+      ) : [
         {
           chamber: payload.chamber,
           displayName: payload.displayName,
-          district,
+          district: payload.district,
           govtrack_id: payload.govtrack_id || null,
           office: payload.role || null,
           party: payload.party,
           state: payload.state,
           thp_id: payload.thp_id || payload.thp_key || null,
 
-        }],
+        },
+      ],
       districts: {
         ...state.districts,
-        [payload.state]: state.districts[payload.state] && district ? [...state.districts[payload.state], district] : [district],
+        [payload.state]: state.districts[payload.state] && payload.district
+          ? map(state.districts[payload.state], (ele, index) => (index === 0 ? payload.district : ele)) : [payload.district],
+      },
+    };
+  case 'SET_ADDITIONAL_MEMBER':
+    return {
+      ...state,
+      members: [...state.members, payload],
+      districts: {
+        ...state.districts,
+        [payload.state]: state.districts[payload.state] ? [...state.districts[payload.state], payload.district] : [payload.district],
+      },
+    };
+  case 'UPDATE_ADDITIONAL_MEMBER':
+    return {
+      ...state,
+      members: map(state.members, (member, index) => (index === payload.index ? payload : member)),
+      districts: {
+        ...state.districts,
+        [payload.state]: state.districts[payload.state] ? map(state.districts[payload.state], (dist, index) => (index === payload.index ? payload.district : dist)) : [payload.district],
       },
     };
   case 'SET_MEETING_TYPE':

@@ -25,6 +25,7 @@ import {
 } from '../../state/townhall/selectors';
 import {
   setFormKeys,
+  resetFormKeys,
 } from '../../state/selections/actions';
 import {
   addDisclaimer,
@@ -59,15 +60,27 @@ class FormController extends React.Component {
   constructor(props) {
     super(props);
     this.handleFormChange = this.handleFormChange.bind(this);
+    this.resetAllData = this.resetAllData.bind(this);
     this.state = {
-      fields: {
-        ...props.currentTownHall,
-      },
+      displayValues: {},
     };
+  }
+
+  resetAllData() {
+    const {
+      resetAllData,
+      resetFormKeys
+    } = this.props;
+    this.setState({ displayValues: null });
+    resetFormKeys();
+    resetAllData();
   }
 
 
   handleFormChange(changedFields) {
+    const {
+      displayValues,
+    } = this.state;
     const {
       addDisclaimer,
       setMeetingType,
@@ -76,13 +89,18 @@ class FormController extends React.Component {
       setUsState,
       setNumberofKeys,
     } = this.props;
-    console.log('fields changed', changedFields);
     map(changedFields, (changedField) => {
       const {
         name,
         value,
       } = changedField;
       if (includes(noopFieldNames, name) || includes(noopFieldNames, name.split('-')[0])) {
+        this.setState({
+          displayValues: {
+            ...displayValues,
+            [name]: value,
+          },
+        });
         return;
       }
       switch (name) {
@@ -113,15 +131,20 @@ class FormController extends React.Component {
     const {
       currentTownHall,
     } = this.props;
+    const {
+      displayValues,
+    } = this.state;
     return (
-      <div>
-        <Row gutter={24}>
+      <div className="form-container">
+        <Row gutter={8}>
           <Col span={12}>
             <MainForm
+              displayValues={displayValues}
               onChange={this.handleFormChange}
+              resetAllData={this.resetAllData}
             />
           </Col>
-          <Col span={8}>
+          <Col span={12}>
             <Affix>
               <Collapse bordered={false}>
                 <Panel
@@ -152,6 +175,7 @@ const mapDispatchToProps = dispatch => ({
   addDisclaimer: () => dispatch(addDisclaimer()),
   clearDisclaimer: () => dispatch(clearDisclaimer()),
   resetAllData: () => dispatch(resetTownHall()),
+  resetFormKeys: () => dispatch(resetFormKeys()),
   setMeetingType: payload => dispatch(setMeetingType(payload)),
   setNumberofKeys: payload => dispatch(setFormKeys(payload)),
   setUsState: payload => dispatch(setUsState(payload)),

@@ -10,6 +10,11 @@ const selectionReducer = (state = initialState, { type, payload }) => {
     return {
       ...initialState,
     };
+  case 'RESET_FORM_KEYS':
+    return {
+      ...state,
+      formKeys: initialState.formKeys,
+    };
   case 'SET_FORM_KEYS':
     return {
       ...state,

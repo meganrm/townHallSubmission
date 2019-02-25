@@ -25,6 +25,10 @@ export const setFormKeys = payload => ({
   type: 'SET_FORM_KEYS',
 });
 
+export const resetFormKeys = () => ({
+  type: 'RESET_FORM_KEYS',
+});
+
 
 export const lookUpAddress = payload => dispatch => request
   .get('https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyDP8q2OVisSLyFyOUU6OTgGjNNQCq7Q3rE')

@@ -50,7 +50,6 @@ import {
   getTimeZone,
   saveMetaData,
   submitEventForReview,
-  resetTownHall,
 } from '../../state/townhall/actions';
 import { getFormKeys } from '../../state/selections/selectors';
 import { formItemLayout } from '../../constants';
@@ -96,9 +95,6 @@ class MainForm extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.checkSubmit = this.checkSubmit.bind(this);
     this.resetAll = this.resetAll.bind(this);
-    this.state = {
-      ...props.currentTownHall,
-    };
   }
 
   componentWillMount() {
@@ -294,7 +290,7 @@ class MainForm extends React.Component {
                 >
                   <Option value="Town Hall">
                   Town Hall
-                  </Option>              
+                  </Option>
                   <Option value="H.R. 1 Town Hall">
                   H.R. 1 Town Hall
                   </Option>
@@ -412,11 +408,11 @@ class MainForm extends React.Component {
                 {
                   initialValue: initFieldValue,
                 })(
-                  <TextArea
-                    id="Notes"
-                    rows={3}
-                    placeholder="Notes about event that cannot be entered anywhere else."
-                  />,
+                <TextArea
+                  id="Notes"
+                  rows={3}
+                  placeholder="Notes about event that cannot be entered anywhere else."
+                />,
               )}
             </FormItem>
             <FormItem>
@@ -470,9 +466,8 @@ const mapDispatchToProps = dispatch => ({
   addDisclaimer: () => dispatch(addDisclaimer()),
   geoCodeLocation: address => dispatch(lookUpAddress(address)),
   mergeNotes: () => dispatch(mergeNotes()),
-  resetAllData: () => dispatch(resetTownHall()),
   requestPersonDataById: (peopleDataUrl, id) => dispatch(requestPersonDataById(peopleDataUrl, id)),
-  requestAdditionalPersonDataById: (peopleDataUrl, id) => dispatch(requestAdditionalPersonDataById(peopleDataUrl, id)),
+  requestAdditionalPersonDataById: (peopleDataUrl, id, index) => dispatch(requestAdditionalPersonDataById(peopleDataUrl, id, index)),
   setDate: date => dispatch(setDate(date)),
   setEndTime: time => dispatch(setEndTime(time)),
   setLatLng: payload => dispatch(setLatLng(payload)),
@@ -520,15 +515,21 @@ const WrappedMainForm = Form.create({
     const {
       currentTownHall,
       formKeys,
+      displayValues,
     } = props;
     const townHallProps = mapValues(currentTownHall, value => (
       Form.createFormField({
         value,
       })
     ));
-    console.log('form keys from props', formKeys);
+    const displayNames = mapValues(displayValues, (value) => (
+       Form.createFormField({
+          value,
+        })
+    ));
     return {
       ...townHallProps,
+      ...displayNames,
       formKeys: Form.createFormField({
         value: formKeys,
       }),
