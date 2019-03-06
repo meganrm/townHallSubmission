@@ -38,7 +38,7 @@ export const EVENT_TYPES = {
   },
   campaign_town_hall: {
     name: 'Campaign Town Hall',
-    iconFlag: IN_PERSON_ICON_FLAG,
+    iconFlag: CAMPAIGN_ICON_FLAG,
   },
   adopt_a_district: {
     name: 'Adopt-A-District/State',
