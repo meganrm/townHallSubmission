@@ -75,36 +75,36 @@ const townhallReducer = (state = initialState, { type, payload }) => {
       party: payload.party,
       office: payload.role || null,
       eventId: payload.eventId,
-      members: state.members.length ? map(
-        state.members, (ele, index) => ((index === 0)
-          ? {
-            chamber: payload.chamber,
-            displayName: payload.displayName,
-            district: payload.district,
-            govtrack_id: payload.govtrack_id || null,
-            office: payload.role || null,
-            party: payload.party,
-            state: payload.state,
-            thp_id: payload.thp_id || payload.thp_key || null,
-          } : ele),
-      ) : [
-        {
-          chamber: payload.chamber,
-          displayName: payload.displayName,
-          district: payload.district,
-          govtrack_id: payload.govtrack_id || null,
-          office: payload.role || null,
-          party: payload.party,
-          state: payload.state,
-          thp_id: payload.thp_id || payload.thp_key || null,
+      // members: state.members.length ? map(
+      //   state.members, (ele, index) => ((index === 0)
+      //     ? {
+      //       chamber: payload.chamber,
+      //       displayName: payload.displayName,
+      //       district: payload.district,
+      //       govtrack_id: payload.govtrack_id || null,
+      //       office: payload.role || null,
+      //       party: payload.party,
+      //       state: payload.state,
+      //       thp_id: payload.thp_id || payload.thp_key || null,
+      //     } : ele),
+      // ) : [
+      //   {
+      //     chamber: payload.chamber,
+      //     displayName: payload.displayName,
+      //     district: payload.district,
+      //     govtrack_id: payload.govtrack_id || null,
+      //     office: payload.role || null,
+      //     party: payload.party,
+      //     state: payload.state,
+      //     thp_id: payload.thp_id || payload.thp_key || null,
 
-        },
-      ],
-      districts: {
-        ...state.districts,
-        [payload.state]: state.districts[payload.state] && payload.district
-          ? map(state.districts[payload.state], (ele, index) => (index === 0 ? payload.district : ele)) : [payload.district],
-      },
+      //   },
+      // ],
+      // districts: {
+      //   ...state.districts,
+      //   [payload.state]: state.districts[payload.state] && payload.district
+      //     ? map(state.districts[payload.state], (ele, index) => (index === 0 ? payload.district : ele)) : [payload.district],
+      // },
     };
   case 'SET_ADDITIONAL_MEMBER':
     return {
