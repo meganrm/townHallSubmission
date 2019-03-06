@@ -26,6 +26,7 @@ import {
 import {
   setFormKeys,
   resetFormKeys,
+  clearTempAddress,
 } from '../../state/selections/actions';
 import {
   addDisclaimer,
@@ -68,12 +69,14 @@ class FormController extends React.Component {
 
   resetAllData() {
     const {
-      resetAllData,
-      resetFormKeys
+      resetTownHallData,
+      resetFormKeys,
+      clearTempAddress,
     } = this.props;
     this.setState({ displayValues: null });
     resetFormKeys();
-    resetAllData();
+    clearTempAddress();
+    resetTownHallData();
   }
 
 
@@ -174,7 +177,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   addDisclaimer: () => dispatch(addDisclaimer()),
   clearDisclaimer: () => dispatch(clearDisclaimer()),
-  resetAllData: () => dispatch(resetTownHall()),
+  resetTownHallData: () => dispatch(resetTownHall()),
+  clearTempAddress: () => dispatch(clearTempAddress()),
   resetFormKeys: () => dispatch(resetFormKeys()),
   setMeetingType: payload => dispatch(setMeetingType(payload)),
   setNumberofKeys: payload => dispatch(setFormKeys(payload)),

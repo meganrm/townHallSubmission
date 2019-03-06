@@ -2,6 +2,11 @@ const initialState = {
   formKeys: [0],
   mode: 'moc',
   usState: null,
+  lat: null,
+  lng: null,
+  address: null,
+  state: null,
+  stateName: null,
 };
 
 const selectionReducer = (state = initialState, { type, payload }) => {
@@ -38,6 +43,15 @@ const selectionReducer = (state = initialState, { type, payload }) => {
       address: payload.address,
       state: payload.state,
       stateName: payload.stateName,
+    };
+  case 'CLEAR_ADDRESS':
+    return {
+      ...state,
+      lat: initialState.lat,
+      lng: initialState.lng,
+      address: initialState.address,
+      state: initialState.state,
+      stateName: initialState.stateName,
     };
   default:
     return state;

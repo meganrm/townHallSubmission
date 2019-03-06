@@ -155,6 +155,7 @@ class MainForm extends React.Component {
       submitEventForReview,
       memberId,
       userDisplayName,
+      resetAllData,
       uid,
     } = this.props;
     const metaData = {
@@ -185,8 +186,7 @@ class MainForm extends React.Component {
       saveUrl,
     };
     submitEventForReview(submit);
-    this.props.form.resetFields();
-    document.body.scrollTop = 0;
+    resetAllData();
   }
 
   resetAll() {

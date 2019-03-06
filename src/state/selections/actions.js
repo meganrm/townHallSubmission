@@ -16,6 +16,10 @@ export const setTempAddress = payload => ({
   type: 'SET_TEMP_ADDRESS',
 });
 
+export const clearTempAddress = () => ({
+  type: 'CLEAR_ADDRESS',
+});
+
 export const resetSelections = () => ({
   type: 'RESET_SELECTIONS',
 });

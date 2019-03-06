@@ -149,7 +149,7 @@ class LocationForm extends React.Component {
             >
               {options}
               <Option value="disabled" disabled>
-            Hit enter to geocode address, then select address from dropdown
+                Hit enter to geocode address, then select address from dropdown
               </Option>
             </Select>,
           )
