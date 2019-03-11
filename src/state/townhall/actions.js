@@ -1,4 +1,6 @@
 import request from 'superagent';
+import moment from 'moment';
+
 import {
   mapValues,
   isUndefined,
@@ -135,7 +137,8 @@ export const getTimeZone = payload => (dispatch) => {
         utcoffset = `UTC${integr}${mins}`;
       }
 
-      const dateObj = new Date(`${payload.date.replace(/-/g, '/')} ${payload.time} ${utcoffset}`).getTime();
+      const dateObj = moment(`${payload.date} ${payload.time} ${utcoffset}`).utc().unix();
+
       return (dispatch(setDateWithTimeZone(
         {
           dateObj,
