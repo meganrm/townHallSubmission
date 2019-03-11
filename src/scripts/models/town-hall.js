@@ -1,4 +1,6 @@
 import request from 'superagent';
+import moment from 'moment';
+
 import { firebasedb } from '../util/setupFirebase';
 
 class TownHall {
@@ -44,7 +46,7 @@ class TownHall {
         } else {
             databaseTH = this;
         }
-        const time = Date.parse(`${newTownHall.Date} ${databaseTH.Time}`) / 1000;
+        const time = Date.parse(`${newTownHall.dateString} ${databaseTH.Time}`) / 1000;
         const loc = `${databaseTH.lat},${databaseTH.lng}`;
         console.log(time, loc);
         const url = `https://maps.googleapis.com/maps/api/timezone/json?location=${loc}&timestamp=${time}&key=AIzaSyBvs-ugD9uydf8lUBwiwvN4dB5X9lbgpLw`;
@@ -75,7 +77,7 @@ class TownHall {
                 }
 
                 console.log(offset, `${newTownHall.Date.replace(/-/g, '/')} ${databaseTH.Time} ${utcoffset}`);
-                newTownHall.dateObj = new Date(`${newTownHall.Date.replace(/-/g, '/')} ${databaseTH.Time} ${utcoffset}`).getTime();
+                newTownHall.dateObj = moment(`${newTownHall.dateString} ${databaseTH.Time} ${utcoffset}`).utc().unix();
                 return newTownHall;
             }).catch((error) => {
                 console.log(error);
