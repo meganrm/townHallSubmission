@@ -77,7 +77,7 @@ class TownHall {
                 }
 
                 console.log(offset, `${newTownHall.Date.replace(/-/g, '/')} ${databaseTH.Time} ${utcoffset}`);
-                newTownHall.dateObj = moment(`${newTownHall.dateString} ${databaseTH.Time} ${utcoffset}`).utc().unix();
+                newTownHall.dateObj = moment(`${newTownHall.dateString} ${databaseTH.Time} ${utcoffset}`).utc().valueOf();
                 return newTownHall;
             }).catch((error) => {
                 console.log(error);
