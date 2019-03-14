@@ -14,6 +14,12 @@ const {
 } = Select;
 const FormItem = Form.Item;
 
+const initialState = {
+    data: [],
+    validating: '',
+    value: undefined,
+};
+
 class LocationForm extends React.Component {
   constructor(props) {
     super(props);
@@ -31,9 +37,9 @@ class LocationForm extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.tempAddress) {
       this.setState(prevState => ({
-        data: uniq([...prevState.data, `Formatted: ${nextProps.tempAddress}`]),
         validating: 'success',
       }));
+      this.props.setFieldsValue({address: nextProps.tempAddress})
     }
   }
 
@@ -55,6 +61,7 @@ class LocationForm extends React.Component {
       data: uniq([...prevState.data, prevState.value]),
       validating: 'validating',
     }));
+
   }
 
   handleChange(value) {
@@ -70,16 +77,14 @@ class LocationForm extends React.Component {
       tempLng,
       tempStateInfo,
     } = this.props;
-    const address = value.split(': ')[1];
+    console.log(value)
     saveAddress({
       ...tempStateInfo,
-      address,
+      address: value,
       lat: tempLat,
       lng: tempLng,
     });
-    this.setState({
-      value: address,
-    });
+    this.setState(initialState);
   }
 
   static renderTeleInputs() {
@@ -105,7 +110,7 @@ class LocationForm extends React.Component {
       data,
     } = this.state;
     const options = data.map(d => (
-      <Option key={d}>
+      <Option key={d} value={d.split(': ')[1]}>
         {d}
       </Option>
     ));
@@ -134,24 +139,14 @@ class LocationForm extends React.Component {
           {getFieldDecorator('address', {
             initialValue: '',
           })(
-            <Select
-              showSearch
-              combobox
+            <Input
               onInputKeyDown={this.onKeyDown}
               placeholder="address"
               style={style}
-              defaultActiveFirstOption={false}
-              showArrow={false}
-              filterOption={false}
-              onSearch={this.handleChange}
-              onSelect={this.handleSelect}
+              onChange={this.handleChange}
+              onBlur={this.handleSearch}
               notFoundContent={null}
-            >
-              {options}
-              <Option value="disabled" disabled>
-                Hit enter to geocode address, then select address from dropdown
-              </Option>
-            </Select>,
+            />,
           )
           }
         </FormItem>
