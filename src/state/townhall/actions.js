@@ -138,7 +138,7 @@ export const getTimeZone = payload => (dispatch) => {
       }
 
       const dateObj = moment(`${payload.date} ${payload.time} ${utcoffset}`).utc().valueOf();
-
+      console.log(dateObj, moment(dateObj).format());
       return (dispatch(setDateWithTimeZone(
         {
           dateObj,
