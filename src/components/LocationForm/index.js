@@ -63,6 +63,7 @@ class LocationForm extends React.Component {
       tempLng,
       tempStateInfo,
       tempAddress,
+      setFieldsValue,
     } = this.props;
     saveAddress({
       ...tempStateInfo,
@@ -71,7 +72,7 @@ class LocationForm extends React.Component {
       lng: tempLng,
     });
     this.setState(initialState);
-    this.props.setFieldsValue({ address: tempAddress });
+    setFieldsValue({ address: tempAddress });
   }
 
   static renderTeleInputs() {
@@ -156,6 +157,7 @@ LocationForm.propTypes = {
   geoCodeLocation: PropTypes.func.isRequired,
   getFieldDecorator: PropTypes.func.isRequired,
   saveAddress: PropTypes.func.isRequired,
+  setFieldsValue: PropTypes.func.isRequired,
   style: PropTypes.shape({}),
   tempAddress: PropTypes.string,
   tempLat: PropTypes.number,
