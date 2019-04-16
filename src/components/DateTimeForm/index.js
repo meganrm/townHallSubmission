@@ -2,6 +2,7 @@ import React from 'react';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import {
+  Button,
   Checkbox,
   Input,
   DatePicker,
@@ -19,9 +20,15 @@ class DateTimeForm extends React.Component {
     this.onChangeDate = this.onChangeDate.bind(this);
     this.onChangeStartTime = this.onChangeStartTime.bind(this);
     this.onChangeEndTime = this.onChangeEndTime.bind(this);
+    this.closeTimeStart = this.closeTimeStart.bind(this);
+    this.closeEndTime = this.closeEndTime.bind(this);
+    this.handleOpenStartChange = this.handleOpenStartChange.bind(this);
+    this.handleOpenEndChange = this.handleOpenEndChange.bind(this);
     this.onRepeatingEventCheckboxChanged = this.onRepeatingEventCheckboxChanged.bind(this);
     this.state = {
       repeatingEvent: false,
+      startOpen: false,
+      endTimeOpen: false,
     };
   }
 
@@ -38,6 +45,8 @@ class DateTimeForm extends React.Component {
     const {
       setStartTime,
     } = this.props;
+    console.log(time, timeString);
+
     setStartTime(timeString);
   }
 
@@ -48,13 +57,29 @@ class DateTimeForm extends React.Component {
     setEndTime(timeString);
   }
 
+  closeTimeStart() {
+    this.setState({ startOpen: false });
+  }
+
+  closeEndTime() {
+    this.setState({ endTimeOpen: false });
+  }
+
+  handleOpenStartChange(open) {
+    this.setState({ startOpen: open });
+  }
+
+  handleOpenEndChange(open) {
+    this.setState({ endTimeOpen: open });
+  }
+
   renderReatingEvent() {
     const {
       getFieldDecorator,
     } = this.props;
     const { repeatingEvent } = this.state;
     return repeatingEvent ? (
-      <FormItem 
+      <FormItem
         className="repeating"
         label="Repeating Event"
         {...formItemLayout}
@@ -91,6 +116,11 @@ class DateTimeForm extends React.Component {
     const {
       getFieldDecorator,
     } = this.props;
+
+    const {
+      startOpen,
+      endTimeOpen,
+    } = this.state;
     return (
       <React.Fragment>
         <FormItem className="checkbox">
@@ -119,13 +149,21 @@ class DateTimeForm extends React.Component {
                 use12Hours
                 minuteStep={15}
                 format="h:mm A"
-                defaultOpenValue={moment().minute(0)}
+                defaultOpenValue={moment().hour(0).minute(0)}
                 onChange={this.onChangeStartTime}
+                open={startOpen}
+                onOpenChange={this.handleOpenStartChange}
+                allowClear={false}
+                addon={() => (
+                  <Button size="small" type="primary" onClick={this.closeTimeStart}>
+                    Ok
+                  </Button>
+                )}
               />,
             )}
         </FormItem>
         <FormItem
-          label = "End time"
+          label="End time"
           {...formItemLayout}
         >
           {getFieldDecorator(
@@ -137,7 +175,15 @@ class DateTimeForm extends React.Component {
               use12Hours
               minuteStep={15}
               format="h:mm A"
+              allowClear={false}
+              open={endTimeOpen}
+              onOpenChange={this.handleOpenEndChange}
               onChange={this.onChangeEndTime}
+              addon={() => (
+                <Button size="small" type="primary" onClick={this.closeEndTime}>
+                    Ok
+                </Button>
+              )}
             />,
           )}
         </FormItem>
