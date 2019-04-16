@@ -1,39 +1,41 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { uniq } from 'lodash';
 
 import {
+  Alert,
   Input,
   Form,
-  Select,
 } from 'antd';
+
 import { formItemLayout } from '../../constants';
 
-const {
-  Option,
-} = Select;
+
 const FormItem = Form.Item;
+
+const initialState = {
+  data: [],
+  validating: '',
+  value: undefined,
+};
 
 class LocationForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: [],
       validating: '',
       value: undefined,
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSearch = this.handleSearch.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
+    this.clearAddressTimeout = this.clearAddressTimeout.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.tempAddress) {
-      this.setState(prevState => ({
-        data: uniq([...prevState.data, `Formatted: ${nextProps.tempAddress}`]),
-        validating: 'success',
-      }));
+  componentDidUpdate(prevProps) {
+    const { tempAddress } = this.props;
+    if (!prevProps.tempAddress && tempAddress) {
+      this.confirmingTime = setTimeout(this.handleSelect, 300);
     }
   }
 
@@ -43,6 +45,12 @@ class LocationForm extends React.Component {
     }
   }
 
+  clearAddressTimeout() {
+    clearTimeout(this.confirmingTime);
+    this.setState(initialState);
+  }
+
+
   handleSearch() {
     const {
       geoCodeLocation,
@@ -50,36 +58,37 @@ class LocationForm extends React.Component {
     const {
       value,
     } = this.state;
-    geoCodeLocation(value.split(': ')[1]);
-    this.setState(prevState => ({
-      data: uniq([...prevState.data, prevState.value]),
-      validating: 'validating',
-    }));
-  }
-
-  handleChange(value) {
+    geoCodeLocation(value);
     this.setState({
-      value: `You entered: ${value}`,
+      validating: 'validating',
     });
   }
 
-  handleSelect(value) {
+  handleChange({ target }) {
+    this.setState({
+      value: target.value,
+    });
+  }
+
+  handleSelect() {
     const {
       saveAddress,
+      clearTempAddress,
       tempLat,
       tempLng,
       tempStateInfo,
+      tempAddress,
+      setFieldsValue,
     } = this.props;
-    const address = value.split(': ')[1];
     saveAddress({
       ...tempStateInfo,
-      address,
+      address: tempAddress,
       lat: tempLat,
       lng: tempLng,
     });
-    this.setState({
-      value: address,
-    });
+    this.setState(initialState);
+    clearTempAddress();
+    setFieldsValue({ address: tempAddress });
   }
 
   static renderTeleInputs() {
@@ -97,18 +106,15 @@ class LocationForm extends React.Component {
 
   render() {
     const {
+      address,
       style,
       getFieldDecorator,
+      tempAddress,
     } = this.props;
     const {
       validating,
-      data,
     } = this.state;
-    const options = data.map(d => (
-      <Option key={d}>
-        {d}
-      </Option>
-    ));
+
     return (
       <React.Fragment>
         <FormItem class="general-inputs">
@@ -127,43 +133,49 @@ class LocationForm extends React.Component {
           className="general-inputs"
           id="location-form-group"
           hasFeedback
-          validateStatus={validating}
+          validateStatus={validating && !tempAddress}
           label="Address"
           {...formItemLayout}
         >
           {getFieldDecorator('address', {
             initialValue: '',
+            isRequired: true,
+            message: 'please enter an address',
           })(
-            <Select
-              showSearch
-              combobox
+
+            <Input
               onInputKeyDown={this.onKeyDown}
               placeholder="address"
               style={style}
-              defaultActiveFirstOption={false}
-              showArrow={false}
-              filterOption={false}
-              onSearch={this.handleChange}
-              onSelect={this.handleSelect}
+              onChange={this.handleChange}
+              onBlur={this.handleSearch}
               notFoundContent={null}
-            >
-              {options}
-              <Option value="disabled" disabled>
-                Hit enter to geocode address, then select address from dropdown
-              </Option>
-            </Select>,
+            />,
           )
           }
+
         </FormItem>
+        {
+          (tempAddress || address) && (
+            <Alert
+              message={(<p>Address from geocoding: <br /><strong>{tempAddress || address}</strong></p>)}
+              type="success"
+              showIcon
+              onClose={this.clearAddressTimeout}
+            />
+          )}
       </React.Fragment>
     );
   }
 }
 
 LocationForm.propTypes = {
+  address: PropTypes.string,
+  clearTempAddress: PropTypes.func.isRequired,
   geoCodeLocation: PropTypes.func.isRequired,
   getFieldDecorator: PropTypes.func.isRequired,
   saveAddress: PropTypes.func.isRequired,
+  setFieldsValue: PropTypes.func.isRequired,
   style: PropTypes.shape({}),
   tempAddress: PropTypes.string,
   tempLat: PropTypes.number,
@@ -172,11 +184,12 @@ LocationForm.propTypes = {
 };
 
 LocationForm.defaultProps = {
+  address: '',
   style: null,
   tempAddress: null,
-  tempStateInfo: null,
   tempLat: 0,
   tempLng: 0,
+  tempStateInfo: null,
 };
 
 export default LocationForm;
