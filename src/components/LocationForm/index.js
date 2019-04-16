@@ -28,7 +28,15 @@ class LocationForm extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleSearch = this.handleSearch.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
+    this.clearAddressTimeout = this.clearAddressTimeout.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
+  }
+
+  componentDidUpdate(prevProps) {
+    const { tempAddress } = this.props;
+    if (!prevProps.tempAddress && tempAddress) {
+      this.confirmingTime = setTimeout(this.handleSelect, 300);
+    }
   }
 
   onKeyDown(e) {
@@ -36,6 +44,12 @@ class LocationForm extends React.Component {
       this.handleSearch();
     }
   }
+
+  clearAddressTimeout() {
+    clearTimeout(this.confirmingTime);
+    this.setState(initialState);
+  }
+
 
   handleSearch() {
     const {
@@ -59,6 +73,7 @@ class LocationForm extends React.Component {
   handleSelect() {
     const {
       saveAddress,
+      clearTempAddress,
       tempLat,
       tempLng,
       tempStateInfo,
@@ -72,6 +87,7 @@ class LocationForm extends React.Component {
       lng: tempLng,
     });
     this.setState(initialState);
+    clearTempAddress();
     setFieldsValue({ address: tempAddress });
   }
 
@@ -90,6 +106,7 @@ class LocationForm extends React.Component {
 
   render() {
     const {
+      address,
       style,
       getFieldDecorator,
       tempAddress,
@@ -116,7 +133,7 @@ class LocationForm extends React.Component {
           className="general-inputs"
           id="location-form-group"
           hasFeedback
-          validateStatus={validating}
+          validateStatus={validating && !tempAddress}
           label="Address"
           {...formItemLayout}
         >
@@ -138,22 +155,23 @@ class LocationForm extends React.Component {
           }
 
         </FormItem>
-        {tempAddress && (
-          <Alert
-            message={(<p>Confirm address from geocoding: <br /><strong>{tempAddress}</strong></p>)}
-            type="success"
-            closable
-            showIcon
-            closeText="OK"
-            onClose={this.handleSelect}
-          />
-        )}
+        {
+          (tempAddress || address) && (
+            <Alert
+              message={(<p>Address from geocoding: <br /><strong>{tempAddress || address}</strong></p>)}
+              type="success"
+              showIcon
+              onClose={this.clearAddressTimeout}
+            />
+          )}
       </React.Fragment>
     );
   }
 }
 
 LocationForm.propTypes = {
+  address: PropTypes.string,
+  clearTempAddress: PropTypes.func.isRequired,
   geoCodeLocation: PropTypes.func.isRequired,
   getFieldDecorator: PropTypes.func.isRequired,
   saveAddress: PropTypes.func.isRequired,
@@ -166,11 +184,12 @@ LocationForm.propTypes = {
 };
 
 LocationForm.defaultProps = {
+  address: '',
   style: null,
   tempAddress: null,
-  tempStateInfo: null,
   tempLat: 0,
   tempLng: 0,
+  tempStateInfo: null,
 };
 
 export default LocationForm;

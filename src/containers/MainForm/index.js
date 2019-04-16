@@ -37,7 +37,11 @@ import DateTimeForm from '../../components/DateTimeForm';
 import 'antd/dist/antd.less';
 
 import { getTownHall } from '../../state/townhall/selectors';
-import { toggleMemberCandidate, lookUpAddress } from '../../state/selections/actions';
+import {
+  clearTempAddress,
+  toggleMemberCandidate,
+  lookUpAddress,
+} from '../../state/selections/actions';
 import {
   mergeNotes,
   addDisclaimer,
@@ -201,10 +205,10 @@ class MainForm extends React.Component {
     const {
       allNames,
       allPeople,
-      address,
       currentTownHall,
       peopleDataUrl,
       personMode,
+      clearTempAddress,
       requestPersonDataById,
       requestAdditionalPersonDataById,
       togglePersonMode,
@@ -332,9 +336,10 @@ class MainForm extends React.Component {
             </FormItem>
           </section>
           <LocationForm
-            address={address}
             geoCodeLocation={geoCodeLocation}
             tempAddress={tempAddress}
+            address={currentTownHall.address}
+            clearTempAddress={clearTempAddress}
             tempLat={tempLat}
             tempLng={tempLng}
             tempStateInfo={{ stateName: tempStateName, state: tempState }}
@@ -464,10 +469,11 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   addDisclaimer: () => dispatch(addDisclaimer()),
+  clearTempAddress: () => dispatch(clearTempAddress()),
   geoCodeLocation: address => dispatch(lookUpAddress(address)),
   mergeNotes: () => dispatch(mergeNotes()),
-  requestPersonDataById: (peopleDataUrl, id) => dispatch(requestPersonDataById(peopleDataUrl, id)),
   requestAdditionalPersonDataById: (peopleDataUrl, id, index) => dispatch(requestAdditionalPersonDataById(peopleDataUrl, id, index)),
+  requestPersonDataById: (peopleDataUrl, id) => dispatch(requestPersonDataById(peopleDataUrl, id)),
   setDate: date => dispatch(setDate(date)),
   setEndTime: time => dispatch(setEndTime(time)),
   setLatLng: payload => dispatch(setLatLng(payload)),
