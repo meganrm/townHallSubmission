@@ -9,11 +9,11 @@ import {
 
 import { formItemLayout } from '../../constants';
 
-
+const { Search } = Input;
 const FormItem = Form.Item;
 
 const initialState = {
-  data: [],
+  showResponse: false,
   validating: '',
   value: undefined,
 };
@@ -21,10 +21,7 @@ const initialState = {
 class LocationForm extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      validating: '',
-      value: undefined,
-    };
+    this.state = initialState;
     this.handleChange = this.handleChange.bind(this);
     this.handleSearch = this.handleSearch.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
@@ -54,17 +51,25 @@ class LocationForm extends React.Component {
   handleSearch() {
     const {
       geoCodeLocation,
+      address,
     } = this.props;
     const {
       value,
     } = this.state;
+    if (address === value || !value) {
+      return;
+    }
     geoCodeLocation(value);
     this.setState({
+      showResponse: true,
       validating: 'validating',
     });
   }
 
   handleChange({ target }) {
+    if (!target) {
+      this.setState(initialState);
+    }
     this.setState({
       value: target.value,
     });
@@ -86,7 +91,9 @@ class LocationForm extends React.Component {
       lat: tempLat,
       lng: tempLng,
     });
-    this.setState(initialState);
+    this.setState({
+      validating: false,
+    });
     clearTempAddress();
     setFieldsValue({ address: tempAddress });
   }
@@ -139,24 +146,27 @@ class LocationForm extends React.Component {
         >
           {getFieldDecorator('address', {
             initialValue: '',
-            isRequired: true,
-            message: 'please enter an address',
+            rules: [{
+              message: 'please enter an address',
+              required: true,
+            }],
           })(
-
-            <Input
-              onInputKeyDown={this.onKeyDown}
+            <Search
+              onPressEnter={this.handleSearch}
+              onSearch={this.handleSearch}
               placeholder="address"
               style={style}
               onChange={this.handleChange}
               onBlur={this.handleSearch}
               notFoundContent={null}
+              allowClear
             />,
           )
           }
 
         </FormItem>
         {
-          (tempAddress || address) && (
+          (tempAddress || address) && this.state.showResponse && (
             <Alert
               message={(<p>Address from geocoding: <br /><strong>{tempAddress || address}</strong></p>)}
               type="success"
