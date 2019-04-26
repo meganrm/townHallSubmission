@@ -3,6 +3,20 @@ export const MANUAL_MODE = 'manual';
 export const MOC_MODE = 'moc';
 export const CANDIDATE_MODE = 'candidate';
 
+export const STATE_LEGS = {
+  AZ: 'Arizona',
+  CO: 'Colorado',
+  // FL: 'Florida',
+  MD: 'Maryland',
+  // ME: 'Maine',
+  MI: 'Michigan',
+  NC: 'North Carolina',
+  NV: 'Nevada',
+  OR: 'Oregon',
+  // PA: 'Pennsylvania',
+  VA: 'Virginia',
+};
+
 export const formItemLayout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 14 },

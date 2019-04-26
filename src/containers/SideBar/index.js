@@ -7,12 +7,15 @@ import {
 import {
   Menu,
 } from 'antd';
+import { map } from 'lodash';
+
 import page from '../../vendor/scripts/page';
 
 import {
   setUsState,
 } from '../../state/selections/actions';
 import { getSelectedUSState } from '../../state/selections/selectors';
+import { STATE_LEGS } from '../../constants';
 
 const MenuItemGroup = Menu.ItemGroup;
 
@@ -49,11 +52,7 @@ class SideBar extends React.Component {
             <Menu.Item key="federal">Federal</Menu.Item>
           </MenuItemGroup>
           <MenuItemGroup key="state-title" title="Enter events for state legislators">
-            <Menu.Item key="AZ">Arizona</Menu.Item>
-            <Menu.Item key="CO">Colorado</Menu.Item>
-            <Menu.Item key="OR">Oregon</Menu.Item>
-            <Menu.Item key="NC">North Carolina</Menu.Item>
-            <Menu.Item key="VA">Virginia</Menu.Item>
+            {map(STATE_LEGS, (stateName, state) => (<Menu.Item key={state}>{stateName}</Menu.Item>))}
           </MenuItemGroup>
         </Menu>
       </section>
