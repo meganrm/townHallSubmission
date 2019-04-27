@@ -37,13 +37,23 @@ class MemberLookup extends React.Component {
       getFieldValue,
       personMode,
     } = this.props;
-  
     if (currentTownHall.members.length !== prevProps.currentTownHall.members.length) {
       currentTownHall.members.forEach((member, index) => {
         const key = `preview-${index}`;
         setFieldsValue({
-          [key]: `${this.formatName(member)} ${this.formatDistrict(member)}`,
+          [key]: `${this.formatName(member)} ${this.formatDistrict()}`,
         });
+      });
+    }
+    if (currentTownHall.displayName && currentTownHall.displayName !== prevProps.currentTownHall.displayName) {
+      const key = 'preview-0';
+      setFieldsValue({
+        [key]: `${this.formatName(currentTownHall)} ${this.formatDistrict()}`,
+      });
+    } else if (!currentTownHall.displayName && prevProps.currentTownHall.displayName) {
+      const key = 'preview-0';
+      setFieldsValue({
+        [key]: '',
       });
     }
     if (!getFieldValue('displayName') && personMode !== MANUAL_MODE && document.querySelector('.ant-select-selection__clear')) {
@@ -73,7 +83,7 @@ class MemberLookup extends React.Component {
     return requestAdditionalPersonDataById(peopleDataUrl, person.id);
   }
 
-  formatName(member) {
+  formatName() {
     const {
       currentTownHall,
       personMode,
@@ -88,11 +98,11 @@ class MemberLookup extends React.Component {
       lower: 'Rep.',
       nationwide: 'President',
     };
-    if (member.displayName && personMode === 'moc') {
-      return `${prefixMapping[member.chamber]} ${member.displayName} (${member.party})`;
+    if (currentTownHall.displayName && personMode === 'moc') {
+      return `${prefixMapping[currentTownHall.chamber]} ${currentTownHall.displayName} (${currentTownHall.party})`;
     }
     if (currentTownHall.displayName && personMode === 'candidate') {
-      return `${member.displayName} (${member.party}), Running for: `;
+      return `${currentTownHall.displayName} (${currentTownHall.party}), Running for: `;
     }
     return '';
   }
@@ -306,8 +316,8 @@ class MemberLookup extends React.Component {
         </Radio.Group>
         {personMode === 'manual' ? renderCustomPersonForm(
           {
-            getFieldDecorator,
             currentTownHall,
+            getFieldDecorator,
             getFieldValue,
             selectedUSState,
             setGenericTownHallValue,
