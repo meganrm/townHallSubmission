@@ -1,40 +1,64 @@
 import React from 'react';
+import classNames from 'classnames';
 import {
   Layout,
 } from 'antd';
 
 import MainFormController from '../FormController';
 import SideBar from '../SideBar';
+import './style.scss';
 
 const {
   Header,
   Sider,
   Content,
 } = Layout;
-export default () => (
-  <div>
 
-    <Layout>
-      <Sider
-        breakpoint="xs"
-        style={{
-          height: '100vh',
-          left: 0,
-          overflow: 'auto',
-          position: 'fixed',
-        }}
-      >
-        <SideBar />
-      </Sider>
-      <Layout style={{ marginLeft: 200 }}>
-        <Header style={{ background: '#fff', padding: 10 }}>
-          <h3 className="text-success">Enter a new town hall event</h3>
-        </Header>
-        <Content style={{ margin: '0 48px 0', overflow: 'initial' }}>
-          <MainFormController />
-        </Content>
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.onCollapse = this.onCollapse.bind(this);
+    this.state = {
+      collapsed: false,
+    };
+  }
+
+  onCollapse(collapsed) {
+    console.log(collapsed);
+    this.setState({
+      collapsed,
+    });
+  }
+
+  render() {
+    const { collapsed } = this.state;
+    const contentClass = classNames('body-content', {
+      'side-bar-open': !collapsed,
+    });
+    return (
+      <Layout>
+        <Sider
+          breakpoint="lg"
+          collapsible
+          width={250}
+          collapsedWidth="0"
+          collapsed={collapsed}
+          onCollapse={this.onCollapse}
+          style={{
+            height: '100vh',
+            left: 0,
+          }}
+        >
+          <SideBar />
+        </Sider>
+        <Layout className={contentClass}>
+          <Content>
+            <MainFormController />
+          </Content>
+        </Layout>
       </Layout>
-    </Layout>
-  </div>
+    );
+  }
+}
 
-);
+export default App;
