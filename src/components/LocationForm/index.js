@@ -98,16 +98,15 @@ class LocationForm extends React.Component {
     setFieldsValue({ address: tempAddress });
   }
 
-  static renderTeleInputs() {
+  renderTeleInputs() {
+    const {
+      getFieldDecorator,
+    } = this.props;
     return (
       <FormItem>
-        <label className="" htmlFor="phoneNumber">
-        Phone Number format: (555) 555-5555
-        </label>
-        <Input type="tel" class="form-control" id="phoneNumber" placeholder="Phone Number" value="" />
-        <span id="phoneNumber-error" className="help-block error-message hidden">
-        Please enter a valid phone number
-        </span>
+        {getFieldDecorator('phoneNumber', {
+          initialValue: '',
+        })(<Input type="tel" class="form-control" placeholder="Phone Number" />)}
       </FormItem>);
   }
 
@@ -117,11 +116,13 @@ class LocationForm extends React.Component {
       style,
       getFieldDecorator,
       tempAddress,
+      getFieldValue,
     } = this.props;
     const {
+      showResponse,
       validating,
     } = this.state;
-
+    const meetingType = getFieldValue('meetingType');
     return (
       <React.Fragment>
         <FormItem class="general-inputs">
@@ -136,37 +137,39 @@ class LocationForm extends React.Component {
             />,
           )}
         </FormItem>
-        <FormItem
-          className="general-inputs"
-          id="location-form-group"
-          hasFeedback
-          validateStatus={validating && !tempAddress}
-          label="Address"
-          {...formItemLayout}
-        >
-          {getFieldDecorator('address', {
-            initialValue: '',
-            rules: [{
-              message: 'please enter an address',
-              required: true,
-            }],
-          })(
-            <Search
-              onPressEnter={this.handleSearch}
-              onSearch={this.handleSearch}
-              placeholder="address"
-              style={style}
-              onChange={this.handleChange}
-              onBlur={this.handleSearch}
-              notFoundContent={null}
-              allowClear
-            />,
-          )
-          }
-
-        </FormItem>
+        {meetingType === 'Tele-Town Hall' ? this.renderTeleInputs()
+          : (
+            <FormItem
+              className="general-inputs"
+              id="location-form-group"
+              hasFeedback
+              // help={getError('address') || ''}
+              validateStatus={validating && !tempAddress}
+              label="Address"
+              {...formItemLayout}
+            >
+              {getFieldDecorator('address', {
+                initialValue: '',
+                rules: [{
+                  message: 'please enter an address',
+                  required: meetingType !== 'Tele-Town Hall',
+                }],
+              })(
+                <Search
+                  onPressEnter={this.handleSearch}
+                  onSearch={this.handleSearch}
+                  placeholder="address"
+                  style={style}
+                  onChange={this.handleChange}
+                  onBlur={this.handleSearch}
+                  notFoundContent={null}
+                  allowClear
+                />,
+              )}
+            </FormItem>
+          )}
         {
-          (tempAddress || address) && this.state.showResponse && (
+          (tempAddress || address) && showResponse && (
             <Alert
               message={(<p>Address from geocoding: <br /><strong>{tempAddress || address}</strong></p>)}
               type="success"
@@ -184,6 +187,7 @@ LocationForm.propTypes = {
   clearTempAddress: PropTypes.func.isRequired,
   geoCodeLocation: PropTypes.func.isRequired,
   getFieldDecorator: PropTypes.func.isRequired,
+  getFieldValue: PropTypes.func.isRequired,
   saveAddress: PropTypes.func.isRequired,
   setFieldsValue: PropTypes.func.isRequired,
   style: PropTypes.shape({}),
