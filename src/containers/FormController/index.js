@@ -23,19 +23,8 @@ import 'antd/dist/antd.less';
 import {
   getTownHall,
 } from '../../state/townhall/selectors';
-import {
-  setFormKeys,
-  resetFormKeys,
-  clearTempAddress,
-} from '../../state/selections/actions';
-import {
-  addDisclaimer,
-  setMeetingType,
-  setValue,
-  clearDisclaimer,
-  resetTownHall,
-  setUsState,
-} from '../../state/townhall/actions';
+import selectionStateBranch from '../../state/selections';
+import townHallStateBranch from '../../state/townhall';
 import MainForm from '../MainForm';
 
 import './style.scss';
@@ -63,10 +52,21 @@ class FormController extends React.Component {
     this.handleFormChange = this.handleFormChange.bind(this);
     this.resetAllData = this.resetAllData.bind(this);
     this.resetErrors = this.resetErrors.bind(this);
+    this.setErrors = this.setErrors.bind(this);
     this.state = {
       displayValues: {},
       errors: null,
     };
+  }
+
+  setErrors(errors) {
+    this.setState({ errors });
+  }
+
+  resetErrors() {
+    this.setState({
+      errors: null,
+    });
   }
 
   resetAllData() {
@@ -75,16 +75,13 @@ class FormController extends React.Component {
       resetFormKeys,
       clearTempAddress,
     } = this.props;
-    this.setState({ displayValues: null, errors: null });
+    this.setState({
+      displayValues: null,
+      errors: null,
+    });
     resetFormKeys();
     clearTempAddress();
     resetTownHallData();
-  }
-
-  resetErrors() {
-    this.setState({
-      errors: null
-    });
   }
 
   handleFormChange(changedFields) {
@@ -155,6 +152,8 @@ class FormController extends React.Component {
               onChange={this.handleFormChange}
               resetAllData={this.resetAllData}
               errors={errors}
+              resetErrors={this.resetErrors}
+              setErrors={this.setErrors}
             />
           </Col>
           <Col span={12}>
@@ -185,22 +184,27 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  addDisclaimer: () => dispatch(addDisclaimer()),
-  clearDisclaimer: () => dispatch(clearDisclaimer()),
-  clearTempAddress: () => dispatch(clearTempAddress()),
-  resetFormKeys: () => dispatch(resetFormKeys()),
-  resetTownHallData: () => dispatch(resetTownHall()),
-  setMeetingType: payload => dispatch(setMeetingType(payload)),
-  setNumberofKeys: payload => dispatch(setFormKeys(payload)),
-  setUsState: payload => dispatch(setUsState(payload)),
-  setValue: payload => dispatch(setValue(payload)),
+  addDisclaimer: () => dispatch(townHallStateBranch.actions.addDisclaimer()),
+  clearDisclaimer: () => dispatch(townHallStateBranch.actions.clearDisclaimer()),
+  clearTempAddress: () => dispatch(selectionStateBranch.actions.clearTempAddress()),
+  resetFormKeys: () => dispatch(selectionStateBranch.actions.resetFormKeys()),
+  resetTownHallData: () => dispatch(townHallStateBranch.actions.resetTownHall()),
+  setMeetingType: payload => dispatch(townHallStateBranch.actions.setMeetingType(payload)),
+  setNumberofKeys: payload => dispatch(selectionStateBranch.actions.setFormKeys(payload)),
+  setUsState: payload => dispatch(townHallStateBranch.actions.setUsState(payload)),
+  setValue: payload => dispatch(townHallStateBranch.actions.setValue(payload)),
 });
 
 FormController.propTypes = {
   addDisclaimer: PropTypes.func.isRequired,
   clearDisclaimer: PropTypes.func.isRequired,
+  clearTempAddress: PropTypes.func.isRequired,
+  currentTownHall: PropTypes.shape({}).isRequired,
+  resetFormKeys: PropTypes.func.isRequired,
+  resetTownHallData: PropTypes.func.isRequired,
   setMeetingType: PropTypes.func.isRequired,
   setNumberofKeys: PropTypes.func.isRequired,
+  setUsState: PropTypes.func.isRequired,
   setValue: PropTypes.func.isRequired,
 };
 

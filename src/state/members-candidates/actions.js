@@ -26,6 +26,7 @@ export const requestPersonDataById = (peopleDataUrl, id) => dispatch => firebase
   .once('value')
   .then((result) => {
     const personData = result.val();
+    console.log(personData)
     personData.district = sanitizeDistrict(personData.district);
     return (dispatch(setDataFromPersonInDatabase(personData)));
   });

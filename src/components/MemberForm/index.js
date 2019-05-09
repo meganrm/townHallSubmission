@@ -191,6 +191,7 @@ class MemberLookup extends React.Component {
       getFieldDecorator,
       selectedUSState,
       personMode,
+      getError,
     } = this.props;
     const intro = personMode === 'candidate' ? 'Candidate for ' : 'Member of ';
     let title = `${intro}Congress Information `;
@@ -209,6 +210,8 @@ class MemberLookup extends React.Component {
         </h4>
         <FormItem
           extra="Enter their name and we will auto-fill the information"
+          validateStatus={getError('displayName') ? 'error' : ''}
+          help={getError('displayName') || ''}
         >
           {
             getFieldDecorator(fieldName, {
@@ -345,6 +348,7 @@ MemberLookup.propTypes = {
     },
   )).isRequired,
   currentTownHall: PropTypes.shape({}).isRequired,
+  getError: PropTypes.func.isRequired,
   getFieldDecorator: PropTypes.func.isRequired,
   getFieldValue: PropTypes.func.isRequired,
   peopleDataUrl: PropTypes.string.isRequired,
