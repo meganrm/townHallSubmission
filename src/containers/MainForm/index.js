@@ -2,9 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {
   mapValues,
+  map,
 } from 'lodash';
 import { connect } from 'react-redux';
 import {
+  Alert,
   BackTop,
   Form,
   Button,
@@ -99,6 +101,12 @@ class MainForm extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.checkSubmit = this.checkSubmit.bind(this);
     this.resetAll = this.resetAll.bind(this);
+    this.renderErrors = this.renderErrors.bind(this);
+    this.checkSubmit = this.checkSubmit.bind(this);
+    this.getError = this.getError.bind(this);
+    this.state = {
+      error: null,
+    };
   }
 
   componentWillMount() {
@@ -121,7 +129,6 @@ class MainForm extends React.Component {
     if (peopleNameUrl !== nextProps.peopleNameUrl) {
       startSetPeople(nextProps.peopleNameUrl);
     }
-    // this.setState({...nextProps.currentTownHall})
   }
 
   componentDidUpdate(prevProps) {
@@ -139,10 +146,12 @@ class MainForm extends React.Component {
     }
   }
 
+
   checkSubmit(e) {
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err) => {
       if (err) {
+        this.setState({ error: err });
         return console.log(err);
       }
       return this.handleSubmit();
@@ -159,7 +168,6 @@ class MainForm extends React.Component {
       submitEventForReview,
       memberId,
       userDisplayName,
-      resetAllData,
       uid,
     } = this.props;
     const metaData = {
@@ -190,7 +198,7 @@ class MainForm extends React.Component {
       saveUrl,
     };
     submitEventForReview(submit);
-    resetAllData();
+    this.resetAll();
   }
 
   resetAll() {
@@ -201,7 +209,27 @@ class MainForm extends React.Component {
     MainForm.scrollToTop();
   }
 
+  getError(field) {
+    const {
+      getFieldError,
+    } = this.props.form;
+    return getFieldError(field);
+  }
+
+  renderErrors() {
+    return (
+      <Alert
+        message={(<p>You are missing required fields</p>)}
+        type="error"
+        showIcon
+        closable
+      />);
+  }
+
   render() {
+    const {
+      error,
+    } = this.state;
     const {
       allNames,
       allPeople,
@@ -230,12 +258,13 @@ class MainForm extends React.Component {
       getFieldValue,
       getFieldsValue,
       setFieldsValue,
+      getFieldError,
     } = this.props.form;
 
     return (
       <div className="new-event-form">
         <BackTop />
-
+        {error && this.renderErrors()}
         <Form
           onSubmit={this.checkSubmit}
           id="new-event-form-element"
@@ -278,6 +307,8 @@ class MainForm extends React.Component {
             </FormItem>
             <FormItem
               label="Event type"
+              validateStatus={getFieldError('meetingType') ? 'error' : ''}
+              help={getFieldError('meetingType') || ''}
               {...formItemLayout}
             >
               {getFieldDecorator('meetingType', {
@@ -348,13 +379,14 @@ class MainForm extends React.Component {
             getFieldDecorator={getFieldDecorator}
             setFieldsValue={setFieldsValue}
             getFieldValue={getFieldValue}
+            getError={this.getError}
           />
           <DateTimeForm
             setDate={setDate}
             setStartTime={setStartTime}
             setEndTime={setEndTime}
             getFieldDecorator={getFieldDecorator}
-
+            getError={this.getError}
           />
           <section className="extra-data event-details">
             <h4>
@@ -414,10 +446,10 @@ class MainForm extends React.Component {
                   initialValue: initFieldValue,
                 })(
                 <TextArea
-                  id="Notes"
-                  rows={3}
-                  placeholder="Notes about event that cannot be entered anywhere else."
-                />,
+                    id="Notes"
+                    rows={3}
+                    placeholder="Notes about event that cannot be entered anywhere else."
+                  />,
               )}
             </FormItem>
             <FormItem>
@@ -528,10 +560,10 @@ const WrappedMainForm = Form.create({
         value,
       })
     ));
-    const displayNames = mapValues(displayValues, (value) => (
-       Form.createFormField({
-          value,
-        })
+    const displayNames = mapValues(displayValues, value => (
+      Form.createFormField({
+        value,
+      })
     ));
     return {
       ...townHallProps,

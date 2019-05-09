@@ -62,8 +62,10 @@ class FormController extends React.Component {
     super(props);
     this.handleFormChange = this.handleFormChange.bind(this);
     this.resetAllData = this.resetAllData.bind(this);
+    this.resetErrors = this.resetErrors.bind(this);
     this.state = {
       displayValues: {},
+      errors: null,
     };
   }
 
@@ -73,12 +75,17 @@ class FormController extends React.Component {
       resetFormKeys,
       clearTempAddress,
     } = this.props;
-    this.setState({ displayValues: null });
+    this.setState({ displayValues: null, errors: null });
     resetFormKeys();
     clearTempAddress();
     resetTownHallData();
   }
 
+  resetErrors() {
+    this.setState({
+      errors: null
+    });
+  }
 
   handleFormChange(changedFields) {
     const {
@@ -92,6 +99,7 @@ class FormController extends React.Component {
       setUsState,
       setNumberofKeys,
     } = this.props;
+
     map(changedFields, (changedField) => {
       const {
         name,
@@ -136,6 +144,7 @@ class FormController extends React.Component {
     } = this.props;
     const {
       displayValues,
+      errors,
     } = this.state;
     return (
       <div className="form-container">
@@ -145,6 +154,7 @@ class FormController extends React.Component {
               displayValues={displayValues}
               onChange={this.handleFormChange}
               resetAllData={this.resetAllData}
+              errors={errors}
             />
           </Col>
           <Col span={12}>
@@ -177,9 +187,9 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   addDisclaimer: () => dispatch(addDisclaimer()),
   clearDisclaimer: () => dispatch(clearDisclaimer()),
-  resetTownHallData: () => dispatch(resetTownHall()),
   clearTempAddress: () => dispatch(clearTempAddress()),
   resetFormKeys: () => dispatch(resetFormKeys()),
+  resetTownHallData: () => dispatch(resetTownHall()),
   setMeetingType: payload => dispatch(setMeetingType(payload)),
   setNumberofKeys: payload => dispatch(setFormKeys(payload)),
   setUsState: payload => dispatch(setUsState(payload)),

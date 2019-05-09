@@ -45,8 +45,6 @@ class DateTimeForm extends React.Component {
     const {
       setStartTime,
     } = this.props;
-    console.log(time, timeString);
-
     setStartTime(timeString);
   }
 
@@ -73,9 +71,10 @@ class DateTimeForm extends React.Component {
     this.setState({ endTimeOpen: open });
   }
 
-  renderReatingEvent() {
+  renderRepeatingEvent() {
     const {
       getFieldDecorator,
+      getError,
     } = this.props;
     const { repeatingEvent } = this.state;
     return repeatingEvent ? (
@@ -97,7 +96,9 @@ class DateTimeForm extends React.Component {
       </FormItem>
     )
       : (
-        <FormItem>
+        <FormItem
+          help={getError('date') || ''}
+        >
           {
             getFieldDecorator('date', {
               initialValue: undefined,
@@ -115,6 +116,7 @@ class DateTimeForm extends React.Component {
   render() {
     const {
       getFieldDecorator,
+      getError,
     } = this.props;
 
     const {
@@ -130,9 +132,10 @@ class DateTimeForm extends React.Component {
             Repeating Event
           </Checkbox>
         </FormItem>
-        {this.renderReatingEvent()}
+        {this.renderRepeatingEvent()}
         <FormItem
           label="Start time"
+          help={getError('time') || ''}
           {...formItemLayout}
         >
           {
@@ -193,6 +196,7 @@ class DateTimeForm extends React.Component {
 }
 
 DateTimeForm.propTypes = {
+  getError: PropTypes.func.isRequired,
   getFieldDecorator: PropTypes.func.isRequired,
   setDate: PropTypes.func.isRequired,
   setEndTime: PropTypes.func.isRequired,
