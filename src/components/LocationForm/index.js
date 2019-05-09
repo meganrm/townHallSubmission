@@ -106,7 +106,7 @@ class LocationForm extends React.Component {
       <FormItem>
         {getFieldDecorator('phoneNumber', {
           initialValue: '',
-        })(<Input type="tel" class="form-control" placeholder="Phone Number" value="" />)}
+        })(<Input type="tel" class="form-control" placeholder="Phone Number" />)}
       </FormItem>);
   }
 
@@ -117,9 +117,9 @@ class LocationForm extends React.Component {
       getFieldDecorator,
       tempAddress,
       getFieldValue,
-      getError,
     } = this.props;
     const {
+      showResponse,
       validating,
     } = this.state;
     const meetingType = getFieldValue('meetingType');
@@ -143,7 +143,7 @@ class LocationForm extends React.Component {
               className="general-inputs"
               id="location-form-group"
               hasFeedback
-              help={getError('address') || ''}
+              // help={getError('address') || ''}
               validateStatus={validating && !tempAddress}
               label="Address"
               {...formItemLayout}
@@ -169,7 +169,7 @@ class LocationForm extends React.Component {
             </FormItem>
           )}
         {
-          (tempAddress || address) && this.state.showResponse && (
+          (tempAddress || address) && showResponse && (
             <Alert
               message={(<p>Address from geocoding: <br /><strong>{tempAddress || address}</strong></p>)}
               type="success"
@@ -187,6 +187,7 @@ LocationForm.propTypes = {
   clearTempAddress: PropTypes.func.isRequired,
   geoCodeLocation: PropTypes.func.isRequired,
   getFieldDecorator: PropTypes.func.isRequired,
+  getFieldValue: PropTypes.func.isRequired,
   saveAddress: PropTypes.func.isRequired,
   setFieldsValue: PropTypes.func.isRequired,
   style: PropTypes.shape({}),
