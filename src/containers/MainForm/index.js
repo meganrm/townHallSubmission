@@ -5,6 +5,7 @@ import {
 } from 'lodash';
 import { connect } from 'react-redux';
 import {
+  Alert,
   BackTop,
   Form,
   Button,
@@ -13,16 +14,7 @@ import {
   Checkbox,
 } from 'antd';
 
-import {
-  startSetPeople,
-  requestPersonDataById,
-  requestAdditionalPersonDataById,
-} from '../../state/members-candidates/actions';
-
-import {
-  getAllNames,
-  getAllPeople,
-} from '../../state/members-candidates/selectors';
+import lawMakerStateBranch from '../../state/members-candidates';
 
 import selectionStateBranch from '../../state/selections';
 
@@ -36,26 +28,8 @@ import DateTimeForm from '../../components/DateTimeForm';
 
 import 'antd/dist/antd.less';
 
-import { getTownHall } from '../../state/townhall/selectors';
-import {
-  clearTempAddress,
-  toggleMemberCandidate,
-  lookUpAddress,
-} from '../../state/selections/actions';
-import {
-  mergeNotes,
-  addDisclaimer,
-  setLatLng,
-  setDate,
-  setStartTime,
-  setMeetingType,
-  setEndTime,
-  setValue,
-  getTimeZone,
-  saveMetaData,
-  submitEventForReview,
-} from '../../state/townhall/actions';
-import { getFormKeys } from '../../state/selections/selectors';
+import townHallStateBranch from '../../state/townhall';
+
 import { formItemLayout } from '../../constants';
 
 const FormItem = Form.Item;
@@ -99,6 +73,8 @@ class MainForm extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.checkSubmit = this.checkSubmit.bind(this);
     this.resetAll = this.resetAll.bind(this);
+    this.checkSubmit = this.checkSubmit.bind(this);
+    this.getError = this.getError.bind(this);
   }
 
   componentWillMount() {
@@ -121,7 +97,6 @@ class MainForm extends React.Component {
     if (peopleNameUrl !== nextProps.peopleNameUrl) {
       startSetPeople(nextProps.peopleNameUrl);
     }
-    // this.setState({...nextProps.currentTownHall})
   }
 
   componentDidUpdate(prevProps) {
@@ -139,14 +114,14 @@ class MainForm extends React.Component {
     }
   }
 
-  checkSubmit(e) {
-    e.preventDefault();
-    this.props.form.validateFieldsAndScroll((err) => {
-      if (err) {
-        return console.log(err);
-      }
-      return this.handleSubmit();
-    });
+  getError(field) {
+    const {
+      errors,
+    } = this.props;
+    if (errors && errors[field]) {
+      return errors[field].errors[0].message;
+    }
+    return false;
   }
 
   handleSubmit() {
@@ -159,7 +134,6 @@ class MainForm extends React.Component {
       submitEventForReview,
       memberId,
       userDisplayName,
-      resetAllData,
       uid,
     } = this.props;
     const metaData = {
@@ -190,7 +164,7 @@ class MainForm extends React.Component {
       saveUrl,
     };
     submitEventForReview(submit);
-    resetAllData();
+    return this.resetAll();
   }
 
   resetAll() {
@@ -201,6 +175,31 @@ class MainForm extends React.Component {
     MainForm.scrollToTop();
   }
 
+  checkSubmit(e) {
+    e.preventDefault();
+    const {
+      setErrors,
+      form,
+    } = this.props;
+    form.validateFieldsAndScroll((err) => {
+      if (err) {
+        setErrors(err);
+        return console.log(err);
+      }
+      return this.handleSubmit();
+    });
+  }
+
+  static renderErrors() {
+    return (
+      <Alert
+        message={(<p>You are missing required fields</p>)}
+        type="error"
+        showIcon
+        closable
+      />);
+  }
+
   render() {
     const {
       allNames,
@@ -208,12 +207,15 @@ class MainForm extends React.Component {
       currentTownHall,
       peopleDataUrl,
       personMode,
+      peopleLookUpError,
       clearTempAddress,
+      handleDatabaseLookupError,
       requestPersonDataById,
       requestAdditionalPersonDataById,
       togglePersonMode,
       selectedUSState,
       geoCodeLocation,
+      resetDatabaseLookupError,
       setLatLng,
       setDate,
       setStartTime,
@@ -224,18 +226,20 @@ class MainForm extends React.Component {
       tempStateName,
       tempState,
       setValue,
+      errors,
+      form,
     } = this.props;
     const {
       getFieldDecorator,
       getFieldValue,
       getFieldsValue,
       setFieldsValue,
-    } = this.props.form;
+    } = form;
 
     return (
       <div className="new-event-form">
         <BackTop />
-
+        {errors && MainForm.renderErrors()}
         <Form
           onSubmit={this.checkSubmit}
           id="new-event-form-element"
@@ -260,8 +264,12 @@ class MainForm extends React.Component {
             getFieldValue={getFieldValue}
             setFieldsValue={setFieldsValue}
             fields={getFieldsValue()}
+            getError={this.getError}
+            peopleLookUpError={peopleLookUpError}
+            resetDatabaseLookUpError={resetDatabaseLookupError}
+            handleDatabaseLookupError={handleDatabaseLookupError}
           />
-          <section className="meeting infomation">
+          <section className="meeting information">
             <h4>
               Information about the Event
             </h4>
@@ -278,6 +286,8 @@ class MainForm extends React.Component {
             </FormItem>
             <FormItem
               label="Event type"
+              validateStatus={this.getError('meetingType') ? 'error' : ''}
+              help={this.getError('meetingType') || ''}
               {...formItemLayout}
             >
               {getFieldDecorator('meetingType', {
@@ -348,13 +358,14 @@ class MainForm extends React.Component {
             getFieldDecorator={getFieldDecorator}
             setFieldsValue={setFieldsValue}
             getFieldValue={getFieldValue}
+            getError={this.getError}
           />
           <DateTimeForm
             setDate={setDate}
             setStartTime={setStartTime}
             setEndTime={setEndTime}
             getFieldDecorator={getFieldDecorator}
-
+            getError={this.getError}
           />
           <section className="extra-data event-details">
             <h4>
@@ -409,10 +420,7 @@ class MainForm extends React.Component {
               <label htmlFor="Notes">
               Public Notes
               </label>
-              {getFieldDecorator('Notes',
-                {
-                  initialValue: initFieldValue,
-                })(
+              {getFieldDecorator('Notes', { initialValue: initFieldValue })(
                 <TextArea
                   id="Notes"
                   rows={3}
@@ -449,11 +457,12 @@ class MainForm extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  allNames: getAllNames(state),
-  allPeople: getAllPeople(state),
-  currentTownHall: getTownHall(state),
-  formKeys: getFormKeys(state),
+  allNames: lawMakerStateBranch.selectors.getAllNames(state),
+  allPeople: lawMakerStateBranch.selectors.getAllPeople(state),
+  currentTownHall: townHallStateBranch.selectors.getTownHall(state),
+  formKeys: selectionStateBranch.selectors.getFormKeys(state),
   peopleDataUrl: selectionStateBranch.selectors.getPeopleDataUrl(state),
+  peopleLookUpError: lawMakerStateBranch.selectors.getPeopleRequestError(state),
   peopleNameUrl: selectionStateBranch.selectors.getPeopleNameUrl(state),
   personMode: selectionStateBranch.selectors.getMode(state),
   saveUrl: selectionStateBranch.selectors.getSaveUrl(state),
@@ -468,55 +477,82 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  addDisclaimer: () => dispatch(addDisclaimer()),
-  clearTempAddress: () => dispatch(clearTempAddress()),
-  geoCodeLocation: address => dispatch(lookUpAddress(address)),
-  mergeNotes: () => dispatch(mergeNotes()),
-  requestAdditionalPersonDataById: (peopleDataUrl, id, index) => dispatch(requestAdditionalPersonDataById(peopleDataUrl, id, index)),
-  requestPersonDataById: (peopleDataUrl, id) => dispatch(requestPersonDataById(peopleDataUrl, id)),
-  setDate: date => dispatch(setDate(date)),
-  setEndTime: time => dispatch(setEndTime(time)),
-  setLatLng: payload => dispatch(setLatLng(payload)),
-  setMeetingType: payload => dispatch(setMeetingType(payload)),
-  setStartTime: time => dispatch(setStartTime(time)),
-  setTimeZone: payload => dispatch(getTimeZone(payload)),
-  setValue: payload => dispatch(setValue(payload)),
-  startSetPeople: peopleNameUrl => dispatch(startSetPeople(peopleNameUrl)),
-  submitEventForReview: payload => dispatch(submitEventForReview(payload)),
-  submitMetaData: payload => dispatch(saveMetaData(payload)),
-  togglePersonMode: mode => dispatch(toggleMemberCandidate(mode)),
+  addDisclaimer: () => dispatch(townHallStateBranch.actions.addDisclaimer()),
+  clearTempAddress: () => dispatch(selectionStateBranch.actions.clearTempAddress()),
+  geoCodeLocation: address => dispatch(selectionStateBranch.actions.lookUpAddress(address)),
+  handleDatabaseLookupError: () => dispatch(lawMakerStateBranch.actions.databaseLookupError()),
+  mergeNotes: () => dispatch(townHallStateBranch.actions.mergeNotes()),
+  requestAdditionalPersonDataById: (peopleDataUrl, id, index) => dispatch(lawMakerStateBranch.actions.requestAdditionalPersonDataById(peopleDataUrl, id, index)),
+  requestPersonDataById: (peopleDataUrl, id) => dispatch(lawMakerStateBranch.actions.requestPersonDataById(peopleDataUrl, id)),
+  resetDatabaseLookupError: () => dispatch(lawMakerStateBranch.actions.resetDatabaseLookUpError()),
+  setDate: date => dispatch(townHallStateBranch.actions.setDate(date)),
+  setEndTime: time => dispatch(townHallStateBranch.actions.setEndTime(time)),
+  setLatLng: payload => dispatch(townHallStateBranch.actions.setLatLng(payload)),
+  setMeetingType: payload => dispatch(townHallStateBranch.actions.setMeetingType(payload)),
+  setStartTime: time => dispatch(townHallStateBranch.actions.setStartTime(time)),
+  setTimeZone: payload => dispatch(townHallStateBranch.actions.getTimeZone(payload)),
+  setValue: payload => dispatch(townHallStateBranch.actions.setValue(payload)),
+  startSetPeople: peopleNameUrl => dispatch(lawMakerStateBranch.actions.startSetPeople(peopleNameUrl)),
+  submitEventForReview: payload => dispatch(townHallStateBranch.actions.submitEventForReview(payload)),
+  submitMetaData: payload => dispatch(townHallStateBranch.actions.saveMetaData(payload)),
+  togglePersonMode: mode => dispatch(selectionStateBranch.actions.toggleMemberCandidate(mode)),
 });
 
 MainForm.propTypes = {
   allNames: PropTypes.arrayOf(PropTypes.string).isRequired,
   allPeople: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  clearTempAddress: PropTypes.func.isRequired,
   currentTownHall: PropTypes.shape({}).isRequired,
+  errors: PropTypes.shape({}),
+  form: PropTypes.shape({}).isRequired,
+  geoCodeLocation: PropTypes.func.isRequired,
+  handleDatabaseLookupError: PropTypes.func.isRequired,
+  memberId: PropTypes.func.isRequired,
+  mergeNotes: PropTypes.func.isRequired,
   peopleDataUrl: PropTypes.string.isRequired,
+  peopleLookUpError: PropTypes.string,
   peopleNameUrl: PropTypes.string.isRequired,
   personMode: PropTypes.string.isRequired,
+  requestAdditionalPersonDataById: PropTypes.func.isRequired,
+  requestPersonDataById: PropTypes.func.isRequired,
+  resetAllData: PropTypes.func.isRequired,
+  resetDatabaseLookupError: PropTypes.func.isRequired,
   saveUrl: PropTypes.string.isRequired,
   selectedUSState: PropTypes.string,
+  setDate: PropTypes.func.isRequired,
+  setEndTime: PropTypes.func.isRequired,
+  setErrors: PropTypes.func.isRequired,
+  setLatLng: PropTypes.func.isRequired,
+  setStartTime: PropTypes.func.isRequired,
+  setTimeZone: PropTypes.func.isRequired,
+  setValue: PropTypes.func.isRequired,
   startSetPeople: PropTypes.func.isRequired,
+  submitEventForReview: PropTypes.func.isRequired,
+  submitMetaData: PropTypes.func.isRequired,
   tempAddress: PropTypes.string,
   tempLat: PropTypes.number,
   tempLng: PropTypes.number,
+  tempState: PropTypes.string,
+  tempStateName: PropTypes.string,
+  togglePersonMode: PropTypes.func.isRequired,
   uid: PropTypes.string,
   userDisplayName: PropTypes.string,
 };
 
 MainForm.defaultProps = {
+  errors: null,
+  peopleLookUpError: null,
   selectedUSState: null,
   tempAddress: '',
   tempLat: 0,
   tempLng: 0,
+  tempState: '',
+  tempStateName: '',
   uid: null,
   userDisplayName: null,
 };
 
 const WrappedMainForm = Form.create({
-  onFieldsChange(props, changedFields) {
-    props.onChange(changedFields);
-  },
   mapPropsToFields(props) {
     const {
       currentTownHall,
@@ -528,10 +564,10 @@ const WrappedMainForm = Form.create({
         value,
       })
     ));
-    const displayNames = mapValues(displayValues, (value) => (
-       Form.createFormField({
-          value,
-        })
+    const displayNames = mapValues(displayValues, value => (
+      Form.createFormField({
+        value,
+      })
     ));
     return {
       ...townHallProps,
@@ -540,6 +576,14 @@ const WrappedMainForm = Form.create({
         value: formKeys,
       }),
     };
+  },
+  onFieldsChange(props, changedFields) {
+    const {
+      onChange,
+      resetErrors,
+    } = props;
+    resetErrors();
+    onChange(changedFields);
   },
   onValuesChange() {
     // console.log('values changed', values);

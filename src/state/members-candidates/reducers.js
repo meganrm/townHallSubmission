@@ -1,5 +1,6 @@
 const initialState = {
   allPeople: [],
+  error: null,
 };
 
 const peopleReducer = (state = initialState, {
@@ -11,6 +12,17 @@ const peopleReducer = (state = initialState, {
     return {
       ...state,
       allPeople: payload,
+      error: null,
+    };
+  case 'SET_DATABASE_LOOKUP_ERROR':
+    return {
+      ...state,
+      error: 'That person is not in our database',
+    };
+  case 'RESET_DATABASE_LOOKUP_ERROR':
+    return {
+      ...state,
+      error: null,
     };
   default:
     return state;

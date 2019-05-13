@@ -69,11 +69,16 @@ class MemberLookup extends React.Component {
       peopleDataUrl,
       requestPersonDataById,
       requestAdditionalPersonDataById,
+      handleDatabaseLookupError,
+      resetDatabaseLookUpError,
     } = this.props;
-
     const person = find(allPeople, {
       nameEntered: value,
     });
+    if (!person) {
+      return handleDatabaseLookupError();
+    }
+    resetDatabaseLookUpError();
     if (index === 0) {
       return requestPersonDataById(peopleDataUrl, person.id);
     }
@@ -191,6 +196,8 @@ class MemberLookup extends React.Component {
       getFieldDecorator,
       selectedUSState,
       personMode,
+      getError,
+      peopleLookUpError,
     } = this.props;
     const intro = personMode === 'candidate' ? 'Candidate for ' : 'Member of ';
     let title = `${intro}Congress Information `;
@@ -209,6 +216,8 @@ class MemberLookup extends React.Component {
         </h4>
         <FormItem
           extra="Enter their name and we will auto-fill the information"
+          validateStatus={(getError('displayName') || peopleLookUpError) ? 'error' : ''}
+          help={getError('displayName') || peopleLookUpError || ''}
         >
           {
             getFieldDecorator(fieldName, {
@@ -223,13 +232,14 @@ class MemberLookup extends React.Component {
               <div>
                 <AutoComplete
                   style={{
-                    width: '60%',
                     marginRight: 8,
+                    width: '60%',
                   }}
                   allowClear
                   key={key}
                   dataSource={allNames}
                   onSelect={value => this.onNameSelect(value, key)}
+                  onBlur={value => this.onNameSelect(value, key)}
                   filterOption={filterFunction}
                   placeholder={placeHolderText}
                 />
@@ -307,9 +317,10 @@ class MemberLookup extends React.Component {
           <Radio.Button value={MOC_MODE}>
             In office (Moc or Gov)
           </Radio.Button>
-          <Radio.Button value={CANDIDATE_MODE}>
-            Candidate
-          </Radio.Button>
+          {!selectedUSState && (
+            <Radio.Button value={CANDIDATE_MODE}>
+              Candidate
+            </Radio.Button>)}
           <Radio.Button value={MANUAL_MODE}>
             Manually Enter
           </Radio.Button>
@@ -345,18 +356,24 @@ MemberLookup.propTypes = {
     },
   )).isRequired,
   currentTownHall: PropTypes.shape({}).isRequired,
+  getError: PropTypes.func.isRequired,
   getFieldDecorator: PropTypes.func.isRequired,
   getFieldValue: PropTypes.func.isRequired,
+  handleDatabaseLookupError: PropTypes.func.isRequired,
   peopleDataUrl: PropTypes.string.isRequired,
+  peopleLookUpError: PropTypes.string,
   personMode: PropTypes.string.isRequired,
   requestAdditionalPersonDataById: PropTypes.func.isRequired,
   requestPersonDataById: PropTypes.func.isRequired,
+  resetDatabaseLookUpError: PropTypes.func.isRequired,
   selectedUSState: PropTypes.string,
   setFieldsValue: PropTypes.func.isRequired,
+  setGenericTownHallValue: PropTypes.func.isRequired,
   togglePersonMode: PropTypes.func.isRequired,
 };
 
 MemberLookup.defaultProps = {
+  peopleLookUpError: null,
   selectedUSState: undefined,
 };
 
