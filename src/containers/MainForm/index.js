@@ -269,7 +269,7 @@ class MainForm extends React.Component {
             resetDatabaseLookUpError={resetDatabaseLookupError}
             handleDatabaseLookupError={handleDatabaseLookupError}
           />
-          <section className="meeting infomation">
+          <section className="meeting information">
             <h4>
               Information about the Event
             </h4>
