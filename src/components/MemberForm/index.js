@@ -69,14 +69,14 @@ class MemberLookup extends React.Component {
       peopleDataUrl,
       requestPersonDataById,
       requestAdditionalPersonDataById,
-      databaseLookupError,
+      handleDatabaseLookupError,
       resetDatabaseLookUpError,
     } = this.props;
     const person = find(allPeople, {
       nameEntered: value,
     });
     if (!person) {
-      return databaseLookupError();
+      return handleDatabaseLookupError();
     }
     resetDatabaseLookUpError();
     if (index === 0) {
@@ -232,8 +232,8 @@ class MemberLookup extends React.Component {
               <div>
                 <AutoComplete
                   style={{
-                    width: '60%',
                     marginRight: 8,
+                    width: '60%',
                   }}
                   allowClear
                   key={key}
@@ -317,9 +317,10 @@ class MemberLookup extends React.Component {
           <Radio.Button value={MOC_MODE}>
             In office (Moc or Gov)
           </Radio.Button>
-          <Radio.Button value={CANDIDATE_MODE}>
-            Candidate
-          </Radio.Button>
+          {!selectedUSState && (
+            <Radio.Button value={CANDIDATE_MODE}>
+              Candidate
+            </Radio.Button>)}
           <Radio.Button value={MANUAL_MODE}>
             Manually Enter
           </Radio.Button>
@@ -355,10 +356,10 @@ MemberLookup.propTypes = {
     },
   )).isRequired,
   currentTownHall: PropTypes.shape({}).isRequired,
-  databaseLookupError: PropTypes.func.isRequired,
   getError: PropTypes.func.isRequired,
   getFieldDecorator: PropTypes.func.isRequired,
   getFieldValue: PropTypes.func.isRequired,
+  handleDatabaseLookupError: PropTypes.func.isRequired,
   peopleDataUrl: PropTypes.string.isRequired,
   peopleLookUpError: PropTypes.string,
   personMode: PropTypes.string.isRequired,

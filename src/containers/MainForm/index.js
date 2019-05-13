@@ -28,26 +28,8 @@ import DateTimeForm from '../../components/DateTimeForm';
 
 import 'antd/dist/antd.less';
 
-import { getTownHall } from '../../state/townhall/selectors';
-import {
-  clearTempAddress,
-  toggleMemberCandidate,
-  lookUpAddress,
-} from '../../state/selections/actions';
-import {
-  mergeNotes,
-  addDisclaimer,
-  setLatLng,
-  setDate,
-  setStartTime,
-  setMeetingType,
-  setEndTime,
-  setValue,
-  getTimeZone,
-  saveMetaData,
-  submitEventForReview,
-} from '../../state/townhall/actions';
-import { getFormKeys } from '../../state/selections/selectors';
+import townHallStateBranch from '../../state/townhall';
+
 import { formItemLayout } from '../../constants';
 
 const FormItem = Form.Item;
@@ -227,7 +209,7 @@ class MainForm extends React.Component {
       personMode,
       peopleLookUpError,
       clearTempAddress,
-      databaseLookupError,
+      handleDatabaseLookupError,
       requestPersonDataById,
       requestAdditionalPersonDataById,
       togglePersonMode,
@@ -285,7 +267,7 @@ class MainForm extends React.Component {
             getError={this.getError}
             peopleLookUpError={peopleLookUpError}
             resetDatabaseLookUpError={resetDatabaseLookupError}
-            databaseLookupError={databaseLookupError}
+            handleDatabaseLookupError={handleDatabaseLookupError}
           />
           <section className="meeting infomation">
             <h4>
@@ -477,8 +459,8 @@ class MainForm extends React.Component {
 const mapStateToProps = state => ({
   allNames: lawMakerStateBranch.selectors.getAllNames(state),
   allPeople: lawMakerStateBranch.selectors.getAllPeople(state),
-  currentTownHall: getTownHall(state),
-  formKeys: getFormKeys(state),
+  currentTownHall: townHallStateBranch.selectors.getTownHall(state),
+  formKeys: selectionStateBranch.selectors.getFormKeys(state),
   peopleDataUrl: selectionStateBranch.selectors.getPeopleDataUrl(state),
   peopleLookUpError: lawMakerStateBranch.selectors.getPeopleRequestError(state),
   peopleNameUrl: selectionStateBranch.selectors.getPeopleNameUrl(state),
@@ -495,26 +477,25 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  addDisclaimer: () => dispatch(addDisclaimer()),
-  clearTempAddress: () => dispatch(clearTempAddress()),
-  databaseLookupError: () => dispatch(lawMakerStateBranch.actions.databaseLookupError()),
-  geoCodeLocation: address => dispatch(lookUpAddress(address)),
-  mergeNotes: () => dispatch(mergeNotes()),
+  addDisclaimer: () => dispatch(townHallStateBranch.actions.addDisclaimer()),
+  clearTempAddress: () => dispatch(selectionStateBranch.actions.clearTempAddress()),
+  geoCodeLocation: address => dispatch(selectionStateBranch.actions.lookUpAddress(address)),
+  handleDatabaseLookupError: () => dispatch(lawMakerStateBranch.actions.databaseLookupError()),
+  mergeNotes: () => dispatch(townHallStateBranch.actions.mergeNotes()),
   requestAdditionalPersonDataById: (peopleDataUrl, id, index) => dispatch(lawMakerStateBranch.actions.requestAdditionalPersonDataById(peopleDataUrl, id, index)),
   requestPersonDataById: (peopleDataUrl, id) => dispatch(lawMakerStateBranch.actions.requestPersonDataById(peopleDataUrl, id)),
   resetDatabaseLookupError: () => dispatch(lawMakerStateBranch.actions.resetDatabaseLookUpError()),
-  setDate: date => dispatch(setDate(date)),
-  setEndTime: time => dispatch(setEndTime(time)),
-  setLatLng: payload => dispatch(setLatLng(payload)),
-  setMeetingType: payload => dispatch(setMeetingType(payload)),
-  setStartTime: time => dispatch(setStartTime(time)),
-  setTimeZone: payload => dispatch(getTimeZone(payload)),
-  setValue: payload => dispatch(setValue(payload)),
+  setDate: date => dispatch(townHallStateBranch.actions.setDate(date)),
+  setEndTime: time => dispatch(townHallStateBranch.actions.setEndTime(time)),
+  setLatLng: payload => dispatch(townHallStateBranch.actions.setLatLng(payload)),
+  setMeetingType: payload => dispatch(townHallStateBranch.actions.setMeetingType(payload)),
+  setStartTime: time => dispatch(townHallStateBranch.actions.setStartTime(time)),
+  setTimeZone: payload => dispatch(townHallStateBranch.actions.getTimeZone(payload)),
+  setValue: payload => dispatch(townHallStateBranch.actions.setValue(payload)),
   startSetPeople: peopleNameUrl => dispatch(lawMakerStateBranch.actions.startSetPeople(peopleNameUrl)),
-  submitEventForReview: payload => dispatch(submitEventForReview(payload)),
-  submitMetaData: payload => dispatch(saveMetaData(payload)),
-  togglePersonMode: mode => dispatch(toggleMemberCandidate(mode)),
-
+  submitEventForReview: payload => dispatch(townHallStateBranch.actions.submitEventForReview(payload)),
+  submitMetaData: payload => dispatch(townHallStateBranch.actions.saveMetaData(payload)),
+  togglePersonMode: mode => dispatch(selectionStateBranch.actions.toggleMemberCandidate(mode)),
 });
 
 MainForm.propTypes = {
@@ -523,7 +504,9 @@ MainForm.propTypes = {
   clearTempAddress: PropTypes.func.isRequired,
   currentTownHall: PropTypes.shape({}).isRequired,
   errors: PropTypes.shape({}),
+  form: PropTypes.shape({}).isRequired,
   geoCodeLocation: PropTypes.func.isRequired,
+  handleDatabaseLookupError: PropTypes.func.isRequired,
   memberId: PropTypes.func.isRequired,
   mergeNotes: PropTypes.func.isRequired,
   peopleDataUrl: PropTypes.string.isRequired,
@@ -532,6 +515,7 @@ MainForm.propTypes = {
   personMode: PropTypes.string.isRequired,
   requestAdditionalPersonDataById: PropTypes.func.isRequired,
   requestPersonDataById: PropTypes.func.isRequired,
+  resetAllData: PropTypes.func.isRequired,
   resetDatabaseLookupError: PropTypes.func.isRequired,
   saveUrl: PropTypes.string.isRequired,
   selectedUSState: PropTypes.string,
@@ -541,11 +525,15 @@ MainForm.propTypes = {
   setLatLng: PropTypes.func.isRequired,
   setStartTime: PropTypes.func.isRequired,
   setTimeZone: PropTypes.func.isRequired,
+  setValue: PropTypes.func.isRequired,
   startSetPeople: PropTypes.func.isRequired,
   submitEventForReview: PropTypes.func.isRequired,
+  submitMetaData: PropTypes.func.isRequired,
   tempAddress: PropTypes.string,
   tempLat: PropTypes.number,
   tempLng: PropTypes.number,
+  tempState: PropTypes.string,
+  tempStateName: PropTypes.string,
   togglePersonMode: PropTypes.func.isRequired,
   uid: PropTypes.string,
   userDisplayName: PropTypes.string,
@@ -558,6 +546,8 @@ MainForm.defaultProps = {
   tempAddress: '',
   tempLat: 0,
   tempLng: 0,
+  tempState: '',
+  tempStateName: '',
   uid: null,
   userDisplayName: null,
 };
