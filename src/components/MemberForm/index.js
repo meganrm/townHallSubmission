@@ -69,11 +69,16 @@ class MemberLookup extends React.Component {
       peopleDataUrl,
       requestPersonDataById,
       requestAdditionalPersonDataById,
+      databaseLookupError,
+      resetDatabaseLookUpError,
     } = this.props;
-
     const person = find(allPeople, {
       nameEntered: value,
     });
+    if (!person) {
+      return databaseLookupError();
+    }
+    resetDatabaseLookUpError();
     if (index === 0) {
       return requestPersonDataById(peopleDataUrl, person.id);
     }
@@ -192,6 +197,7 @@ class MemberLookup extends React.Component {
       selectedUSState,
       personMode,
       getError,
+      peopleLookUpError,
     } = this.props;
     const intro = personMode === 'candidate' ? 'Candidate for ' : 'Member of ';
     let title = `${intro}Congress Information `;
@@ -210,8 +216,8 @@ class MemberLookup extends React.Component {
         </h4>
         <FormItem
           extra="Enter their name and we will auto-fill the information"
-          validateStatus={getError('displayName') ? 'error' : ''}
-          help={getError('displayName') || ''}
+          validateStatus={(getError('displayName') || peopleLookUpError) ? 'error' : ''}
+          help={getError('displayName') || peopleLookUpError || ''}
         >
           {
             getFieldDecorator(fieldName, {
@@ -233,6 +239,7 @@ class MemberLookup extends React.Component {
                   key={key}
                   dataSource={allNames}
                   onSelect={value => this.onNameSelect(value, key)}
+                  onBlur={value => this.onNameSelect(value, key)}
                   filterOption={filterFunction}
                   placeholder={placeHolderText}
                 />
@@ -348,19 +355,24 @@ MemberLookup.propTypes = {
     },
   )).isRequired,
   currentTownHall: PropTypes.shape({}).isRequired,
+  databaseLookupError: PropTypes.func.isRequired,
   getError: PropTypes.func.isRequired,
   getFieldDecorator: PropTypes.func.isRequired,
   getFieldValue: PropTypes.func.isRequired,
   peopleDataUrl: PropTypes.string.isRequired,
+  peopleLookUpError: PropTypes.string,
   personMode: PropTypes.string.isRequired,
   requestAdditionalPersonDataById: PropTypes.func.isRequired,
   requestPersonDataById: PropTypes.func.isRequired,
+  resetDatabaseLookUpError: PropTypes.func.isRequired,
   selectedUSState: PropTypes.string,
   setFieldsValue: PropTypes.func.isRequired,
+  setGenericTownHallValue: PropTypes.func.isRequired,
   togglePersonMode: PropTypes.func.isRequired,
 };
 
 MemberLookup.defaultProps = {
+  peopleLookUpError: null,
   selectedUSState: undefined,
 };
 

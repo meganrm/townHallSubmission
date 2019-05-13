@@ -16,11 +16,6 @@ import {
 
 import lawMakerStateBranch from '../../state/members-candidates';
 
-import {
-  getAllNames,
-  getAllPeople,
-} from '../../state/members-candidates/selectors';
-
 import selectionStateBranch from '../../state/selections';
 
 import {
@@ -230,12 +225,15 @@ class MainForm extends React.Component {
       currentTownHall,
       peopleDataUrl,
       personMode,
+      peopleLookUpError,
       clearTempAddress,
+      databaseLookupError,
       requestPersonDataById,
       requestAdditionalPersonDataById,
       togglePersonMode,
       selectedUSState,
       geoCodeLocation,
+      resetDatabaseLookupError,
       setLatLng,
       setDate,
       setStartTime,
@@ -285,6 +283,9 @@ class MainForm extends React.Component {
             setFieldsValue={setFieldsValue}
             fields={getFieldsValue()}
             getError={this.getError}
+            peopleLookUpError={peopleLookUpError}
+            resetDatabaseLookUpError={resetDatabaseLookupError}
+            databaseLookupError={databaseLookupError}
           />
           <section className="meeting infomation">
             <h4>
@@ -437,8 +438,8 @@ class MainForm extends React.Component {
               <label htmlFor="Notes">
               Public Notes
               </label>
-              {getFieldDecorator('Notes',
-                { initialValue: initFieldValue })(<TextArea
+              {getFieldDecorator('Notes', { initialValue: initFieldValue })(
+                <TextArea
                   id="Notes"
                   rows={3}
                   placeholder="Notes about event that cannot be entered anywhere else."
@@ -474,11 +475,12 @@ class MainForm extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  allNames: getAllNames(state),
-  allPeople: getAllPeople(state),
+  allNames: lawMakerStateBranch.selectors.getAllNames(state),
+  allPeople: lawMakerStateBranch.selectors.getAllPeople(state),
   currentTownHall: getTownHall(state),
   formKeys: getFormKeys(state),
   peopleDataUrl: selectionStateBranch.selectors.getPeopleDataUrl(state),
+  peopleLookUpError: lawMakerStateBranch.selectors.getPeopleRequestError(state),
   peopleNameUrl: selectionStateBranch.selectors.getPeopleNameUrl(state),
   personMode: selectionStateBranch.selectors.getMode(state),
   saveUrl: selectionStateBranch.selectors.getSaveUrl(state),
@@ -495,10 +497,12 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   addDisclaimer: () => dispatch(addDisclaimer()),
   clearTempAddress: () => dispatch(clearTempAddress()),
+  databaseLookupError: () => dispatch(lawMakerStateBranch.actions.databaseLookupError()),
   geoCodeLocation: address => dispatch(lookUpAddress(address)),
   mergeNotes: () => dispatch(mergeNotes()),
   requestAdditionalPersonDataById: (peopleDataUrl, id, index) => dispatch(lawMakerStateBranch.actions.requestAdditionalPersonDataById(peopleDataUrl, id, index)),
   requestPersonDataById: (peopleDataUrl, id) => dispatch(lawMakerStateBranch.actions.requestPersonDataById(peopleDataUrl, id)),
+  resetDatabaseLookupError: () => dispatch(lawMakerStateBranch.actions.resetDatabaseLookUpError()),
   setDate: date => dispatch(setDate(date)),
   setEndTime: time => dispatch(setEndTime(time)),
   setLatLng: payload => dispatch(setLatLng(payload)),
@@ -510,6 +514,7 @@ const mapDispatchToProps = dispatch => ({
   submitEventForReview: payload => dispatch(submitEventForReview(payload)),
   submitMetaData: payload => dispatch(saveMetaData(payload)),
   togglePersonMode: mode => dispatch(toggleMemberCandidate(mode)),
+
 });
 
 MainForm.propTypes = {
@@ -518,16 +523,23 @@ MainForm.propTypes = {
   clearTempAddress: PropTypes.func.isRequired,
   currentTownHall: PropTypes.shape({}).isRequired,
   errors: PropTypes.shape({}),
+  geoCodeLocation: PropTypes.func.isRequired,
   memberId: PropTypes.func.isRequired,
   mergeNotes: PropTypes.func.isRequired,
   peopleDataUrl: PropTypes.string.isRequired,
+  peopleLookUpError: PropTypes.string,
   peopleNameUrl: PropTypes.string.isRequired,
   personMode: PropTypes.string.isRequired,
   requestAdditionalPersonDataById: PropTypes.func.isRequired,
   requestPersonDataById: PropTypes.func.isRequired,
+  resetDatabaseLookupError: PropTypes.func.isRequired,
   saveUrl: PropTypes.string.isRequired,
   selectedUSState: PropTypes.string,
+  setDate: PropTypes.func.isRequired,
+  setEndTime: PropTypes.func.isRequired,
   setErrors: PropTypes.func.isRequired,
+  setLatLng: PropTypes.func.isRequired,
+  setStartTime: PropTypes.func.isRequired,
   setTimeZone: PropTypes.func.isRequired,
   startSetPeople: PropTypes.func.isRequired,
   submitEventForReview: PropTypes.func.isRequired,
@@ -541,6 +553,7 @@ MainForm.propTypes = {
 
 MainForm.defaultProps = {
   errors: null,
+  peopleLookUpError: null,
   selectedUSState: null,
   tempAddress: '',
   tempLat: 0,

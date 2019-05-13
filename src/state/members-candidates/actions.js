@@ -6,6 +6,14 @@ import {
 } from '../townhall/actions';
 import { sanitizeDistrict } from '../../scripts/util';
 
+export const databaseLookupError = () => ({
+  type: 'SET_DATABASE_LOOKUP_ERROR',
+});
+
+export const resetDatabaseLookUpError = () => ({
+  type: 'RESET_DATABASE_LOOKUP_ERROR',
+});
+
 export const setPeople = people => ({
   payload: people,
   type: 'SET_PEOPLE',
@@ -25,10 +33,12 @@ export const startSetPeople = peopleNameUrl => dispatch => firebasedb.ref(people
 export const requestPersonDataById = (peopleDataUrl, id) => dispatch => firebasedb.ref(`${peopleDataUrl}/${id}`)
   .once('value')
   .then((result) => {
-    const personData = result.val();
-    console.log(personData)
-    personData.district = sanitizeDistrict(personData.district);
-    return (dispatch(setDataFromPersonInDatabase(personData)));
+    if (result.exists()) {
+      const personData = result.val();
+      personData.district = sanitizeDistrict(personData.district);
+      return (dispatch(setDataFromPersonInDatabase(personData)));
+    }
+    return dispatch(databaseLookupError());
   });
 
 export const requestAdditionalPersonDataById = (peopleDataUrl, id, index) => dispatch => firebasedb.ref(`${peopleDataUrl}/${id}`)
