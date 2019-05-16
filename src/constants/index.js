@@ -6,14 +6,14 @@ export const CANDIDATE_MODE = 'candidate';
 export const STATE_LEGS = {
   AZ: 'Arizona',
   CO: 'Colorado',
-  // FL: 'Florida',
+  FL: 'Florida',
   MD: 'Maryland',
-  // ME: 'Maine',
+  ME: 'Maine',
   MI: 'Michigan',
   NC: 'North Carolina',
   NV: 'Nevada',
   OR: 'Oregon',
-  // PA: 'Pennsylvania',
+  PA: 'Pennsylvania',
   VA: 'Virginia',
 };
 
