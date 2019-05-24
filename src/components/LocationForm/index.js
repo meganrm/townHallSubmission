@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
 import {
   Alert,
   Input,
   Form,
 } from 'antd';
+import { includes } from 'lodash';
 
 import { formItemLayout } from '../../constants';
 
@@ -117,6 +117,8 @@ class LocationForm extends React.Component {
       getFieldDecorator,
       tempAddress,
       getFieldValue,
+      requiredFields,
+
     } = this.props;
     const {
       showResponse,
@@ -152,7 +154,7 @@ class LocationForm extends React.Component {
                 initialValue: '',
                 rules: [{
                   message: 'please enter an address',
-                  required: meetingType !== 'Tele-Town Hall',
+                  required: includes(requiredFields, 'address'),
                 }],
               })(
                 <Search

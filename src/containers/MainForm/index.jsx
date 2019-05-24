@@ -26,7 +26,7 @@ import MemberForm from '../../components/MemberForm';
 import LocationForm from '../../components/LocationForm';
 import DateTimeForm from '../../components/DateTimeForm';
 
-import 'antd/dist/antd.less';
+// import 'antd/dist/antd.less';
 
 import townHallStateBranch from '../../state/townhall';
 
@@ -147,7 +147,8 @@ class MainForm extends React.Component {
     };
 
     if (currentTownHall.meetingType === 'No Events') {
-      return submitMetaData(metaData);
+      submitMetaData(metaData);
+      return this.resetAll();
     }
     mergeNotes();
     const submit = {
@@ -216,6 +217,7 @@ class MainForm extends React.Component {
       selectedUSState,
       geoCodeLocation,
       resetDatabaseLookupError,
+      requiredFields,
       setLatLng,
       setDate,
       setStartTime,
@@ -252,6 +254,7 @@ class MainForm extends React.Component {
           <MemberForm
             allNames={allNames}
             allPeople={allPeople}
+            requiredFields={requiredFields}
             currentTownHall={currentTownHall}
             peopleDataUrl={peopleDataUrl}
             requestPersonDataById={requestPersonDataById}
@@ -345,104 +348,112 @@ class MainForm extends React.Component {
               )}
             </FormItem>
           </section>
-          <LocationForm
-            geoCodeLocation={geoCodeLocation}
-            tempAddress={tempAddress}
-            address={currentTownHall.address}
-            clearTempAddress={clearTempAddress}
-            tempLat={tempLat}
-            tempLng={tempLng}
-            tempStateInfo={{ stateName: tempStateName, state: tempState }}
-            saveAddress={setLatLng}
-            handleInputBlur={this.handleInputBlur}
-            getFieldDecorator={getFieldDecorator}
-            setFieldsValue={setFieldsValue}
-            getFieldValue={getFieldValue}
-            getError={this.getError}
-          />
-          <DateTimeForm
-            setDate={setDate}
-            setStartTime={setStartTime}
-            setEndTime={setEndTime}
-            getFieldDecorator={getFieldDecorator}
-            getError={this.getError}
-          />
-          <section className="extra-data event-details">
-            <h4>
+          {currentTownHall.meetingType !== 'No Events' && (
+            <LocationForm
+              geoCodeLocation={geoCodeLocation}
+              tempAddress={tempAddress}
+              address={currentTownHall.address}
+              clearTempAddress={clearTempAddress}
+              tempLat={tempLat}
+              tempLng={tempLng}
+              tempStateInfo={{ stateName: tempStateName, state: tempState }}
+              saveAddress={setLatLng}
+              handleInputBlur={this.handleInputBlur}
+              getFieldDecorator={getFieldDecorator}
+              setFieldsValue={setFieldsValue}
+              getFieldValue={getFieldValue}
+              getError={this.getError}
+              requiredFields={requiredFields}
+            />
+          )}
+          {currentTownHall.meetingType !== 'No Events' && (
+            <DateTimeForm
+              setDate={setDate}
+              setStartTime={setStartTime}
+              setEndTime={setEndTime}
+              getFieldDecorator={getFieldDecorator}
+              getError={this.getError}
+              requiredFields={requiredFields}
+            />)}
+          {currentTownHall.meetingType !== 'No Events' && (
+
+            <section className="extra-data event-details">
+              <h4>
               Additional information
-            </h4>
-            <FormItem>
-              <label htmlFor="link">
+              </h4>
+              <FormItem>
+                <label htmlFor="link">
                 URL related to event (optional)
-              </label>
-              {getFieldDecorator('link', {
-                initialValue: initFieldValue,
-              })(
-                <Input
-                  type="url"
-                  className="input-underline"
-                  id="link"
-                  placeholder="Link"
-                />,
-              )}
-            </FormItem>
-            <FormItem>
-              <label htmlFor="linkName">
-                Link display name (optional)
-              </label>
-              {getFieldDecorator('linkName', {
-                initialValue: initFieldValue,
-              })(
-                <Input
-                  type="text"
-                  className="input-underline"
-                  id="linkName"
-                  placeholder="Link Name"
-                />,
-              )}
-            </FormItem>
-            <FormItem>
-              {
-                getFieldDecorator('ada_accessible', {
-                  initialValue: false,
-                  valuePropName: 'checked',
+                </label>
+                {getFieldDecorator('link', {
+                  initialValue: initFieldValue,
                 })(
-                  <Checkbox
-                    type="checkbox"
-                    class="general-checkbox"
-                    id="ada_accessible"
-                  >
-              ADA accessible?
-                  </Checkbox>,
+                  <Input
+                    type="url"
+                    className="input-underline"
+                    id="link"
+                    placeholder="Link"
+                  />,
                 )}
-            </FormItem>
-            <FormItem>
-              <label htmlFor="Notes">
+              </FormItem>
+              <FormItem>
+                <label htmlFor="linkName">
+                Link display name (optional)
+                </label>
+                {getFieldDecorator('linkName', {
+                  initialValue: initFieldValue,
+                })(
+                  <Input
+                    type="text"
+                    className="input-underline"
+                    id="linkName"
+                    placeholder="Link Name"
+                  />,
+                )}
+              </FormItem>
+              <FormItem>
+                {
+                  getFieldDecorator('ada_accessible', {
+                    initialValue: false,
+                    valuePropName: 'checked',
+                  })(
+                    <Checkbox
+                      type="checkbox"
+                      class="general-checkbox"
+                      id="ada_accessible"
+                    >
+              ADA accessible?
+                    </Checkbox>,
+                  )}
+              </FormItem>
+              <FormItem>
+                <label htmlFor="Notes">
               Public Notes
-              </label>
-              {getFieldDecorator('Notes', { initialValue: initFieldValue })(
-                <TextArea
-                  id="Notes"
-                  rows={3}
-                  placeholder="Notes about event that cannot be entered anywhere else."
-                />,
-              )}
-            </FormItem>
-            <FormItem>
-              <label htmlFor="Internal-Notes">
+                </label>
+                {getFieldDecorator('Notes', { initialValue: initFieldValue })(
+                  <TextArea
+                    id="Notes"
+                    rows={3}
+                    placeholder="Notes about event that cannot be entered anywhere else."
+                  />,
+                )}
+              </FormItem>
+              <FormItem>
+                <label htmlFor="Internal-Notes">
               Internal Notes to THP Team
-              </label>
-              {getFieldDecorator('Internal-Notes', {
-                initialValue: initFieldValue,
-              })(
-                <TextArea
-                  rows={3}
-                  id="Internal-Notes"
-                  placeholder="Notes for Town Hall Project team."
-                />,
-              )}
-            </FormItem>
-          </section>
+                </label>
+                {getFieldDecorator('Internal-Notes', {
+                  initialValue: initFieldValue,
+                })(
+                  <TextArea
+                    rows={3}
+                    id="Internal-Notes"
+                    placeholder="Notes for Town Hall Project team."
+                  />,
+                )}
+              </FormItem>
+            </section>
+          )}
           <Button
             type="primary"
             htmlType="submit"
@@ -465,6 +476,7 @@ const mapStateToProps = state => ({
   peopleLookUpError: lawMakerStateBranch.selectors.getPeopleRequestError(state),
   peopleNameUrl: selectionStateBranch.selectors.getPeopleNameUrl(state),
   personMode: selectionStateBranch.selectors.getMode(state),
+  requiredFields: townHallStateBranch.selectors.getRequiredFields(state),
   saveUrl: selectionStateBranch.selectors.getSaveUrl(state),
   selectedUSState: selectionStateBranch.selectors.getSelectedUSState(state),
   tempAddress: selectionStateBranch.selectors.getTempAddress(state),
@@ -515,6 +527,7 @@ MainForm.propTypes = {
   personMode: PropTypes.string.isRequired,
   requestAdditionalPersonDataById: PropTypes.func.isRequired,
   requestPersonDataById: PropTypes.func.isRequired,
+  requiredFields: PropTypes.arrayOf(PropTypes.string).isRequired,
   resetAllData: PropTypes.func.isRequired,
   resetDatabaseLookupError: PropTypes.func.isRequired,
   saveUrl: PropTypes.string.isRequired,

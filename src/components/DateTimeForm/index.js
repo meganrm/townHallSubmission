@@ -9,6 +9,7 @@ import {
   Form,
   TimePicker,
 } from 'antd';
+import { includes } from 'lodash';
 
 import { formItemLayout } from '../../constants';
 
@@ -74,6 +75,7 @@ class DateTimeForm extends React.Component {
   renderRepeatingEvent() {
     const {
       getFieldDecorator,
+      requiredFields,
       getError,
     } = this.props;
     const { repeatingEvent } = this.state;
@@ -104,7 +106,7 @@ class DateTimeForm extends React.Component {
               initialValue: undefined,
               rules: [{
                 message: 'Please enter a valid date',
-                required: true,
+                required: includes(requiredFields, 'date'),
               }],
             })(
               <DatePicker onChange={this.onChangeDate} />,
@@ -117,6 +119,7 @@ class DateTimeForm extends React.Component {
     const {
       getFieldDecorator,
       getError,
+      requiredFields,
     } = this.props;
 
     const {
@@ -144,7 +147,7 @@ class DateTimeForm extends React.Component {
                 initialValue: undefined,
                 rules: [{
                   message: 'Please enter a valid time',
-                  required: true,
+                  required: includes(requiredFields, 'time'),
                 }],
               },
             )(
@@ -198,6 +201,7 @@ class DateTimeForm extends React.Component {
 DateTimeForm.propTypes = {
   getError: PropTypes.func.isRequired,
   getFieldDecorator: PropTypes.func.isRequired,
+  requiredFields: PropTypes.arrayOf(PropTypes.string).isRequired,
   setDate: PropTypes.func.isRequired,
   setEndTime: PropTypes.func.isRequired,
   setStartTime: PropTypes.func.isRequired,
