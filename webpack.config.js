@@ -61,8 +61,11 @@ module.exports = {
   mode: 'development',
 
   plugins,
+  resolve: {
+    extensions: [".jsx", ".js", ".json"]
+  },
 
-  // Load this and everythning it cares about
+  // Load this and everything it cares about
   entry: `${__dirname}/src/main.js`,
 
   devtool: 'source-map',
@@ -78,7 +81,7 @@ module.exports = {
       {
         exclude: /node_modules/,
         loader: 'babel-loader',
-        test: /\.js$/,
+        test: /\.js|.jsx?$/,
         options: {
           plugins: [
             ['import', { libraryName: 'antd', style: true }],
