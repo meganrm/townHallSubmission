@@ -16,6 +16,7 @@ import {
 } from '../../state/selections/actions';
 import { getSelectedUSState } from '../../state/selections/selectors';
 import { STATE_LEGS } from '../../constants';
+import './style.scss';
 
 const MenuItemGroup = Menu.ItemGroup;
 

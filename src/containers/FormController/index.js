@@ -145,8 +145,8 @@ class FormController extends React.Component {
     } = this.state;
     return (
       <div className="form-container">
-        <Row gutter={8}>
-          <Col span={12}>
+        <Row>
+          <Col md={24} lg={12}>
             <MainForm
               displayValues={displayValues}
               onChange={this.handleFormChange}
@@ -156,7 +156,7 @@ class FormController extends React.Component {
               setErrors={this.setErrors}
             />
           </Col>
-          <Col span={12}>
+          <Col md={0} lg={12}>
             <Affix>
               <Collapse bordered={false}>
                 <Panel

@@ -1,0 +1,44 @@
+.ant-layout-content {
+    margin-left: 50px;
+}
+
+.ant-layout.ant-layout-has-sider {
+    padding: 20px;
+}
+
+.ant-layout {
+    background: white;
+    z-index: 2;
+}
+
+.ant-layout-sider-zero-width-trigger {
+    z-index: 3;
+    background: white;
+}
+
+@media only screen and (max-width: 425px) {
+    .ant-layout-content {
+        width: 100vw;
+    }
+    .ant-layout-sider-zero-width-trigger {
+        right: 0;
+        width: calc(100vw - 280px);
+        position: fixed;
+        top: 0;
+        height: 100vh;
+        background: #5050508a;
+    }
+    .ant-layout-sider-zero-width-trigger:hover {
+        background: #5050508a;
+
+    }
+    .ant-layout-sider-collapsed .ant-layout-sider-zero-width-trigger {
+        width: 30px;
+        left: 0;
+
+    }
+    .ant-layout-sider-collapsed .ant-layout-sider-zero-width-trigger:hover{
+        width: 30px;
+        left: 0;
+    }
+}

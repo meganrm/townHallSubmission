@@ -25,6 +25,7 @@
   "dependencies": {
     "antd": "^3.8.1",
     "bootstrap3": "^3.3.5",
+    "classnames": "^2.2.6",
     "express": "^4.15.2",
     "express-request-proxy": "^2.0.0",
     "handlebars": "^4.0.6",
