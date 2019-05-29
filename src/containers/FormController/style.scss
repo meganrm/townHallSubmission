@@ -3,7 +3,7 @@
 }
 
 .language-bash {
-    background-color: white; 
+    background-color: white;
     border: none;
 }
 
@@ -11,5 +11,11 @@
     .ant-affix {
         overflow: scroll;
         height: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .new-event-form {
+        width: calc(80vw - 50px);
     }
 }
