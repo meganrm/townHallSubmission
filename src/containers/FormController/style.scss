@@ -1,21 +1,9 @@
-.ant-collapse-content{
-    overflow: visible;
-}
-
 .language-bash {
     background-color: white;
     border: none;
 }
 
-.form-container {
-    .ant-affix {
-        overflow: scroll;
-        height: 100%;
-    }
-}
-
-@media (max-width: 768px) {
-    .new-event-form {
-        width: calc(80vw - 50px);
-    }
+.new-event-form {
+  margin-top: 10px;
+  margin-bottom: 20px;
 }
