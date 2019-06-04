@@ -37,11 +37,6 @@ class SideBar extends React.Component {
     const selectedKey = currentUsState || 'federal';
     return (
       <section className="session-data">
-        <h4>Welcome</h4>
-        <small>Having trouble? Email info@townhallproject.com</small>
-        <p id="submitted-meta-data" className="hidden"><span>You've submitted: </span><span id="submitted-total">0</span><span> event(s)</span></p>
-        <p id="submit-success" className="hidden text-success">Thank you for submitting an event!</p>
-        <ul id="submitted" className="list-group events-table" />
         <Menu
           onClick={SideBar.handleClick}
           defaultSelectedKeys={
@@ -49,6 +44,8 @@ class SideBar extends React.Component {
           }
           mode="inline"
         >
+        <Menu.Item key='subs' disabled className="meta-menu-item"><span id="submitted-meta-data"><span>You've submitted: </span><span id="submitted-total">0</span><span> event(s)</span></span></Menu.Item>
+        <Menu.Divider></Menu.Divider>
           <MenuItemGroup key="federal-title" title="Enter events for Congress">
             <Menu.Item key="federal">Federal</Menu.Item>
           </MenuItemGroup>
