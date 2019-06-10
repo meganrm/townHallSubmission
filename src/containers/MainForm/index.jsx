@@ -12,6 +12,7 @@ import {
   Input,
   Select,
   Checkbox,
+  message,
 } from 'antd';
 
 import lawMakerStateBranch from '../../state/members-candidates';
@@ -37,6 +38,10 @@ const { Option } = Select;
 const { TextArea } = Input;
 
 let initFieldValue;
+
+const success = () => {
+  message.success('Thanks for submitting info!', 4);
+};
 
 class MainForm extends React.Component {
   static shouldGetLatLng(currentTownHall, nextTownHall) {
@@ -148,6 +153,7 @@ class MainForm extends React.Component {
 
     if (currentTownHall.meetingType === 'No Events') {
       submitMetaData(metaData);
+      success();
       return this.resetAll();
     }
     mergeNotes();
@@ -165,6 +171,7 @@ class MainForm extends React.Component {
       saveUrl,
     };
     submitEventForReview(submit);
+    success();
     return this.resetAll();
   }
 
@@ -519,7 +526,7 @@ MainForm.propTypes = {
   form: PropTypes.shape({}).isRequired,
   geoCodeLocation: PropTypes.func.isRequired,
   handleDatabaseLookupError: PropTypes.func.isRequired,
-  memberId: PropTypes.func.isRequired,
+  // memberId: PropTypes.func.isRequired,
   mergeNotes: PropTypes.func.isRequired,
   peopleDataUrl: PropTypes.string.isRequired,
   peopleLookUpError: PropTypes.string,
