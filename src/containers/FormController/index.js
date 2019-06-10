@@ -156,7 +156,11 @@ class FormController extends React.Component {
               setErrors={this.setErrors}
             />
           </Col>
-          <Col md={0} lg={12}>
+          {
+            this.props.mobile ? (
+              <div></div>
+            ) : (
+              <Col md={0} lg={12}>
             <Affix>
               <Collapse bordered={false}>
                 <Panel
@@ -172,6 +176,8 @@ class FormController extends React.Component {
               </Collapse>
             </Affix>
           </Col>
+            )
+          }
         </Row>
       </div>
     );
