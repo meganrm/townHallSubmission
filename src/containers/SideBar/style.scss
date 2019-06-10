@@ -1,5 +1,11 @@
 .session-data {
-  margin-bottom: 20px;
+  margin-bottom: 70px;
+}
+
+@media screen and (max-width: 500px) {
+  .session-data {
+    margin-bottom: 100px;
+  }
 }
 
 .ant-menu-item-group-title {
