@@ -164,8 +164,6 @@ class LocationForm extends React.Component {
                   style={style}
                   onChange={this.handleChange}
                   onBlur={this.handleSearch}
-                  notFoundContent={null}
-                  allowClear
                 />,
               )}
             </FormItem>

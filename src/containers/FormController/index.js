@@ -156,12 +156,16 @@ class FormController extends React.Component {
               setErrors={this.setErrors}
             />
           </Col>
-          <Col md={0} lg={12}>
+          {
+            this.props.mobile ? (
+              <div></div>
+            ) : (
+              <Col md={0} lg={12}>
             <Affix>
               <Collapse bordered={false}>
                 <Panel
                   style={customPanelStyle}
-                  header="Data object (click to see data you've entered"
+                  header="Data object (click to see data you've entered)"
                 >
                   <pre className="language-bash" style={{ overflow: 'visible' }}>
                     {
@@ -172,6 +176,8 @@ class FormController extends React.Component {
               </Collapse>
             </Affix>
           </Col>
+            )
+          }
         </Row>
       </div>
     );

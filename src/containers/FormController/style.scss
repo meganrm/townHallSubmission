@@ -1,21 +1,16 @@
-.ant-collapse-content{
-    overflow: visible;
-}
-
 .language-bash {
     background-color: white;
     border: none;
 }
 
-.form-container {
-    .ant-affix {
-        overflow: scroll;
-        height: 100%;
-    }
+.new-event-form {
+  margin-top: 10px;
+  margin-bottom: 20px;
 }
 
-@media (max-width: 768px) {
-    .new-event-form {
-        width: calc(80vw - 50px);
-    }
+@media screen and (max-width: 500px) {
+  .form-container {
+    padding: 5px;
+    margin-bottom: 100px;
+  }
 }

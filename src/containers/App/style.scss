@@ -1,44 +1,22 @@
-.ant-layout-content {
-    margin-left: 50px;
+.trigger {
+  display: flex;
+  margin-left: 250px;
+  font-size: 18px;
+  line-height: 64px;
+  padding: 0 24px;
+  cursor: pointer;
+  transition: color 0.3s;
+  .logo {
+    height: 32px;
+    background: rgba(255, 255, 255, 0.2);
+    margin: 16px;
+  }
 }
 
-.ant-layout.ant-layout-has-sider {
-    padding: 20px;
+.trigger:hover {
+  color: #1890ff;
 }
 
-.ant-layout {
-    background: white;
-    z-index: 2;
-}
-
-.ant-layout-sider-zero-width-trigger {
-    z-index: 3;
-    background: white;
-}
-
-@media only screen and (max-width: 425px) {
-    .ant-layout-content {
-        width: 100vw;
-    }
-    .ant-layout-sider-zero-width-trigger {
-        right: 0;
-        width: calc(100vw - 280px);
-        position: fixed;
-        top: 0;
-        height: 100vh;
-        background: #5050508a;
-    }
-    .ant-layout-sider-zero-width-trigger:hover {
-        background: #5050508a;
-
-    }
-    .ant-layout-sider-collapsed .ant-layout-sider-zero-width-trigger {
-        width: 30px;
-        left: 0;
-
-    }
-    .ant-layout-sider-collapsed .ant-layout-sider-zero-width-trigger:hover{
-        width: 30px;
-        left: 0;
-    }
+.side-bar-closed {
+  margin-left: 0;
 }
