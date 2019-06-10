@@ -9,6 +9,8 @@ import {
 import PageHeader from '../../components/PageHeader';
 import MainFormController from '../FormController';
 import SideBar from '../SideBar';
+import MobileView from '../MobileView';
+
 import './style.scss';
 
 const {
@@ -56,10 +58,7 @@ class App extends React.Component {
     });
     if (isMobile) {
       return (
-        <div>
-          <PageHeader />
-          Mobile!!
-        </div>
+        <MobileView />
       );
     } else {
       return (
