@@ -5,12 +5,15 @@
 
 .new-event-form {
   margin-top: 10px;
-  margin-bottom: 20px;
+  margin-bottom: 60px;
 }
 
 @media screen and (max-width: 500px) {
   .form-container {
     padding: 5px;
     margin-bottom: 100px;
+  }
+  .new-event-form {
+    margin-bottom: 20px;
   }
 }

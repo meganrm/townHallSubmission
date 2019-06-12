@@ -46,7 +46,7 @@ class SideBar extends React.Component {
         >
         <Menu.Item key='subs' disabled className="meta-menu-item"><span id="submitted-meta-data"><span>You've submitted: </span><span id="submitted-total">0</span><span> event(s)</span></span></Menu.Item>
         <Menu.Divider></Menu.Divider>
-          <MenuItemGroup key="federal-title" title="Enter events for Congress">
+          <MenuItemGroup key="federal-title" title="Enter events for federal lawmakers and candidates">
             <Menu.Item key="federal">Federal</Menu.Item>
           </MenuItemGroup>
           <MenuItemGroup key="state-title" title="Enter events for state legislators">
