@@ -147,7 +147,7 @@ class LocationForm extends React.Component {
               hasFeedback
               // help={getError('address') || ''}
               validateStatus={validating && !tempAddress}
-              label="Address"
+              label="Full Street Address"
               {...formItemLayout}
             >
               {getFieldDecorator('address', {
