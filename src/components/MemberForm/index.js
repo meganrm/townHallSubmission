@@ -199,13 +199,8 @@ class MemberLookup extends React.Component {
       getError,
       peopleLookUpError,
     } = this.props;
-    const intro = personMode === 'candidate' ? 'Candidate for ' : 'Member of ';
-    let title = `${intro}Congress Information `;
-    let placeHolderText = personMode === 'candidate' ? 'Candidate\'s name' : 'Member of congress name';
-    if (selectedUSState) {
-      title = `${intro + selectedUSState} state legislature information`;
-      placeHolderText = 'State lawmaker\'s name';
-    }
+    const title = "Lawmaker Information";
+    const placeHolderText = "Lawmaker Name";
     const fieldName = key > 0 ? `displayName-${key}` : 'displayName';
     const filterFunction = (inputValue, option) => option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1;
     return (
@@ -315,15 +310,15 @@ class MemberLookup extends React.Component {
           onChange={event => togglePersonMode(event.target.value)}
         >
           <Radio.Button value={MOC_MODE}>
-            In office (Moc or Gov)
+            Official Lawmaker Event
           </Radio.Button>
           {!selectedUSState && (
             <Radio.Button value={CANDIDATE_MODE}>
-              Candidate
+              Candidate Event
             </Radio.Button>)}
-          <Radio.Button value={MANUAL_MODE}>
+          {/*<Radio.Button value={MANUAL_MODE}>
             Manually Enter
-          </Radio.Button>
+          </Radio.Button>*/}
         </Radio.Group>
         {personMode === 'manual' ? renderCustomPersonForm(
           {
