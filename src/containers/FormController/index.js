@@ -23,6 +23,9 @@ import 'antd/dist/antd.less';
 import {
   getTownHall,
 } from '../../state/townhall/selectors';
+import {
+  getUserMOCs,
+} from '../../state/user/selectors';
 import selectionStateBranch from '../../state/selections';
 import townHallStateBranch from '../../state/townhall';
 import MainForm from '../MainForm';
@@ -138,6 +141,7 @@ class FormController extends React.Component {
   render() {
     const {
       currentTownHall,
+      mocids
     } = this.props;
     const {
       displayValues,
@@ -154,6 +158,7 @@ class FormController extends React.Component {
               errors={errors}
               resetErrors={this.resetErrors}
               setErrors={this.setErrors}
+              mocids={mocids}
             />
           </Col>
           {
@@ -187,6 +192,7 @@ class FormController extends React.Component {
 
 const mapStateToProps = state => ({
   currentTownHall: getTownHall(state),
+  mocids: getUserMOCs(state)
 });
 
 const mapDispatchToProps = dispatch => ({
