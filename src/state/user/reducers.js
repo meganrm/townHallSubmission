@@ -2,6 +2,7 @@ const initialState = {
   uid: null,
   displayName: null,
   email: null,
+  mocids: [],
 };
 
 const selectionReducer = (state = initialState, {
@@ -20,7 +21,11 @@ const selectionReducer = (state = initialState, {
       displayName: payload.displayName,
       email: payload.email,
     };
-
+  case 'SET_MOCS':
+      return {
+        ...state,
+        mocids: payload
+      }
   default:
     return state;
   }
