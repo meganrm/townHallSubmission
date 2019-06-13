@@ -7,6 +7,11 @@ const setUser = payload => ({
   type: 'SET_USER',
 });
 
+const setMOCs = payload => ({
+  payload,
+  type: 'SET_MOCS',
+});
+
 export const writeUserData = payload => (dispatch) => {
   firebasedb.ref(`users/${payload.uid}`).update({
     email: payload.email,
@@ -14,3 +19,10 @@ export const writeUserData = payload => (dispatch) => {
   })
     .then(dispatch(setUser(payload)));
 };
+
+export const getUserMOCs = payload => (dispatch) => {
+  firebasedb.ref(`users/${payload.uid}/mocs`).once('value').then((snapshot) => {
+    const mocIds = Object.keys(snapshot.val());
+    dispatch(setMOCs(mocIds))
+  })
+}
