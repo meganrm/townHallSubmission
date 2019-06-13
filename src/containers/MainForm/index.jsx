@@ -79,6 +79,7 @@ class MainForm extends React.Component {
     this.checkSubmit = this.checkSubmit.bind(this);
     this.resetAll = this.resetAll.bind(this);
     this.checkSubmit = this.checkSubmit.bind(this);
+    this.renderMocBtns = this.renderMocBtns.bind(this);
     this.getError = this.getError.bind(this);
   }
 
@@ -127,6 +128,20 @@ class MainForm extends React.Component {
       return errors[field].errors[0].message;
     }
     return false;
+  }
+
+  renderMocBtns() {
+    if(this.props.mocids) {
+      return (
+        <div>
+          <Button.Group>
+            {this.props.mocids.map((id) => {
+              return <Button type="primary" key={id}>{id}</Button>
+            })}
+          </Button.Group>
+        </div>
+      )
+    }
   }
 
   handleSubmit() {
@@ -237,6 +252,7 @@ class MainForm extends React.Component {
       setValue,
       errors,
       form,
+      mocids
     } = this.props;
     const {
       getFieldDecorator,
@@ -254,6 +270,7 @@ class MainForm extends React.Component {
           id="new-event-form-element"
           layout="horizontal"
         >
+          {this.renderMocBtns()}
           <Button
             onClick={this.resetAll}
           >Reset fields
