@@ -446,7 +446,7 @@ class MainForm extends React.Component {
                       class="general-checkbox"
                       id="ada_accessible"
                     >
-              ADA accessible?
+              <span style={{ fontSize: '13px'}}>Is the venue ADA accessible? (Please only select this if you can verify)</span>
                     </Checkbox>,
                   )}
               </FormItem>
