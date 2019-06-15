@@ -11,7 +11,9 @@ import {
   Button,
   Input,
   Select,
+  Modal,
   Checkbox,
+  Radio,
   message,
 } from 'antd';
 
@@ -42,6 +44,8 @@ let initFieldValue;
 const success = () => {
   message.success('Thanks for submitting info!', 4);
 };
+
+const confirm = Modal.confirm;
 
 class MainForm extends React.Component {
   static shouldGetLatLng(currentTownHall, nextTownHall) {
@@ -81,6 +85,7 @@ class MainForm extends React.Component {
     this.checkSubmit = this.checkSubmit.bind(this);
     this.renderMocBtns = this.renderMocBtns.bind(this);
     this.getError = this.getError.bind(this);
+    this.showConfirm = this.showConfirm.bind(this);
   }
 
   componentWillMount() {
@@ -136,12 +141,25 @@ class MainForm extends React.Component {
         <div>
           <Button.Group>
             {this.props.mocids.map((id) => {
-              return <Button type="primary" key={id}>{id}</Button>
+              return <Button type="primary" key={id} onClick={() => this.props.requestPersonDataById('mocData', id)}>{id}</Button>
             })}
           </Button.Group>
         </div>
       )
     }
+  }
+  showConfirm(submit) {
+    let govId = this.props.currentTownHall.govtrack_id;
+    confirm({
+      title: `Do you want to submit No Events for ${govId}?`,
+      onOk() {
+        return new Promise((resolve, reject) => {
+          submit();
+          setTimeout(resolve, 1000);
+        });
+      },
+      onCancel() {},
+    });
   }
 
   handleSubmit() {
@@ -152,16 +170,15 @@ class MainForm extends React.Component {
       peopleDataUrl,
       mergeNotes,
       submitEventForReview,
-      memberId,
       userDisplayName,
       uid,
     } = this.props;
     const metaData = {
       eventId: currentTownHall.eventId,
-      memberId,
       govtrack_id: currentTownHall.govtrack_id || null,
       mocDataPath: peopleDataUrl,
       thp_id: currentTownHall.thp_id || null,
+      memberId: currentTownHall.govtrack_id || currentTownHall.thp_id,
       uid,
       userDisplayName,
     };
@@ -252,7 +269,6 @@ class MainForm extends React.Component {
       setValue,
       errors,
       form,
-      mocids
     } = this.props;
     const {
       getFieldDecorator,
@@ -271,6 +287,13 @@ class MainForm extends React.Component {
           layout="horizontal"
         >
           {this.renderMocBtns()}
+          <Form.Item>
+            {getFieldDecorator('meetingType')(
+              <Radio.Group>
+                <Radio.Button value="No Events" onClick={() => this.showConfirm(this.handleSubmit)}>No Events</Radio.Button>
+              </Radio.Group>,
+            )}
+          </Form.Item>
           <Button
             onClick={this.resetAll}
           >Reset fields
@@ -543,7 +566,6 @@ MainForm.propTypes = {
   form: PropTypes.shape({}).isRequired,
   geoCodeLocation: PropTypes.func.isRequired,
   handleDatabaseLookupError: PropTypes.func.isRequired,
-  // memberId: PropTypes.func.isRequired,
   mergeNotes: PropTypes.func.isRequired,
   peopleDataUrl: PropTypes.string.isRequired,
   peopleLookUpError: PropTypes.string,
