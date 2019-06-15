@@ -137,16 +137,15 @@ class MainForm extends React.Component {
       peopleDataUrl,
       mergeNotes,
       submitEventForReview,
-      memberId,
       userDisplayName,
       uid,
     } = this.props;
     const metaData = {
       eventId: currentTownHall.eventId,
-      memberId,
       govtrack_id: currentTownHall.govtrack_id || null,
       mocDataPath: peopleDataUrl,
       thp_id: currentTownHall.thp_id || null,
+      memberId: currentTownHall.govtrack_id || currentTownHall.thp_id,
       uid,
       userDisplayName,
     };
@@ -526,7 +525,6 @@ MainForm.propTypes = {
   form: PropTypes.shape({}).isRequired,
   geoCodeLocation: PropTypes.func.isRequired,
   handleDatabaseLookupError: PropTypes.func.isRequired,
-  // memberId: PropTypes.func.isRequired,
   mergeNotes: PropTypes.func.isRequired,
   peopleDataUrl: PropTypes.string.isRequired,
   peopleLookUpError: PropTypes.string,
