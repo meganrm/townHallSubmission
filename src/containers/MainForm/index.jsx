@@ -83,7 +83,6 @@ class MainForm extends React.Component {
     this.checkSubmit = this.checkSubmit.bind(this);
     this.resetAll = this.resetAll.bind(this);
     this.checkSubmit = this.checkSubmit.bind(this);
-    this.renderMocBtns = this.renderMocBtns.bind(this);
     this.getError = this.getError.bind(this);
     this.showConfirm = this.showConfirm.bind(this);
   }
@@ -135,23 +134,11 @@ class MainForm extends React.Component {
     return false;
   }
 
-  renderMocBtns() {
-    if(this.props.mocids) {
-      return (
-        <div>
-          <Button.Group>
-            {this.props.mocids.map((id) => {
-              return <Button type="primary" key={id} onClick={() => this.props.requestPersonDataById('mocData', id)}>{id}</Button>
-            })}
-          </Button.Group>
-        </div>
-      )
-    }
-  }
   showConfirm(submit) {
-    let govId = this.props.currentTownHall.govtrack_id;
+    let member = this.props.currentTownHall.Member;
+    if (!member) { return; }
     confirm({
-      title: `Do you want to submit No Events for ${govId}?`,
+      title: `Submit No Events for ${member}?`,
       onOk() {
         return new Promise((resolve, reject) => {
           submit();
@@ -286,17 +273,8 @@ class MainForm extends React.Component {
           id="new-event-form-element"
           layout="horizontal"
         >
-          {this.renderMocBtns()}
-          <Form.Item>
-            {getFieldDecorator('meetingType')(
-              <Radio.Group>
-                <Radio.Button value="No Events" onClick={() => this.showConfirm(this.handleSubmit)}>No Events</Radio.Button>
-              </Radio.Group>,
-            )}
-          </Form.Item>
-          <Button
-            onClick={this.resetAll}
-          >Reset fields
+          <Button ghost type="primary" icon="rollback" size="large" onClick={this.resetAll}>
+            Reset fields
           </Button>
           <MemberForm
             allNames={allNames}
@@ -319,6 +297,15 @@ class MainForm extends React.Component {
             resetDatabaseLookUpError={resetDatabaseLookupError}
             handleDatabaseLookupError={handleDatabaseLookupError}
           />
+          <Form.Item>
+            {getFieldDecorator('meetingType')(
+              <Radio.Group buttonStyle="solid" size="large">
+                <Radio.Button value="No Events" style={{ background: '#607d8bab', borderColor: '#607d8bab', color: 'white' }} onClick={() => this.showConfirm(this.handleSubmit)}>
+                  No Events
+                </Radio.Button>
+              </Radio.Group>,
+            )}
+          </Form.Item>
           <section className="meeting information">
             <h4>
               Information about the Event
