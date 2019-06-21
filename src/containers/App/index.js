@@ -76,7 +76,6 @@ class App extends React.Component {
                   style={{
                     overflow: 'auto',
                     height: '100vh',
-                    position: 'fixed',
                     left: 0,
                     marginBottom: 40,
                   }}
