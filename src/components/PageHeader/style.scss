@@ -7,8 +7,25 @@
   margin-left: 60px;
 }
 
-.info-btn {
-  position: absolute !important;
-  right: 5vw;
-  margin-top: 15px;
+@media screen and (max-width: 500px) {
+  .thp-logo {
+    margin-left: 10px;
+  }
+}
+
+.header-menu {
+  margin-right: 1vw;
+  line-height: 63px !important;
+  .ant-menu-item {
+    color: white;
+    background: #3facef;
+    margin-right: 10px;
+    .anticon {
+      font-size: 18px;
+      margin-right: 0 !important;
+    }
+  }
+  .ant-menu-item:hover {
+    background: #6ac9fc;
+  }
 }
