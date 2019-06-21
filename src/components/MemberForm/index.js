@@ -330,13 +330,13 @@ class MemberLookup extends React.Component {
           },
         ) : this.memberForms()}
 
-        <div className="district-group federal-district-group" id="federal-district-group">
+        {/* <div className="district-group federal-district-group" id="federal-district-group">
           <FormItem>
             <Button type="dashed" onClick={this.addMember} style={{ width: '60%' }}>
               <Icon type="plus" /> Add another lawmaker
             </Button>
           </FormItem>
-        </div>
+        </div> */}
       </section>
     );
   }
