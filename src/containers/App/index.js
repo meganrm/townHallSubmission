@@ -1,5 +1,4 @@
 import React from 'react';
-import classNames from 'classnames';
 import {
   Layout,
   Affix,
@@ -16,6 +15,7 @@ import './style.scss';
 const {
   Sider,
   Content,
+  Header
 } = Layout;
 
 class App extends React.Component {
@@ -53,9 +53,7 @@ class App extends React.Component {
       width
     } = this.state;
     const isMobile = width <= 500;
-    const contentClass = classNames('body-content', {
-      'side-bar-closed': collapsed,
-    });
+    const navMargin = collapsed ? '0px' : '250px';
     if (isMobile) {
       return (
         <MobileView />
@@ -65,36 +63,38 @@ class App extends React.Component {
         <Layout>
           <PageHeader />
           <Layout>
-            <Layout>
-              <Affix>
-                <Sider
-                  breakpoint="lg"
-                  collapsible
-                  width={250}
-                  collapsedWidth="0"
-                  collapsed={collapsed}
-                  style={{
-                    overflow: 'auto',
-                    height: '100vh',
-                    position: 'fixed',
-                    left: 0,
-                    marginBottom: 40,
-                  }}
-                >
-                  <SideBar />
-                </Sider>
-              </Affix>
+            <Affix>
+              <Sider
+                trigger={null}
+                breakpoint="lg"
+                collapsible
+                width={250}
+                collapsedWidth="0"
+                collapsed={collapsed}
+                style={{
+                  overflow: 'auto',
+                  height: '100vh',
+                  position: 'fixed',
+                  left: 0,
+                  marginBottom: 40,
+                }}
+              >
+                <SideBar />
+              </Sider>
+            </Affix>
+            <Header style={{ background: '#fff', padding: 0 }}>
               <Affix>
                 <Icon
-                  className={`${contentClass} trigger`}
-                  type={collapsed ? 'menu-unfold' : 'menu-fold'}
+                  className={`trigger`}
+                  style={{ marginLeft: navMargin }}
+                  type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
                   onClick={this.toggle}
                 />
               </Affix>
-              <Content className={contentClass}>
-                <MainFormController />
-              </Content>
-            </Layout>
+            </Header>
+            <Content style={{ margin: '24px 16px 0', overflow: 'initial' }}>
+              <MainFormController />
+            </Content>
           </Layout>
         </Layout>
       );
