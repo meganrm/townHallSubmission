@@ -1,65 +1,11 @@
-// /*!
-//  * Bootstrap v3.3.7 (http://getbootstrap.com)
-//  * Copyright 2011-2016 Twitter, Inc.
-//  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
-//  */
 
-// // Core variables and mixins
-@import "~bootstrap3/less/variables.less";
-@import "~bootstrap3/less/mixins.less";
-
-// Reset and dependencies
-@import "~bootstrap3/less/normalize.less";
-@import "~bootstrap3/less/print.less";
-// @import "glyphicons.less";
-
-// Core CSS
-@import "~bootstrap3/less/scaffolding.less";
-@import "~bootstrap3/less/type.less";
-@import "~bootstrap3/less/code.less";
-@import "~bootstrap3/less/grid.less";
-@import "~bootstrap3/less/tables.less";
-@import "~bootstrap3/less/forms.less";
-@import "~bootstrap3/less/buttons.less";
-
-// Components
-@import "~bootstrap3/less/component-animations.less";
-@import "~bootstrap3/less/dropdowns.less";
-@import "~bootstrap3/less/button-groups.less";
-@import "~bootstrap3/less/input-groups.less";
-@import "~bootstrap3/less/navs.less";
-@import "~bootstrap3/less/navbar.less";
-// @import "breadcrumbs.less";
-// @import "pagination.less";
-@import "~bootstrap3/less/pager.less";
-@import "~bootstrap3/less/labels.less";
-@import "~bootstrap3/less/badges.less";
-// @import "jumbotron.less";
-@import "~bootstrap3/less/thumbnails.less";
-@import "~bootstrap3/less/alerts.less";
-@import "~bootstrap3/less/progress-bars.less";
-@import "~bootstrap3/less/media.less";
-@import "~bootstrap3/less/list-group.less";
-@import "~bootstrap3/less/panels.less";
-@import "~bootstrap3/less/responsive-embed.less";
-@import "~bootstrap3/less/wells.less";
-@import "~bootstrap3/less/close.less";
-
-// Components w/ JavaScript
-@import "~bootstrap3/less/modals.less";
-@import "~bootstrap3/less/tooltip.less";
-@import "~bootstrap3/less/popovers.less";
-// @import "carousel.less";
-
-// Utility classes
-@import "~bootstrap3/less/utilities.less";
-@import "~bootstrap3/less/responsive-utilities.less";
-
-// Brand Colors
 @brand-primary: #0d4668;
 @brand-secondary: #ff4741; //red
+@brand-warning: @brand-secondary;
+@brand-danger: @brand-secondary;
 @brand-cool: #b6e5fb;
 @brand-text: #132149;
+@text-color: @brand-text;
 @brand-gray: #d4e0e5;
 @brand-success: #3facef;
 @brand-info: #132149;
@@ -76,122 +22,36 @@
   color: @brand-secondary-dark;
 }
 
-@link-color:                        @brand-secondary;
-@component-active-bg:               @brand-secondary;
-@nav-tabs-active-link-hover-color:  @brand-primary;
-@nav-tabs-link-hover-border-color:  @brand-success;
-@nav-tabs-border-color:             @brand-info;
-@btn-warning-border:                    white;
-@btn-info-border: @brand-info;
-@btn-danger-border: @btn-danger-bg;
-@btn-danger-color: @brand-info;
-
-@table-bg-hover:                @brand-success;
-// Basics of a navbar
-@navbar-height:                    60px;
-@navbar-margin-bottom:             @line-height-computed;
-@navbar-padding-horizontal:        floor((@grid-gutter-width / 2));
-@navbar-padding-vertical:          ((@navbar-height - @line-height-computed) / 2);
-@navbar-collapse-max-height:       340px;
-@navbar-default-color:             #777;
-@navbar-default-bg:                #ffffff;
-@navbar-default-border:            darken(@navbar-default-bg, 6.5%);
-
-// Navbar links
-@navbar-default-link-color:                lighten(@brand-info, 10%);
-@navbar-default-link-hover-color:          @brand-primary;
-@navbar-default-link-hover-bg:             transparent;
-@navbar-default-link-active-color:         @brand-success;
-@navbar-default-link-active-bg:            #ffffff;
-@navbar-default-link-disabled-color:       #ccc;
-@navbar-default-link-disabled-bg:          transparent;
-@navbar-border-radius:                     none;
-
-
-.navbar-brand img{
-  width: 125px;
+.ant-layout {
+  background: white !important;
 }
 
-.navbar-brand{
-  padding-top: 5px!important;
+.ant-layout-sider {
+  background-color: #ffffff;
 }
-
-.navbar-right .social-icons{
-  padding-right: 0px;
-  padding-left: 5px;
-  padding-top: 15px;
-}
-
-//## Define colors for form feedback states and, by default, alerts.
-
-@state-success-text:             @brand-success;
-@state-success-bg:               @brand-success;
-@state-success-border:           darken(spin(@state-success-bg, -10), 5%);
-
-@state-info-text:                @brand-info;
-@state-info-bg:                  @brand-info;
-@state-info-border:              darken(spin(@state-info-bg, -10), 7%);
-
-@state-warning-text:             @brand-warning;
-@state-warning-bg:               @brand-warning;
-@state-warning-border:           darken(spin(@state-warning-bg, -10), 5%);
-
-@state-danger-text:              @brand-danger;
-@state-danger-bg:                @brand-danger;
-@state-danger-border:            darken(spin(@state-danger-bg, -10), 5%);
-
-@progress-bar-warning-bg: @brand-secondary-dark;
 
 // base styles
-html {
-  position: relative;
-  min-height: 100%;
-}
 
-body{
-  color: #1E2528;
+body {
   font-family: 'Raleway', sans-serif;
   margin-bottom: 60px;
-  padding-top: 70px;
-
 }
 
 h2 {
   font-weight: 900;
 }
 
-.navbar-fixed-top{
-  border-bottom: @brand-secondary 2px solid;
-  margin-bottom: 0;
+h4 {
+  color: @brand-gray;
 }
 
 .fa-1x{
   font-size: 1.3em;
 }
 
-header{
-  background-color: @brand-primary;
-  color: white;
-  padding: 20px;
-}
-
 #disclaimer{
   margin-top: 20px;
   border-top: 1px solid @brand-gray;
-}
-
-.footer {
-  color: white;
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  height: 160px;
-  background-color: @brand-info;
-  padding: 40px;
-}
-
-img{
-  width: 100%;
 }
 
 input{
@@ -201,49 +61,19 @@ input{
 .spacer{
   margin-top: 120px;
 }
-#can_embed_form{
-  padding:20px;
-}
 
-article{
+article {
   margin-top:10px;
-}
-
-.dropdown-menu{
-  padding-left:20px;
 }
 
 .list-group .form-group, .list-group .input-group{
   padding:10px;
 }
 
-.list-group-heading{
-  padding-bottom: 0;
-  padding-left: 0;
-  padding-right: 0;
-  .navbar-right {
-     margin-right: 0;
-  }
-  .navbar-nav{
-    margin-left: 0;
-  }
-}
 
-form{
-  border-bottom: 1.5px solid @brand-gray;
-  border-bottom-style: dotted;
-  padding-bottom: 20px;
-  margin-bottom: 10px;
-}
-
-.list-group-item{
-  border-color: @brand-success;
-}
-
-.list-group-item label, form label{
-  font-weight: 400;
-  text-transform: uppercase;
-  font-size: 0.8em;
+form section{
+  padding-top: 20px;
+  margin-top: 10px;
 }
 
 #scroll-to-top{
@@ -269,7 +99,7 @@ form{
   width: 100%;
 }
 
-form .input-underline{
+form .input-underline {
   border: none;
   border-radius: 0;
   box-shadow: 0 0 0;
@@ -288,161 +118,12 @@ form .input-underline{
   margin-top: 1.2em;
 }
 
-.new-event-form section{
-  margin-bottom: 8em;
-}
-
 .has-success .form-control{
   box-shadow: none;
 }
 
-
-// add to cal styles
-.atcb-list {
-    width: 170px;
-    border: 1px solid rgb(186,186,186);
-    border-radius: 2px;
-    box-shadow: 0 0 5px #AAA;
-    right:0;
-    left: auto;
-}
-
-.atcb-item-link {
-    color: #000;
-    font-family: "Verdana";
-    font-size: 14px;
-    text-decoration: none;
-    outline: none;
-    padding: 5px 15px;
-}
-
-.addtocalendar{
-  margin: 0px;
-}
-
-//panels
-.panel{
-  color: @brand-text;
-  margin-bottom: 5px;
-  border-top-color: rgb(208, 209, 213);
-  border-top-style: solid;
-  border-top-width: 1px;
-  border-right-color: rgb(208, 209, 213);
-  border-right-style: solid;
-  border-right-width: 2px;
-  border-bottom-color: rgb(208, 209, 213);
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-left-color: rgb(208, 209, 213);
-  border-left-style: solid;
-  border-left-width: 2px;
-  // border-image-source: initial;
-  // border-image-slice: initial;
-  // border-image-width: initial;
-  // border-image-outset: initial;
-  // border-image-repeat: initial;
-}
-
-.panel-heading small{
-  color: #ccc;
-}
-
-.panel address{
-  margin-bottom: 0;
-}
-
-
-.Democratic .panel-heading{
-  color: white;
-  background-color: #3facef;
-}
-
-.Republican .panel-heading{
-  color: white;
-  background-color: @brand-secondary;
-}
-
-.Independent .panel-heading{
-  color: white;
-  background-color: darken(#705f8c, 20%);
-}
-
 ::-webkit-scrollbar {
    display: none;
-}
-
-.daysAgo {
-  color: white;
-  background-color: darken(@brand-cool, 70%);
-}
-
-.Never {
-  background-color: @brand-secondary-dark;
-  color: white;
-}
-.daysAgo-0 {
-  color: @brand-text;
-  background-color: @brand-cool;
-}
-
-.daysAgo-1 {
-  background-color: darken(@brand-cool, 10%);
-}
-
-.daysAgo-2 {
-  background-color: darken(@brand-cool, 20%);
-}
-
-.daysAgo-3 {
-  background-color: darken(@brand-cool, 30%);
-}
-
-.daysAgo-4 {
-  background-color: darken(@brand-cool, 40%);
-}
-
-.daysAgo-5 {
-  background-color: darken(@brand-cool, 50%);
-}
-.daysAgo-6 {
-  color: white;
-  background-color: darken(@brand-cool, 60%);
-}
-
-
-
-// Table formatting
-.table .meetingType{
-  min-width: 180px;
-}
-.table .time{
-  min-width: 120px;
-}
-.table .party{
-  min-width: 120px;
-}
-
-.table{
-  margin-bottom: 180px;
-}
-
-.noninteractive-header {
-  padding: 6px;
-}
-#filter-info {
-  max-width: 50%;
-  margin: 20px 0 0px 20px;
-  li {
-    margin-bottom: 10px;
-    margin-right: 10px;
-    button:hover {
-      color: #fff;
-    }
-    button i.fa-times {
-      margin-left: 0.5em;
-      font-size: 0.8em;
-    }
-  }
 }
 
 // Results
@@ -451,13 +132,6 @@ form .input-underline{
   color: white;
   margin-bottom: 10px;
   border:none;
-}
-#can-form-area-stay-up-to-date-on-our-work input{
-  color: @brand-text;
-}
-
-#can-form-area-stay-up-to-date-on-our-work h2{
-  display: none;
 }
 
 .input-lg::-webkit-input-placeholder { /* Chrome/Opera/Safari */
@@ -485,11 +159,6 @@ form .input-underline{
   background-color: lighten(@brand-primary, 10%);
 }
 
-#donate-button{
-  text-align: left;
-  border: none;
-}
-
 .btn-secondary{
   color: white;
   background-color: @brand-secondary;
@@ -505,38 +174,6 @@ form .input-underline{
   color: @brand-info;
 }
 
-#nearest{
-  padding-top:10px;
-  overflow-y: scroll;
-  overflow-x: hidden;
-  -ms-overflow-style: none;
-}
-
-.nearest-with-results{
-  // background-color: #cee3ea;
-  height: 528px;
-  // border-left: 1px solid rgb(186, 188, 193);
-  // border-right: 1px solid #c0c4d0;
-}
-
-.header-with-results{
-  background-color: @brand-gray;
-  border-bottom:solid @brand-primary 1px;
-}
-
-#map {
-  height: 528px;
-  // width: 100%;
-}
-
-#mapEmbed {
-  height: 528px;
-  // width: 100%;
-}
-#mapEmbedContainer{
-  position: relative;
-}
-
 #logoOverlay{
   position: absolute;
   left: 30px;
@@ -550,106 +187,17 @@ form .input-underline{
   padding: 20px;
 }
 
-.page{
-  margin-bottom: 200px;
-}
-
 .no-padding {
   padding-left: 0;
   padding-right: 0;
 }
 
-#textresults h4 {
-  margin-bottom: 0px;
-  padding: 10px;
-}
-
-// google forms
-.embed-container {
-  position: relative;
-  padding-bottom: 1056px;
-  height: 0;
-  overflow: hidden;
-}
-  .embed-container iframe,
-  .embed-container object,
-  .embed-container embed {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
- }
-
-// about page
-.quote-header{
-  padding-top: 40px;
-
-}
-#hand-raised{
-  background-image: url('/Images/handraised.jpg');
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
-  height: 35em;
-}
-
-#cover{
-  background-image: url('/Images/town-hall-cover.jpg');
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
-  height: 45em;
-}
-
-
 @media screen and (max-width: 959px){
-  form{
+  form {
     margin-top: 20px;
   }
   .spacer{
       margin-top: 20px;
   }
-  #map {
-    height: 25em;
-    border-top: solid @brand-primary 2px;
-  }
-  .nearest-with-results{
-    height: inherit;
-  }
-  .panel{
-    min-height: 500px;
-  }
-  .header-with-results .container{
-    width: 100%;
-  }
 }
 
-@media screen and (max-width: 767px){
-  .footer{
-    padding: 0px;
-    padding-top: 20px;
-  }
-  .page{
-    margin-bottom: 200px;
-  }
-  .embed-container{
-    padding-bottom: 2871px;
-    // margin-bottom: 43%;
-  }
-  .panel{
-    min-height: none;
-  }
-
-  .map-small #map {
-    display:none;
-    // height: 25em;
-    // border-top: solid @brand-primary 2px;
-    // width: 100%;
-  }
-  .calendarButton{
-    display: none;
-  }
-}

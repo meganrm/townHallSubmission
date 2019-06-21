@@ -1,0 +1,19 @@
+.session-data {
+  margin-bottom: 70px;
+}
+
+@media screen and (max-width: 500px) {
+  .session-data {
+    margin-bottom: 100px;
+  }
+}
+
+.ant-menu-item-group-title {
+  background: #607D8B !important;
+  color: white !important;
+}
+
+.meta-menu-item {
+  cursor: default;
+  color: #244758 !important;
+}
