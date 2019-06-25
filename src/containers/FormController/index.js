@@ -157,7 +157,9 @@ class FormController extends React.Component {
               <div></div>
             ) : (
             <Col md={0} lg={12}>
-              <UserToolkit />
+              <UserToolkit 
+                resetAllData={this.resetAllData}
+              />
           </Col>
             )
           }
