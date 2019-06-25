@@ -244,7 +244,6 @@ UserToolkit.propTypes = {
   resetAllData: PropTypes.func.isRequired,
   requestPersonDataById: PropTypes.func.isRequired,
   selectedMemberLinks: PropTypes.arrayOf(PropTypes.shape({})),
-  getSelectedLink: PropTypes.func.isRequired,
   setSelectedLink: PropTypes.func.isRequired,
   submitMetaData: PropTypes.func.isRequired,
   uid: PropTypes.string,
