@@ -12,9 +12,9 @@ class MemberButtons extends React.Component {
   render() {
     const {
       selectMoc,
+      selectedMoc,
       userMocs,
     } = this.props;
-    console.log(userMocs)
     let widthVal = userMocs >= 4 ? '25%' : `${100 / userMocs}%`;
     const gridStyle = {
       width: widthVal,
@@ -22,11 +22,12 @@ class MemberButtons extends React.Component {
       cursor: 'pointer',
     };
     return (
-      <Card className="user-member-card" title={<span id="submitted-meta-data"><span>You've submitted: </span><span id="submitted-total">0</span><span> event(s)</span></span>}>
+      <React.Fragment>
         {userMocs.map((moc) => {
-          return <Card.Grid style={gridStyle} key={moc.govtrack_id} onClick={() => selectMoc(moc)}>{moc.member_name}</Card.Grid>
+          let memberBtnClass = (selectedMoc.govtrack_id === moc.govtrack_id) ? 'selected-member-btn' : 'member-btn';
+          return <Card.Grid className={`${memberBtnClass}`} style={gridStyle} key={moc.govtrack_id} onClick={() => selectMoc(moc)}>{moc.member_name}</Card.Grid>
         })}
-      </Card>
+      </React.Fragment>
     );
   }
 }
