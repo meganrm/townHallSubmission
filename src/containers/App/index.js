@@ -92,7 +92,7 @@ class App extends React.Component {
                 />
               </Affix>
             </Header>
-            <Content style={{ margin: '24px 16px 0', overflow: 'initial' }}>
+            <Content style={{ marginTop: '1px', overflow: 'initial' }}>
               <MainFormController />
             </Content>
           </Layout>
