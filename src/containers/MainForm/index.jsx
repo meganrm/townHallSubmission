@@ -297,15 +297,6 @@ class MainForm extends React.Component {
             resetDatabaseLookUpError={resetDatabaseLookupError}
             handleDatabaseLookupError={handleDatabaseLookupError}
           />
-          <Form.Item>
-            {getFieldDecorator('meetingType')(
-              <Radio.Group buttonStyle="solid" size="large">
-                <Radio.Button value="No Events" style={{ background: '#607d8bab', borderColor: '#607d8bab', color: 'white' }} onClick={() => this.showConfirm(this.handleSubmit)}>
-                  No Events
-                </Radio.Button>
-              </Radio.Group>,
-            )}
-          </Form.Item>
           <section className="meeting information">
             <h4>
               Information about the Event
