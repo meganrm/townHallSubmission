@@ -6,20 +6,35 @@ import EditLinkForm from '../../components/LinkForms/EditLinkForm';
 import LinksList from '../../components/LinksList';
 import MemberButtons from '../../components/MemberButtons';
 
-import { message } from 'antd';
+import { message, Modal, Card } from 'antd';
+const { confirm } = Modal;
+
+import lawMakerStateBranch from '../../state/members-candidates';
+import selectionStateBranch from '../../state/selections';
+import townHallStateBranch from '../../state/townhall';
 import {
   getUserMOCs,
+  getSelectedMember,
+  getSelectedMemberLinks,
+  getUid,
+  getUserName,
+  getSelectedLink,
 } from '../../state/user/selectors';
-import  {
+import {
   addMemberLink,
   editMemberLink,
   deleteMemberLink,
+  setSelectedLink,
+  getSelectedMemberInfo,
 } from '../../state/user/actions';
-import lawMakerStateBranch from '../../state/members-candidates';
 
-const updateSuccess = (e) => {
+const updateSuccess = () => {
   message.success('Link Updated');
 }
+
+const success = () => {
+  message.success('Thanks for submitting info!', 4);
+};
 
 class UserToolkit extends React.Component {
   constructor(props) {
@@ -32,26 +47,78 @@ class UserToolkit extends React.Component {
     this.saveEditFormRef = this.saveEditFormRef.bind(this);
     this.selectMoc = this.selectMoc.bind(this);
     this.handleDeleteLink = this.handleDeleteLink.bind(this);
+    this.handleAutoFillMember = this.handleAutoFillMember.bind(this);
+    this.renderMemberLinks = this.renderMemberLinks.bind(this);
+    this.showConfirm = this.showConfirm.bind(this);
+    this.handleNoEventSubmit = this.handleNoEventSubmit.bind(this);
     this.state = {
       addVisible: false,
       editVisible: false,
-      selectedMoc: {},   // TODO: PUT IN REDUX
-      selectedLink: {}   // TODO: PUT IN REDUX
     }
   }
-  
+
   selectMoc(moc) {
-    this.setState({
-      selectedMoc: moc
-    });
-    this.props.requestPersonDataById('mocData', moc.govtrack_id)
+    this.props.getSelectedMemberInfo(moc)
+  }
+
+  handleAutoFillMember(govId) {
+    this.props.requestPersonDataById('mocData', govId)
+  }
+
+  showConfirm() {
+    this.props.requestPersonDataById('mocData', this.props.selectedMoc.govtrack_id).then(() => {
+      let member = this.props.currentTownHall.Member;
+      let submit = this.handleNoEventSubmit;
+      if (!member) { return; }
+      confirm({
+        title: `Submit No Events for ${member}?`,
+        onOk() {
+          return new Promise((resolve, reject) => {
+            submit();
+            setTimeout(resolve, 1000);
+          });
+        },
+        onCancel() { },
+      });
+    })
+  }
+
+  resetAll() {
+    const {
+      resetAllData,
+    } = this.props;
+    resetAllData();
+  }
+
+  handleNoEventSubmit() {
+    const {
+      currentTownHall,
+      submitMetaData,
+      peopleDataUrl,
+      userDisplayName,
+      uid,
+    } = this.props;
+    const metaData = {
+      eventId: currentTownHall.eventId,
+      govtrack_id: currentTownHall.govtrack_id || null,
+      mocDataPath: peopleDataUrl,
+      thp_id: currentTownHall.thp_id || null,
+      memberId: currentTownHall.govtrack_id || currentTownHall.thp_id,
+      uid,
+      userDisplayName,
+    };
+    currentTownHall.meetingType = 'No Events';
+    submitMetaData(metaData);
+    success();
+    return this.resetAll();
   }
 
   showModal = (type, link) => {
     if (type === 'add') {
       this.setState({ addVisible: true });
     } else {
-      this.setState({ editVisible: true, selectedLink: link });
+      this.props.setSelectedLink(link);
+      this.setState({ editVisible: true });
     }
   };
 
@@ -64,11 +131,9 @@ class UserToolkit extends React.Component {
   };
 
   handleDeleteLink = () => {
-    console.log('delete ', this.state.selectedLink)
-    console.log(this.state.selectedMoc)
     let payload = {
-      moc_id: this.state.selectedMoc.govtrack_id,
-      link_id:  this.state.selectedLink.id,
+      moc_id: this.props.selectedMoc.govtrack_id,
+      link_id: this.props.selectedLink.id,
     }
     this.props.deleteMemberLink(payload);
   }
@@ -79,10 +144,8 @@ class UserToolkit extends React.Component {
       if (err) {
         return;
       }
-      console.log('Received values of form: ', values);
-      console.log('Values in state for MOC ', this.state.selectedMoc);
       this.props.addMemberLink({
-        member_id: this.state.selectedMoc.govtrack_id,
+        member_id: this.props.selectedMoc.govtrack_id,
         link_title: values.title,
         link_url: values.url
       })
@@ -97,11 +160,9 @@ class UserToolkit extends React.Component {
       if (err) {
         return;
       }
-      console.log('Received values of form: ', values);
-      console.log('Values in state for MOC ', this.state.selectedMoc);
       let payload = {
-        moc_id: this.state.selectedMoc.govtrack_id,
-        link_id:  this.state.selectedLink.id,
+        moc_id: this.props.selectedMoc.govtrack_id,
+        link_id: this.props.selectedLink.id,
         linkInfo: {
           link_title: values.title,
           url: values.url
@@ -123,12 +184,27 @@ class UserToolkit extends React.Component {
   };
 
   renderMocBtns() {
-    console.log(this.props.userMocs)
-    if(this.props.userMocs) {
+    if (this.props.userMocs) {
       return (
-        <MemberButtons 
+        <MemberButtons
           selectMoc={this.selectMoc}
+          selectedMoc={this.props.selectedMoc}
           userMocs={this.props.userMocs}
+        />
+      );
+    }
+  }
+
+  renderMemberLinks() {
+    if (this.props.userMocs) {
+      return (
+        <LinksList
+          selectedMoc={this.props.selectedMoc}
+          memberlinks={this.props.selectedMemberLinks}
+          showModal={this.showModal}
+          showConfirm={this.showConfirm}
+          handleSubmit={this.handleNoEventSubmit}
+          handleAutoFillMember={this.handleAutoFillMember}
         />
       );
     }
@@ -137,11 +213,10 @@ class UserToolkit extends React.Component {
   render() {
     return (
       <div>
-        {this.renderMocBtns()}
-        <LinksList 
-          selectedMoc={this.state.selectedMoc} // move to selector TODO: pass as props - not local state
-          showModal={this.showModal}
-        />
+        <Card className="user-member-card" title={<span id="submitted-meta-data"><span>You've submitted: </span><span id="submitted-total">0</span><span> event(s)</span></span>}>
+          {this.renderMocBtns()}
+        </Card>
+        {this.renderMemberLinks()}
         <AddLinkForm
           wrappedComponentRef={this.saveAddFormRef}
           visible={this.state.addVisible}
@@ -154,7 +229,7 @@ class UserToolkit extends React.Component {
           onCancel={() => this.handleCancel('edit')}
           onCreate={this.handleUpdate}
           onDelete={this.handleDeleteLink}
-          link={this.state.selectedLink}
+          link={this.props.selectedLink}
         />
       </div>
     )
@@ -162,21 +237,47 @@ class UserToolkit extends React.Component {
 }
 
 UserToolkit.propTypes = {
-  userMocs: PropTypes.arrayOf(PropTypes.shape({})),
-  requestPersonDataById: PropTypes.func.isRequired,
   addMemberLink: PropTypes.func.isRequired,
+  currentTownHall: PropTypes.shape({}).isRequired,
+  getSelectedMemberInfo: PropTypes.func.isRequired,
+  peopleDataUrl: PropTypes.string.isRequired,
+  resetAllData: PropTypes.func.isRequired,
+  requestPersonDataById: PropTypes.func.isRequired,
+  selectedMemberLinks: PropTypes.arrayOf(PropTypes.shape({})),
+  getSelectedLink: PropTypes.func.isRequired,
+  setSelectedLink: PropTypes.func.isRequired,
+  submitMetaData: PropTypes.func.isRequired,
+  uid: PropTypes.string,
+  userDisplayName: PropTypes.string,
+  userMocs: PropTypes.arrayOf(PropTypes.shape({})),
+}
+
+UserToolkit.defaultProps = {
+  uid: null,
+  userDisplayName: null,
 }
 
 const mapStateToProps = state => ({
   userMocs: getUserMOCs(state),
+  selectedMoc: getSelectedMember(state),
+  selectedMemberLinks: getSelectedMemberLinks(state),
+  currentTownHall: townHallStateBranch.selectors.getTownHall(state),
+  peopleDataUrl: selectionStateBranch.selectors.getPeopleDataUrl(state),
+  userDisplayName: getUserName(state),
+  uid: getUid(state),
+  selectedLink: getSelectedLink(state)
 });
 
 const mapDispatchToProps = dispatch => ({
   requestPersonDataById: (peopleDataUrl, id) => dispatch(lawMakerStateBranch.actions.requestPersonDataById(peopleDataUrl, id)),
   addMemberLink: (payload) => dispatch(addMemberLink(payload)),
   editMemberLink: (payload) => dispatch(editMemberLink(payload)),
-  deleteMemberLink: (payload) => dispatch(deleteMemberLink(payload))
+  deleteMemberLink: (payload) => dispatch(deleteMemberLink(payload)),
+  getSelectedMemberInfo: (member) => dispatch(getSelectedMemberInfo(member)),
+  submitMetaData: payload => dispatch(townHallStateBranch.actions.saveMetaData(payload)),
+  setSelectedLink: payload => dispatch(dispatch(setSelectedLink(payload))),
 });
+
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserToolkit);
 
