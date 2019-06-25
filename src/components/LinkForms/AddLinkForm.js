@@ -8,7 +8,6 @@ import {
 } from 'antd';
 
 const AddLinkForm = Form.create({ name: 'link_add_form' })(
-  // eslint-disable-next-line
   class extends React.Component {
     render() {
       const { visible, onCancel, onCreate, form } = this.props;
