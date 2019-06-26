@@ -78,7 +78,6 @@ export const getSelectedMemberInfo = payload => (dispatch) => {
 }
 
 export const addMemberLink = payload => (dispatch) => {
-  console.log(payload);
   if (payload.link_title === undefined || payload.link_url === undefined) {
     return;
   } else {
