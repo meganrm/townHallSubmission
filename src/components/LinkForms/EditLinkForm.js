@@ -44,13 +44,13 @@ const EditLinkForm = Form.create({ name: 'link_edit_form' })(
           <Form layout="vertical">
             <Form.Item label="Title">
               {getFieldDecorator('title', {
-                initialValue: link.link_title,
+                initialValue: link ? link.link_title : '',
                 rules: [{ required: true, message: 'Please input the title of the link.' }],
               })(<Input />)}
             </Form.Item>
             <Form.Item label="URL">
               {getFieldDecorator('url', {
-                initialValue: link.url,
+                initialValue: link ? link.url : '',
                 rules: [{ required: true, message: 'Please input the webpage url' }],
               })(<Input />)}
             </Form.Item>
