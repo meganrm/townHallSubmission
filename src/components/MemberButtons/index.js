@@ -24,7 +24,7 @@ class MemberButtons extends React.Component {
     return (
       <React.Fragment>
         {userMocs.map((moc) => {
-          let memberBtnClass = (selectedMoc.govtrack_id === moc.govtrack_id) ? 'selected-member-btn' : 'member-btn';
+          let memberBtnClass = (selectedMoc && selectedMoc.govtrack_id === moc.govtrack_id) ? 'selected-member-btn' : 'member-btn';
           return <Card.Grid className={`${memberBtnClass}`} style={gridStyle} key={moc.govtrack_id} onClick={() => selectMoc(moc)}>{moc.member_name}</Card.Grid>
         })}
       </React.Fragment>
