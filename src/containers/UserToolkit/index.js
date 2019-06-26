@@ -14,19 +14,21 @@ import selectionStateBranch from '../../state/selections';
 import townHallStateBranch from '../../state/townhall';
 import {
   getUserMOCs,
-  getSelectedMember,
-  getSelectedMemberLinks,
   getUid,
   getUserName,
-  getSelectedLink,
 } from '../../state/user/selectors';
+import {
+  getSelectedMember,
+  getSelectedMemberLinks,
+  getSelectedLink,
+} from '../../state/members-candidates/selectors';
 import {
   addMemberLink,
   editMemberLink,
   deleteMemberLink,
   setSelectedLink,
   getSelectedMemberInfo,
-} from '../../state/user/actions';
+} from '../../state/members-candidates/actions';
 
 class UserToolkit extends React.Component {
   constructor(props) {
