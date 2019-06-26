@@ -18,7 +18,7 @@ class LinksList extends React.Component {
     } = this.props;
     return (
       <div>
-      { selectedMoc.govtrack_id ? 
+      { selectedMoc && selectedMoc.govtrack_id ? 
         <Card 
           className="actions-section" 
           title="Actions:" 
@@ -44,7 +44,6 @@ class LinksList extends React.Component {
 
 LinksList.propTypes = {
   showModal: PropTypes.func.isRequired,
-  selectedMoc: PropTypes.shape({}).isRequired,
 }
 
 export default LinksList;
