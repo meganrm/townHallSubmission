@@ -1,12 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  connect,
-} from 'react-redux';
 import { Layout, Tooltip, Menu, Icon, notification } from 'antd';
-import {
-  getTownHall,
-} from '../../state/townhall/selectors';
 import thpLogo from "../../assets/images/THP_logo_horizontal_simple.png";
 const {
   Header,
@@ -24,7 +18,6 @@ const openNotification = () => {
 
 class PageHeader extends React.Component {
   static replacer(key, value) {
-    // Filtering out properties
     if (!value || value.length === 0) {
       return undefined;
     }
@@ -65,14 +58,8 @@ class PageHeader extends React.Component {
   }
 }
 
-const mapStateToProps = state => ({
-  currentTownHall: getTownHall(state),
-});
-
-const mapDispatchToProps = dispatch => ({});
-
 PageHeader.propTypes = {
   currentTownHall: PropTypes.shape({}).isRequired,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(PageHeader);
+export default PageHeader;
