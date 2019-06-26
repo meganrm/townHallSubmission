@@ -1,9 +1,16 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {
   Layout,
   Affix,
   Icon,
 } from 'antd';
+import {
+  connect,
+} from 'react-redux';
+import {
+  getTownHall,
+} from '../../state/townhall/selectors';
 
 import PageHeader from '../../components/PageHeader';
 import MainFormController from '../FormController';
@@ -61,7 +68,9 @@ class App extends React.Component {
     } else {
       return (
         <Layout>
-          <PageHeader />
+          <PageHeader 
+            currentTownHall={this.props.currentTownHall}
+          />
           <Layout>
             <Affix>
               <Sider
@@ -102,4 +111,14 @@ class App extends React.Component {
   }
 }
 
-export default App;
+const mapStateToProps = state => ({
+  currentTownHall: getTownHall(state),
+});
+
+const mapDispatchToProps = dispatch => ({  });
+
+App.propTypes = {
+  currentTownHall: PropTypes.shape({}).isRequired,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
