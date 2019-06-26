@@ -12,7 +12,7 @@ import { showUserEvents } from './scripts/views/newEventView';
 import './scripts/controllers/routes';
 import {
   writeUserData,
-  getUserMOCs
+  startSetUserMocs
 } from './state/user/actions';
 
 import './vendor/styles/normalize.css';
@@ -48,7 +48,7 @@ const signIn = () => {
 
 firebase.auth().onAuthStateChanged((user) => {
   if (user) {
-    store.dispatch(getUserMOCs(user))
+    store.dispatch(startSetUserMocs(user))
     // User is signed in.
     console.log(user.displayName, ' is signed in');
     // eventHandler.readData();
