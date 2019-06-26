@@ -28,14 +28,6 @@ import {
   getSelectedMemberInfo,
 } from '../../state/user/actions';
 
-const updateSuccess = () => {
-  message.success('Link Updated');
-}
-
-const success = () => {
-  message.success('Thanks for submitting info!', 4);
-};
-
 class UserToolkit extends React.Component {
   constructor(props) {
     super(props);
@@ -51,11 +43,21 @@ class UserToolkit extends React.Component {
     this.renderMemberLinks = this.renderMemberLinks.bind(this);
     this.showConfirm = this.showConfirm.bind(this);
     this.handleNoEventSubmit = this.handleNoEventSubmit.bind(this);
+    this.updateSuccess = this.updateSuccess.bind(this);
+    this.success = this.success.bind(this);
     this.state = {
       addVisible: false,
       editVisible: false,
     }
   }
+
+  updateSuccess = () => {
+    message.success('Link Updated');
+  }
+
+  success = () => {
+    message.success('Thanks for submitting info!', 4);
+  };
 
   selectMoc(moc) {
     this.props.getSelectedMemberInfo(moc)
@@ -109,7 +111,7 @@ class UserToolkit extends React.Component {
     };
     currentTownHall.meetingType = 'No Events';
     submitMetaData(metaData);
-    success();
+    this.success();
     return this.resetAll();
   }
 
@@ -170,7 +172,7 @@ class UserToolkit extends React.Component {
       }
       this.props.editMemberLink(payload);
       form.resetFields();
-      updateSuccess();
+      this.updateSuccess();
       this.setState({ editVisible: false });
     });
   }
