@@ -81,7 +81,7 @@ class MobileView extends React.Component {
           open={this.state.open}
           onOpenChange={this.drawerToggle}
         >
-          <Button onClick={this.showDataObj('dataObjectModal')} style={{ width: '100%', zIndex: 3 }}>Data Object</Button>
+    {/*<Button onClick={this.showDataObj('dataObjectModal')} style={{ width: '100%', zIndex: 3 }}>Data Object</Button>*/}
           <WhiteSpace />
           <MainFormController mobile={true}/>
           <Modal
