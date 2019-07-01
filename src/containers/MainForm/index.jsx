@@ -213,6 +213,7 @@ class MainForm extends React.Component {
       allNames,
       allPeople,
       currentTownHall,
+      lawMakerType,
       peopleDataUrl,
       personMode,
       peopleLookUpError,
@@ -307,7 +308,7 @@ class MainForm extends React.Component {
                   required: true,
                 }],
               })(
-                renderEventOptions(this.props.personMode, this.props.selectedUSState),
+                renderEventOptions(lawMakerType),
               )}
             </FormItem>
           </section>
@@ -435,6 +436,7 @@ const mapStateToProps = state => ({
   allPeople: lawMakerStateBranch.selectors.getAllPeople(state),
   currentTownHall: townHallStateBranch.selectors.getTownHall(state),
   formKeys: selectionStateBranch.selectors.getFormKeys(state),
+  lawMakerType: selectionStateBranch.selectors.getLawmakerType(state),
   peopleDataUrl: selectionStateBranch.selectors.getPeopleDataUrl(state),
   peopleLookUpError: lawMakerStateBranch.selectors.getPeopleRequestError(state),
   peopleNameUrl: selectionStateBranch.selectors.getPeopleNameUrl(state),
@@ -480,6 +482,7 @@ MainForm.propTypes = {
   currentTownHall: PropTypes.shape({}).isRequired,
   errors: PropTypes.shape({}),
   form: PropTypes.shape({}).isRequired,
+  lawMakerType: PropTypes.string.isRequired,
   geoCodeLocation: PropTypes.func.isRequired,
   handleDatabaseLookupError: PropTypes.func.isRequired,
   mergeNotes: PropTypes.func.isRequired,
