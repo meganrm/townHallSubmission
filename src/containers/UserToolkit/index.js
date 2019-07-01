@@ -29,6 +29,7 @@ import {
   setSelectedLink,
   getSelectedMemberInfo,
 } from '../../state/members-candidates/actions';
+import { MOC_DATA_ENDPOINT } from '../../constants';
 
 class UserToolkit extends React.Component {
   constructor(props) {
@@ -66,11 +67,11 @@ class UserToolkit extends React.Component {
   }
 
   handleAutoFillMember(govId) {
-    this.props.requestPersonDataById('mocData', govId)
+    this.props.requestPersonDataById(MOC_DATA_ENDPOINT, govId)
   }
 
   showConfirm() {
-    this.props.requestPersonDataById('mocData', this.props.selectedMoc.govtrack_id).then(() => {
+    this.props.requestPersonDataById(MOC_DATA_ENDPOINT, this.props.selectedMoc.govtrack_id).then(() => {
       let member = this.props.currentTownHall.Member;
       let submit = this.handleNoEventSubmit;
       if (!member) { return; }
