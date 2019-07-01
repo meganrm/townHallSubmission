@@ -32,7 +32,6 @@ import DateTimeForm from '../../components/DateTimeForm';
 import townHallStateBranch from '../../state/townhall';
 
 import { formItemLayout } from '../../constants';
-import { renderEventOptions } from './EventOptions';
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -213,7 +212,7 @@ class MainForm extends React.Component {
       allNames,
       allPeople,
       currentTownHall,
-      lawMakerType,
+      eventTypeOptions,
       peopleDataUrl,
       personMode,
       peopleLookUpError,
@@ -308,7 +307,18 @@ class MainForm extends React.Component {
                   required: true,
                 }],
               })(
-                renderEventOptions(lawMakerType),
+                <Select
+                  key="meetingType"
+                  placeholder="Meeting type"
+                >
+                  {eventTypeOptions.map((item, i) => {
+                    return (
+                    <Option value={item} key={i}>
+                      {item}
+                    </Option>
+                    )
+                  })}
+                </Select>,
               )}
             </FormItem>
           </section>
@@ -436,7 +446,7 @@ const mapStateToProps = state => ({
   allPeople: lawMakerStateBranch.selectors.getAllPeople(state),
   currentTownHall: townHallStateBranch.selectors.getTownHall(state),
   formKeys: selectionStateBranch.selectors.getFormKeys(state),
-  lawMakerType: selectionStateBranch.selectors.getLawmakerType(state),
+  eventTypeOptions: selectionStateBranch.selectors.getLawmakerTypeEventOptions(state),
   peopleDataUrl: selectionStateBranch.selectors.getPeopleDataUrl(state),
   peopleLookUpError: lawMakerStateBranch.selectors.getPeopleRequestError(state),
   peopleNameUrl: selectionStateBranch.selectors.getPeopleNameUrl(state),
@@ -482,7 +492,7 @@ MainForm.propTypes = {
   currentTownHall: PropTypes.shape({}).isRequired,
   errors: PropTypes.shape({}),
   form: PropTypes.shape({}).isRequired,
-  lawMakerType: PropTypes.string.isRequired,
+  eventTypeOptions: PropTypes.arrayOf(PropTypes.string).isRequired,
   geoCodeLocation: PropTypes.func.isRequired,
   handleDatabaseLookupError: PropTypes.func.isRequired,
   mergeNotes: PropTypes.func.isRequired,
