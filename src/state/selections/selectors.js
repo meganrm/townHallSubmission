@@ -9,6 +9,23 @@ export const getTempState = state => state.selections.state;
 export const getTempStateName = state => state.selections.stateName;
 export const getFormKeys = state => state.selections.formKeys;
 
+
+export const getLawmakerType = state => {
+  let mode = state.selections.mode;
+  let usState = state.selections.usState;
+  let lawmakerType;
+  if (!usState && mode === 'moc') {
+    lawmakerType = 'fedRep';
+  } else if (mode === 'moc' && usState !== null) {
+    lawmakerType = 'stateRep';
+  } else if (!usState && mode === 'candidate') {
+    lawmakerType = 'fedCandidate';
+  } else if (mode === 'candidate' && usState !== null) {
+    lawmakerType = 'stateCandidate';
+  }
+  return lawmakerType;
+}
+
 export const getPeopleNameUrl = createSelector([getSelectedUSState, getMode], (usState, mode) => {
   if (mode === 'candidate') {
     return 'candidate_keys';
