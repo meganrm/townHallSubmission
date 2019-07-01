@@ -10,10 +10,13 @@ export const getTempStateName = state => state.selections.stateName;
 export const getFormKeys = state => state.selections.formKeys;
 
 
-export const getLawmakerType = state => {
+export const getLawmakerTypeEventOptions = state => {
   let mode = state.selections.mode;
   let usState = state.selections.usState;
+  let eventsArray = [];
   let lawmakerType;
+
+  // parse lawmaker type from state
   if (!usState && mode === 'moc') {
     lawmakerType = 'fedRep';
   } else if (mode === 'moc' && usState !== null) {
@@ -23,7 +26,25 @@ export const getLawmakerType = state => {
   } else if (mode === 'candidate' && usState !== null) {
     lawmakerType = 'stateCandidate';
   }
-  return lawmakerType;
+
+  // get events options array from lawmaker type
+  switch (lawmakerType) {
+    case 'fedRep':
+      eventsArray = ['No Events', 'Town Hall', 'Tele-Town Hall', 'Empty Chair Town Hall', 'Campaign Town Hall', 'Adopt-A-District/State', 'DC Event', 'Office Hours', 'Other'];
+      break;
+    case 'stateRep':
+      eventsArray = ['No Events', 'Town Hall', 'Tele-Town Hall', 'Empty Chair Town Hall', 'Campaign Town Hall', 'Adopt-A-District/State', 'Hearing', 'Office Hours', 'Other'];
+      break;
+    case 'fedCandidate':
+      eventsArray = ['No Events', 'Campaign Town Hall', 'Other', 'Ticketed Event'];
+      break;
+    case 'stateCandidate':
+      eventsArray = ['No Events', 'Campaign Town Hall', 'Other', 'Ticketed Event'];
+      break;
+    default:
+      eventsArray = ['No Events', 'Town Hall', 'H.R. 1 Town Hall', 'H.R. 1 Activist Event', 'Tele-Town Hall', 'Ticketed Event', 'Campaign Town Hall', 'Adopt-A-District/State', 'Empty Chair Town Hall', 'Hearing', 'DC Event', 'Office Hours', 'Other'];
+  }
+  return eventsArray;
 }
 
 export const getPeopleNameUrl = createSelector([getSelectedUSState, getMode], (usState, mode) => {
