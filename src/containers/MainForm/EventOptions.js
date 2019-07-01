@@ -4,174 +4,36 @@ import {
 } from 'antd';
 const { Option } = Select;
 
-export const renderEventOptions = (mode, state) => {
-  let lawmakerType;
-  if (mode === 'moc' && state === null) {
-    lawmakerType = 'fedRep';
-  } else if (mode === 'moc' && state !== null) {
-    lawmakerType = 'stateRep';
-  } else if (mode === 'candidate' && state === null) {
-    lawmakerType = 'fedCandidate';
-  } else if (mode === 'candidate' && state !== null) {
-    lawmakerType = 'stateCandidate';
-  }
+export const renderEventOptions = (lawmakerType) => {
+  let eventsArray = [];
   switch (lawmakerType) {
     case 'fedRep':
-      return (
-        <Select
-          key="meetingType"
-          placeholder="Meeting type"
-        >
-          <Option className="text-secondary" value="No Events">
-            No new events
-          </Option>
-          <Option value="Town Hall">
-            Town Hall
-          </Option>
-          <Option value="Tele-Town Hall">
-            Tele-Town Hall
-          </Option>
-          <Option value="Empty Chair Town Hall">
-            Empty Chair Town Hall
-          </Option>
-          <Option value="Campaign Town Hall">
-            Campaign Town Hall
-          </Option>
-          <Option value="Adopt-A-District/State">
-            Adopt-A-District/State
-          </Option>
-          <Option value="DC Event">
-            DC Event
-          </Option>
-          <Option value="Office Hours">
-            Office Hours
-          </Option>
-          <Option value="Other">
-            Other
-          </Option>
-        </Select>
-      );
+      eventsArray = ['No Events', 'Town Hall', 'Tele-Town Hall', 'Empty Chair Town Hall', 'Campaign Town Hall', 'Adopt-A-District/State', 'DC Event', 'Office Hours', 'Other'];
+      break;
     case 'stateRep':
-      return (
-        <Select
-          key="meetingType"
-          placeholder="Meeting type"
-        >
-          <Option className="text-secondary" value="No Events">
-            No new events
-          </Option>
-          <Option value="Town Hall">
-            Town Hall
-          </Option>
-          <Option value="Tele-Town Hall">
-            Tele-Town Hall
-          </Option>
-          <Option value="Empty Chair Town Hall">
-            Empty Chair Town Hall
-          </Option>
-          <Option value="Campaign Town Hall">
-            Campaign Town Hall
-          </Option>
-          <Option value="Adopt-A-District/State">
-            Adopt-A-District/State
-          </Option>
-          <Option value="Hearing">
-            Hearing
-          </Option>
-          <Option value="Office Hours">
-            Office Hours
-          </Option>
-          <Option value="Other">
-            Other
-          </Option>
-        </Select>
-      );
+      eventsArray = ['No Events', 'Town Hall', 'Tele-Town Hall', 'Empty Chair Town Hall', 'Campaign Town Hall', 'Adopt-A-District/State', 'Hearing', 'Office Hours', 'Other'];
+      break;
     case 'fedCandidate':
-      return (
-        <Select
-          key="meetingType"
-          placeholder="Meeting type"
-        >
-          <Option className="text-secondary" value="No Events">
-            No new events
-          </Option>
-          <Option value="Campaign Town Hall">
-            Campaign Town Hall
-          </Option>
-          <Option value="Other">
-            Other
-          </Option>
-          <Option value="Ticketed Event">
-            Ticketed Event
-          </Option>
-        </Select>
-      );
+      eventsArray = ['No Events', 'Campaign Town Hall', 'Other', 'Ticketed Event'];
+      break;
     case 'stateCandidate':
-      return (
-        <Select
-          key="meetingType"
-          placeholder="Meeting type"
-        >
-          <Option className="text-secondary" value="No Events">
-            No new events
-          </Option>
-          <Option value="Campaign Town Hall">
-            Campaign Town Hall
-          </Option>
-          <Option value="Other">
-            Other
-          </Option>
-          <Option value="Ticketed Event">
-            Ticketed Event
-          </Option>
-        </Select>
-      );
+      eventsArray = ['No Events', 'Campaign Town Hall', 'Other', 'Ticketed Event'];
+      break;
     default:
-      return (
-        <Select
-          key="meetingType"
-          placeholder="Meeting type"
-        >
-          <Option value="Town Hall">
-            Town Hall
-                  </Option>
-          <Option value="H.R. 1 Town Hall">
-            H.R. 1 Town Hall
-                  </Option>
-          <Option value="H.R. 1 Activist Event">
-            H.R. 1 Activist Event
-                  </Option>
-          <Option value="Tele-Town Hall">
-            Tele-Town Hall
-          </Option>
-          <Option value="Ticketed Event">
-            Ticketed Event
-          </Option>
-          <Option value="Campaign Town Hall">
-            Campaign Town Hall
-                  </Option>
-          <Option value="Adopt-A-District/State">
-            Adopt-A-District/State
-                  </Option>
-          <Option value="Empty Chair Town Hall">
-            Empty Chair Town Hall
-          </Option>
-          <Option value="Hearing">
-            Hearing
-          </Option>
-          <Option value="DC Event">
-            DC Event
-          </Option>
-          <Option value="Office Hours">
-            Office Hours
-          </Option>
-          <Option value="Other">
-            Other
-          </Option>
-          <Option className="text-secondary" value="No Events">
-            No new events
-                  </Option>
-        </Select>
-      );
+      eventsArray = ['No Events', 'Town Hall', 'H.R. 1 Town Hall', 'H.R. 1 Activist Event', 'Tele-Town Hall', 'Ticketed Event', 'Campaign Town Hall', 'Adopt-A-District/State', 'Empty Chair Town Hall', 'Hearing', 'DC Event', 'Office Hours', 'Other'];
   }
+  return (
+    <Select
+      key="meetingType"
+      placeholder="Meeting type"
+    >
+      {eventsArray.map((item, i) => {
+        return (
+        <Option value={item} key={i}>
+          {item}
+        </Option>
+        )
+      })}
+    </Select>
+  );
 }
