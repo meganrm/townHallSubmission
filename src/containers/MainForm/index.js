@@ -59,7 +59,7 @@ const FormItem = Form.Item;
 const { Option } = Select;
 const { TextArea } = Input;
 
-const initFieldValue
+let initFieldValue;
 
 class MainForm extends React.Component {
   static shouldGetLatLng(currentTownHall, nextTownHall) {

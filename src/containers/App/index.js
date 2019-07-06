@@ -15,7 +15,7 @@ import './style.scss';
 const {
   Sider,
   Content,
-  Header
+  Header,
 } = Layout;
 
 class App extends React.Component {
@@ -58,7 +58,7 @@ class App extends React.Component {
       return (
         <MobileView />
       );
-    } else {
+    }
       return (
         <Layout>
           <PageHeader />
