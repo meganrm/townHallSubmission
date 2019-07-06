@@ -4,6 +4,7 @@ import {
   mapValues,
 } from 'lodash';
 import { connect } from 'react-redux';
+import moment from 'moment';
 import {
   Alert,
   BackTop,
@@ -163,6 +164,7 @@ class MainForm extends React.Component {
         date: null,
         time: null,
         endTime: null,
+        dateCreated: moment().format(),
         lastUpdated: Date.now(),
         enteredBy: uid,
       },
