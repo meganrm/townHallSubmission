@@ -146,7 +146,7 @@ class LocationForm extends React.Component {
               id="location-form-group"
               hasFeedback
               // help={getError('address') || ''}
-              validateStatus={validating && !tempAddress}
+              validateStatus={validating && !tempAddress ? 'validating' : ''}
               label="Full Street Address"
               {...formItemLayout}
             >

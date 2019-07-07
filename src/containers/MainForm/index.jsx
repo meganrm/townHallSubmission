@@ -4,6 +4,7 @@ import {
   mapValues,
 } from 'lodash';
 import { connect } from 'react-redux';
+import moment from 'moment';
 import {
   Alert,
   BackTop,
@@ -140,17 +141,16 @@ class MainForm extends React.Component {
       userDisplayName,
       uid,
     } = this.props;
-    const metaData = {
-      eventId: currentTownHall.eventId,
-      govtrack_id: currentTownHall.govtrack_id || null,
-      mocDataPath: peopleDataUrl,
-      thp_id: currentTownHall.thp_id || null,
-      memberId: currentTownHall.govtrack_id || currentTownHall.thp_id,
-      uid,
-      userDisplayName,
-    };
-
     if (currentTownHall.meetingType === 'No Events') {
+      const metaData = {
+        eventId: currentTownHall.eventId,
+        govtrack_id: currentTownHall.govtrack_id || null,
+        memberId: currentTownHall.govtrack_id || currentTownHall.thp_id,
+        mocDataPath: peopleDataUrl,
+        thp_id: currentTownHall.thp_id || null,
+        uid,
+        userDisplayName,
+      };
       submitMetaData(metaData);
       success();
       return this.resetAll();
@@ -163,10 +163,10 @@ class MainForm extends React.Component {
         date: null,
         time: null,
         endTime: null,
+        dateCreated: moment().format(),
         lastUpdated: Date.now(),
         enteredBy: uid,
       },
-      metaData,
       saveUrl,
     };
     submitEventForReview(submit);
@@ -284,8 +284,8 @@ class MainForm extends React.Component {
             </h4>
             <FormItem>
               {getFieldDecorator('eventName', {
-                trigger: 'onChange',
                 initialValue: initFieldValue,
+                trigger: 'onChange',
               })(
                 <Input
                   className="input-underline"
@@ -362,7 +362,10 @@ class MainForm extends React.Component {
               clearTempAddress={clearTempAddress}
               tempLat={tempLat}
               tempLng={tempLng}
-              tempStateInfo={{ stateName: tempStateName, state: tempState }}
+              tempStateInfo={{
+                state: tempState,
+                stateName: tempStateName,
+              }}
               saveAddress={setLatLng}
               handleInputBlur={this.handleInputBlur}
               getFieldDecorator={getFieldDecorator}
@@ -428,7 +431,7 @@ class MainForm extends React.Component {
                       class="general-checkbox"
                       id="ada_accessible"
                     >
-              <span style={{ fontSize: '13px'}}>Is the venue ADA accessible? (Please only select this if you can verify)</span>
+                      <span style={{ fontSize: '13px' }}>Is the venue ADA accessible? (Please only select this if you can verify)</span>
                     </Checkbox>,
                   )}
               </FormItem>

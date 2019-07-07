@@ -6,12 +6,14 @@ import { Provider } from 'react-redux';
 import {
   firebase,
   firebaseauth,
+  firebasedb,
 } from './scripts/util/setupFirebase';
 
-import { showUserEvents } from './scripts/views/newEventView';
 import './scripts/controllers/routes';
 import {
   writeUserData,
+  incrementUserEventCount,
+  setInitialCount,
 } from './state/user/actions';
 
 import './vendor/styles/normalize.css';
@@ -19,6 +21,7 @@ import './styles/customboot.less';
 import App from './containers/App';
 
 import store from './store/configureStore';
+import { getIsInitial } from './state/user/selectors';
 
 const provider = new firebase.auth.GoogleAuthProvider();
 
@@ -49,9 +52,19 @@ firebase.auth().onAuthStateChanged((user) => {
   if (user) {
     // User is signed in.
     console.log(user.displayName, ' is signed in');
-    // eventHandler.readData();
-    showUserEvents();
+    firebasedb.ref(`users/${user.uid}/events`).once('value')
+      .then((snapshot) => {
+        const count = snapshot.numChildren();
+        store.dispatch(setInitialCount(count));
+      });
 
+    firebasedb.ref(`users/${user.uid}/events`).on('child_added', () => {
+      const state = store.getState();
+      const initial = getIsInitial(state);
+      if (!initial) {
+        store.dispatch(incrementUserEventCount());
+      }
+    });
     store.dispatch(writeUserData(user));
   } else {
     signIn();

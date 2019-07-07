@@ -3,12 +3,9 @@ import PropTypes from 'prop-types';
 import {
   connect,
 } from 'react-redux';
-import {
-  getTownHall,
-} from '../../state/townhall/selectors';
 
 // ANTD MOBILE COMPONENT IMPORTS //
-import Button from 'antd-mobile/lib/button';
+// import Button from 'antd-mobile/lib/button';
 import 'antd-mobile/lib/button/style/css';
 
 import WhiteSpace from 'antd-mobile/lib/white-space';
@@ -24,8 +21,11 @@ import Icon from 'antd-mobile/lib/icon';
 import 'antd-mobile/lib/icon/style/css';
 
 import Drawer from 'antd-mobile/lib/drawer';
+import {
+  getTownHall,
+} from '../../state/townhall/selectors';
 import 'antd-mobile/lib/drawer/style/css';
-/////////////////////////////////////
+// ///////////////////////////////////
 
 import MainFormController from '../FormController';
 import PageHeader from '../../components/PageHeader';
@@ -47,28 +47,43 @@ class MobileView extends React.Component {
     this.showDataObj = this.showDataObj.bind(this);
     this.onCloseDataObj = this.onCloseDataObj.bind(this);
     this.state = {
-      open: false,
       dataObjectModal: false,
-    }
+      open: false,
+    };
   }
-  drawerToggle(...args) {
-    this.setState({ open: !this.state.open });
+
+  onCloseDataObj(key) {
+    return () => {
+      this.setState({
+        [key]: false,
+      });
+    };
   }
-  showDataObj = key => (e) => {
-    e.preventDefault(); // Android //
+
+  showDataObj(key) {
+    return (e) => {
+      e.preventDefault(); // Android //
+      this.setState({
+        [key]: true,
+      });
+    };
+  }
+
+  drawerToggle() {
+    const { open } = this.state;
     this.setState({
-      [key]: true,
+      open: !open,
     });
   }
-  onCloseDataObj = key => () => {
-    this.setState({
-      [key]: false,
-    });
-  }
+
   render() {
     const {
       currentTownHall,
     } = this.props;
+    const {
+      open,
+      dataObjectModal,
+    } = this.state;
     return (
       <div>
         <PageHeader />
@@ -76,25 +91,29 @@ class MobileView extends React.Component {
         <Drawer
           className="my-drawer"
           style={{ minHeight: document.documentElement.clientHeight }}
-          contentStyle={{ color: '#A6A6A6', textAlign: 'center', paddingTop: 42 }}
+          contentStyle={{
+            color: '#A6A6A6',
+            paddingTop: 42,
+            textAlign: 'center',
+          }}
           sidebar={<SideBar />}
-          open={this.state.open}
+          open={open}
           onOpenChange={this.drawerToggle}
         >
-    {/*<Button onClick={this.showDataObj('dataObjectModal')} style={{ width: '100%', zIndex: 3 }}>Data Object</Button>*/}
+          {/* <Button onClick={this.showDataObj('dataObjectModal')} style={{ width: '100%', zIndex: 3 }}>Data Object</Button> */}
           <WhiteSpace />
-          <MainFormController mobile={true}/>
+          <MainFormController mobile />
           <Modal
             popup
-            visible={this.state.dataObjectModal}
+            visible={dataObjectModal}
             onClose={this.onCloseDataObj('dataObjectModal')}
             animationType="slide-up"
           >
-          <pre className="language-bash" style={{ overflow: 'visible', textAlign: 'left' }}>
-            {
-              JSON.stringify(currentTownHall, MobileView.replacer, 2)
-            }
-          </pre>
+            <pre className="language-bash" style={{ overflow: 'visible', textAlign: 'left' }}>
+              {
+                JSON.stringify(currentTownHall, MobileView.replacer, 2)
+              }
+            </pre>
           </Modal>
         </Drawer>
       </div>
@@ -106,7 +125,7 @@ const mapStateToProps = state => ({
   currentTownHall: getTownHall(state),
 });
 
-const mapDispatchToProps = dispatch => ({ });
+const mapDispatchToProps = () => ({ });
 
 MobileView.propTypes = {
   currentTownHall: PropTypes.shape({}).isRequired,
