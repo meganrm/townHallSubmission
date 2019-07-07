@@ -141,7 +141,6 @@ class MainForm extends React.Component {
       userDisplayName,
       uid,
     } = this.props;
-    console.log(uid)
     if (currentTownHall.meetingType === 'No Events') {
       const metaData = {
         eventId: currentTownHall.eventId,
@@ -244,6 +243,7 @@ class MainForm extends React.Component {
       getFieldsValue,
       setFieldsValue,
     } = form;
+
     return (
       <div className="new-event-form">
         <BackTop />
