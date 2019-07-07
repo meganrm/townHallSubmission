@@ -52,15 +52,13 @@ firebase.auth().onAuthStateChanged((user) => {
   if (user) {
     // User is signed in.
     console.log(user.displayName, ' is signed in');
-    // eventHandler.readData();
-    // showUserEvents();
     firebasedb.ref(`users/${user.uid}/events`).once('value')
-      .then(snapshot => {
+      .then((snapshot) => {
         const count = snapshot.numChildren();
         store.dispatch(setInitialCount(count));
-      })
+      });
 
-    firebasedb.ref(`users/${user.uid}/events`).on('child_added', (snapshot) => {
+    firebasedb.ref(`users/${user.uid}/events`).on('child_added', () => {
       const state = store.getState();
       const initial = getIsInitial(state);
       if (!initial) {
