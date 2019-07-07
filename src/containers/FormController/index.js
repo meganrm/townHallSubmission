@@ -138,6 +138,7 @@ class FormController extends React.Component {
   render() {
     const {
       currentTownHall,
+      mobile,
     } = this.props;
     const {
       displayValues,
@@ -157,25 +158,25 @@ class FormController extends React.Component {
             />
           </Col>
           {
-            this.props.mobile ? (
-              <div></div>
+            mobile ? (
+              <div />
             ) : (
               <Col md={0} lg={12}>
-            <Affix>
-              <Collapse bordered={false}>
-                <Panel
-                  style={customPanelStyle}
-                  header="Data object (click to see data you've entered)"
-                >
-                  <pre className="language-bash" style={{ overflow: 'visible' }}>
-                    {
-                      JSON.stringify(currentTownHall, FormController.replacer, 2)
-                    }
-                  </pre>
-                </Panel>
-              </Collapse>
-            </Affix>
-          </Col>
+                <Affix>
+                  <Collapse bordered={false}>
+                    <Panel
+                      style={customPanelStyle}
+                      header="Data object (click to see data you've entered)"
+                    >
+                      <pre className="language-bash" style={{ overflow: 'visible' }}>
+                        {
+                          JSON.stringify(currentTownHall, FormController.replacer, 2)
+                        }
+                      </pre>
+                    </Panel>
+                  </Collapse>
+                </Affix>
+              </Col>
             )
           }
         </Row>
@@ -206,6 +207,7 @@ FormController.propTypes = {
   clearDisclaimer: PropTypes.func.isRequired,
   clearTempAddress: PropTypes.func.isRequired,
   currentTownHall: PropTypes.shape({}).isRequired,
+  mobile: PropTypes.bool.isRequired,
   resetFormKeys: PropTypes.func.isRequired,
   resetTownHallData: PropTypes.func.isRequired,
   setMeetingType: PropTypes.func.isRequired,

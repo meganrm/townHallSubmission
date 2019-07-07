@@ -194,13 +194,13 @@ class MemberLookup extends React.Component {
     const {
       allNames,
       getFieldDecorator,
-      selectedUSState,
-      personMode,
+      // selectedUSState,
+      // personMode,
       getError,
       peopleLookUpError,
     } = this.props;
-    const title = "Lawmaker Information";
-    const placeHolderText = "Lawmaker Name";
+    const title = 'Lawmaker Information';
+    const placeHolderText = 'Lawmaker Name';
     const fieldName = key > 0 ? `displayName-${key}` : 'displayName';
     const filterFunction = (inputValue, option) => option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1;
     return (
@@ -221,7 +221,7 @@ class MemberLookup extends React.Component {
                 message: 'Please input a lawmaker',
                 required: true,
               }],
-              validateTrigger: ['onChange', 'onBlur'],
+              validateTrigger: ['onChange'],
               valuePropName: 'value',
             })(
               <div>
@@ -316,7 +316,7 @@ class MemberLookup extends React.Component {
             <Radio.Button value={CANDIDATE_MODE}>
               Candidate Event
             </Radio.Button>)}
-          {/*<Radio.Button value={MANUAL_MODE}>
+          {/* <Radio.Button value={MANUAL_MODE}>
             Manually Enter
           </Radio.Button>*/}
         </Radio.Group>
