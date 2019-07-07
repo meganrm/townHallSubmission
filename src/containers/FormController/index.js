@@ -34,8 +34,8 @@ const { Panel } = Collapse;
 const noopFieldNames = ['displayName', 'address', 'preview'];
 
 const customPanelStyle = {
-  marginBottom: 24,
   border: 0,
+  marginBottom: 24,
 };
 
 class FormController extends React.Component {

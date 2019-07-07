@@ -284,8 +284,8 @@ class MainForm extends React.Component {
             </h4>
             <FormItem>
               {getFieldDecorator('eventName', {
-                trigger: 'onChange',
                 initialValue: initFieldValue,
+                trigger: 'onChange',
               })(
                 <Input
                   className="input-underline"
@@ -362,7 +362,10 @@ class MainForm extends React.Component {
               clearTempAddress={clearTempAddress}
               tempLat={tempLat}
               tempLng={tempLng}
-              tempStateInfo={{ stateName: tempStateName, state: tempState }}
+              tempStateInfo={{
+                state: tempState,
+                stateName: tempStateName,
+              }}
               saveAddress={setLatLng}
               handleInputBlur={this.handleInputBlur}
               getFieldDecorator={getFieldDecorator}
@@ -428,7 +431,7 @@ class MainForm extends React.Component {
                       class="general-checkbox"
                       id="ada_accessible"
                     >
-              <span style={{ fontSize: '13px'}}>Is the venue ADA accessible? (Please only select this if you can verify)</span>
+                      <span style={{ fontSize: '13px' }}>Is the venue ADA accessible? (Please only select this if you can verify)</span>
                     </Checkbox>,
                   )}
               </FormItem>

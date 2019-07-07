@@ -7,7 +7,7 @@ import {
   Form,
   Radio,
   Icon,
-  Button,
+  // Button,
 } from 'antd';
 import { find } from 'lodash';
 import renderCustomPersonForm from './customMemberForm';
@@ -94,14 +94,14 @@ class MemberLookup extends React.Component {
       personMode,
     } = this.props;
     const prefixMapping = {
-      HD: 'House District',
-      SD: 'Senate District',
       GOV: 'Governor',
-      statewide: 'Governor',
+      HD: 'House District',
       LTGOV: 'Lt. Governor',
-      upper: 'Sen.',
+      SD: 'Senate District',
       lower: 'Rep.',
       nationwide: 'President',
+      statewide: 'Governor',
+      upper: 'Sen.',
     };
     if (currentTownHall.displayName && personMode === 'moc') {
       return `${prefixMapping[currentTownHall.chamber]} ${currentTownHall.displayName} (${currentTownHall.party})`;
@@ -318,7 +318,7 @@ class MemberLookup extends React.Component {
             </Radio.Button>)}
           {/* <Radio.Button value={MANUAL_MODE}>
             Manually Enter
-          </Radio.Button>*/}
+          </Radio.Button> */}
         </Radio.Group>
         {personMode === 'manual' ? renderCustomPersonForm(
           {
