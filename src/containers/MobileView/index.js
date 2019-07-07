@@ -61,7 +61,6 @@ class MobileView extends React.Component {
   }
 
   showDataObj(key) {
-    // TODO: fix this function
     return (e) => {
       e.preventDefault(); // Android //
       this.setState({
@@ -92,7 +91,11 @@ class MobileView extends React.Component {
         <Drawer
           className="my-drawer"
           style={{ minHeight: document.documentElement.clientHeight }}
-          contentStyle={{ color: '#A6A6A6', textAlign: 'center', paddingTop: 42 }}
+          contentStyle={{
+            color: '#A6A6A6',
+            paddingTop: 42,
+            textAlign: 'center',
+          }}
           sidebar={<SideBar />}
           open={open}
           onOpenChange={this.drawerToggle}

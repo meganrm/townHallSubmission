@@ -141,17 +141,17 @@ class MainForm extends React.Component {
       userDisplayName,
       uid,
     } = this.props;
-    const metaData = {
-      eventId: currentTownHall.eventId,
-      govtrack_id: currentTownHall.govtrack_id || null,
-      mocDataPath: peopleDataUrl,
-      thp_id: currentTownHall.thp_id || null,
-      memberId: currentTownHall.govtrack_id || currentTownHall.thp_id,
-      uid,
-      userDisplayName,
-    };
-
+    console.log(uid)
     if (currentTownHall.meetingType === 'No Events') {
+      const metaData = {
+        eventId: currentTownHall.eventId,
+        govtrack_id: currentTownHall.govtrack_id || null,
+        memberId: currentTownHall.govtrack_id || currentTownHall.thp_id,
+        mocDataPath: peopleDataUrl,
+        thp_id: currentTownHall.thp_id || null,
+        uid,
+        userDisplayName,
+      };
       submitMetaData(metaData);
       success();
       return this.resetAll();
@@ -168,7 +168,6 @@ class MainForm extends React.Component {
         lastUpdated: Date.now(),
         enteredBy: uid,
       },
-      metaData,
       saveUrl,
     };
     submitEventForReview(submit);
@@ -245,7 +244,6 @@ class MainForm extends React.Component {
       getFieldsValue,
       setFieldsValue,
     } = form;
-
     return (
       <div className="new-event-form">
         <BackTop />
