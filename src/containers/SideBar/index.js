@@ -17,6 +17,7 @@ import {
 import { getSelectedUSState } from '../../state/selections/selectors';
 import { STATE_LEGS } from '../../constants';
 import './style.scss';
+import { getEventCount } from '../../state/user/selectors';
 
 const MenuItemGroup = Menu.ItemGroup;
 
@@ -33,7 +34,10 @@ class SideBar extends React.Component {
   }
 
   render() {
-    const { currentUsState } = this.props;
+    const {
+      currentUsState,
+      eventCount,
+    } = this.props;
     const selectedKey = currentUsState || 'federal';
     return (
       <section className="session-data">
@@ -44,8 +48,13 @@ class SideBar extends React.Component {
           }
           mode="inline"
         >
-        <Menu.Item key='subs' disabled className="meta-menu-item"><span id="submitted-meta-data"><span>You've submitted: </span><span id="submitted-total">0</span><span> event(s)</span></span></Menu.Item>
-        <Menu.Divider></Menu.Divider>
+          <Menu.Item key="subs" disabled className="meta-menu-item">
+            <span id="submitted-meta-data">
+              <span>You've submitted: </span>{eventCount}
+              <span> event(s)</span>
+            </span>
+          </Menu.Item>
+          <Menu.Divider />
           <MenuItemGroup key="federal-title" title="Enter events for FEDERAL lawmakers/candidates">
             <Menu.Item key="federal">Federal</Menu.Item>
           </MenuItemGroup>
@@ -60,6 +69,7 @@ class SideBar extends React.Component {
 
 const mapStateToProps = state => ({
   currentUsState: getSelectedUSState(state),
+  eventCount: getEventCount(state),
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -68,6 +78,7 @@ const mapDispatchToProps = dispatch => ({
 
 SideBar.propTypes = {
   currentUsState: PropTypes.string,
+  eventCount: PropTypes.number.isRequired,
 };
 
 SideBar.defaultProps = {
