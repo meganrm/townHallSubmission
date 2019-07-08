@@ -23,7 +23,7 @@ import './style.scss';
 const {
   Sider,
   Content,
-  Header,
+  Header
 } = Layout;
 
 class App extends React.Component {
@@ -50,18 +50,15 @@ class App extends React.Component {
   }
 
   toggle() {
-    const {
-      collapsed,
-    } = this.state;
     this.setState({
-      collapsed: !collapsed,
+      collapsed: !this.state.collapsed,
     });
   }
 
   render() {
     const {
       collapsed,
-      width,
+      width
     } = this.state;
     const isMobile = width <= 500;
     const navMargin = collapsed ? '0px' : '250px';
@@ -69,22 +66,31 @@ class App extends React.Component {
       return (
         <MobileView />
       );
-    }
-    return (
-      <Layout>
-        <PageHeader />
+    } else {
+      return (
         <Layout>
           <PageHeader 
             currentTownHall={this.props.currentTownHall}
           />
           <Layout>
             <Affix>
-              <Icon
-                className="trigger"
-                style={{ marginLeft: navMargin }}
-                type={collapsed ? 'menu-unfold' : 'menu-fold'}
-                onClick={this.toggle}
-              />
+              <Sider
+                trigger={null}
+                breakpoint="lg"
+                collapsible
+                width={250}
+                collapsedWidth="0"
+                collapsed={collapsed}
+                style={{
+                  overflow: 'auto',
+                  height: '100vh',
+                  position: 'fixed',
+                  left: 0,
+                  marginBottom: 40,
+                }}
+              >
+                <SideBar />
+              </Sider>
             </Affix>
             <Header style={{ background: '#fff', padding: 0 }}>
               <Affix>
@@ -103,8 +109,8 @@ class App extends React.Component {
             </Content>
           </Layout>
         </Layout>
-      </Layout>
-    );
+      );
+    }
   }
 }
 

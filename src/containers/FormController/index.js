@@ -131,7 +131,7 @@ class FormController extends React.Component {
 
   render() {
     const {
-      userMocs
+      userMocs,
       currentTownHall,
       mobile,
     } = this.props;

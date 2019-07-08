@@ -12,7 +12,7 @@ import {
 import './scripts/controllers/routes';
 import {
   writeUserData,
-  startSetUserMocs
+  startSetUserMocs,
   incrementUserEventCount,
   setInitialCount,
 } from './state/user/actions';
