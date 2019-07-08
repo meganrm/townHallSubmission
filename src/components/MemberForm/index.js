@@ -7,7 +7,7 @@ import {
   Form,
   Radio,
   Icon,
-  Button,
+  // Button,
 } from 'antd';
 import { find } from 'lodash';
 import renderCustomPersonForm from './customMemberForm';
@@ -94,14 +94,14 @@ class MemberLookup extends React.Component {
       personMode,
     } = this.props;
     const prefixMapping = {
-      HD: 'House District',
-      SD: 'Senate District',
       GOV: 'Governor',
-      statewide: 'Governor',
+      HD: 'House District',
       LTGOV: 'Lt. Governor',
-      upper: 'Sen.',
+      SD: 'Senate District',
       lower: 'Rep.',
       nationwide: 'President',
+      statewide: 'Governor',
+      upper: 'Sen.',
     };
     if (currentTownHall.displayName && personMode === 'moc') {
       return `${prefixMapping[currentTownHall.chamber]} ${currentTownHall.displayName} (${currentTownHall.party})`;
@@ -194,8 +194,8 @@ class MemberLookup extends React.Component {
     const {
       allNames,
       getFieldDecorator,
-      selectedUSState,
-      personMode,
+      // selectedUSState,
+      // personMode,
       getError,
       peopleLookUpError,
     } = this.props;
@@ -221,7 +221,7 @@ class MemberLookup extends React.Component {
                 message: 'Please input a lawmaker',
                 required: true,
               }],
-              validateTrigger: ['onChange', 'onBlur'],
+              validateTrigger: ['onChange'],
               valuePropName: 'value',
             })(
               <div>
@@ -316,9 +316,9 @@ class MemberLookup extends React.Component {
             <Radio.Button value={CANDIDATE_MODE}>
               Candidate Event
             </Radio.Button>)}
-          {/*<Radio.Button value={MANUAL_MODE}>
+          {/* <Radio.Button value={MANUAL_MODE}>
             Manually Enter
-          </Radio.Button>*/}
+          </Radio.Button> */}
         </Radio.Group>
         {personMode === 'manual' ? renderCustomPersonForm(
           {

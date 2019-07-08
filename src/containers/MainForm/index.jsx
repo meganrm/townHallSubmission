@@ -4,6 +4,7 @@ import {
   mapValues,
 } from 'lodash';
 import { connect } from 'react-redux';
+import moment from 'moment';
 import {
   Alert,
   BackTop,
@@ -160,17 +161,16 @@ class MainForm extends React.Component {
       userDisplayName,
       uid,
     } = this.props;
-    const metaData = {
-      eventId: currentTownHall.eventId,
-      govtrack_id: currentTownHall.govtrack_id || null,
-      mocDataPath: peopleDataUrl,
-      thp_id: currentTownHall.thp_id || null,
-      memberId: currentTownHall.govtrack_id || currentTownHall.thp_id,
-      uid,
-      userDisplayName,
-    };
-
     if (currentTownHall.meetingType === 'No Events') {
+      const metaData = {
+        eventId: currentTownHall.eventId,
+        govtrack_id: currentTownHall.govtrack_id || null,
+        memberId: currentTownHall.govtrack_id || currentTownHall.thp_id,
+        mocDataPath: peopleDataUrl,
+        thp_id: currentTownHall.thp_id || null,
+        uid,
+        userDisplayName,
+      };
       submitMetaData(metaData);
       success();
       return this.resetAll();
@@ -183,10 +183,10 @@ class MainForm extends React.Component {
         date: null,
         time: null,
         endTime: null,
+        dateCreated: moment().format(),
         lastUpdated: Date.now(),
         enteredBy: uid,
       },
-      metaData,
       saveUrl,
     };
     submitEventForReview(submit);
@@ -232,6 +232,7 @@ class MainForm extends React.Component {
       allNames,
       allPeople,
       currentTownHall,
+      eventTypeOptions,
       peopleDataUrl,
       personMode,
       peopleLookUpError,
@@ -303,8 +304,8 @@ class MainForm extends React.Component {
             </h4>
             <FormItem>
               {getFieldDecorator('eventName', {
-                trigger: 'onChange',
                 initialValue: initFieldValue,
+                trigger: 'onChange',
               })(
                 <Input
                   className="input-underline"
@@ -325,50 +326,17 @@ class MainForm extends React.Component {
                   required: true,
                 }],
               })(
-
                 <Select
                   key="meetingType"
                   placeholder="Meeting type"
                 >
-                  <Option value="Town Hall">
-                  Town Hall
-                  </Option>
-                  <Option value="H.R. 1 Town Hall">
-                  H.R. 1 Town Hall
-                  </Option>
-                  <Option value="H.R. 1 Activist Event">
-                  H.R. 1 Activist Event
-                  </Option>
-                  <Option value="Tele-Town Hall">
-                  Tele-Town Hall
-                  </Option>
-                  <Option value="Ticketed Event">
-                  Ticketed Event
-                  </Option>
-                  <Option value="Campaign Town Hall">
-                  Campaign Town Hall
-                  </Option>
-                  <Option value="Adopt-A-District/State">
-                  Adopt-A-District/State
-                  </Option>
-                  <Option value="Empty Chair Town Hall">
-                  Empty Chair Town Hall
-                  </Option>
-                  <Option value="Hearing">
-                  Hearing
-                  </Option>
-                  <Option value="DC Event">
-                  DC Event
-                  </Option>
-                  <Option value="Office Hours">
-                  Office Hours
-                  </Option>
-                  <Option value="Other">
-                    Other
-                  </Option>
-                  <Option className="text-secondary" value="No Events">
-                    No new events
-                  </Option>
+                  {eventTypeOptions.map((item, i) => {
+                    return (
+                    <Option value={item} key={i}>
+                      {item}
+                    </Option>
+                    )
+                  })}
                 </Select>,
               )}
             </FormItem>
@@ -381,7 +349,10 @@ class MainForm extends React.Component {
               clearTempAddress={clearTempAddress}
               tempLat={tempLat}
               tempLng={tempLng}
-              tempStateInfo={{ stateName: tempStateName, state: tempState }}
+              tempStateInfo={{
+                state: tempState,
+                stateName: tempStateName,
+              }}
               saveAddress={setLatLng}
               handleInputBlur={this.handleInputBlur}
               getFieldDecorator={getFieldDecorator}
@@ -447,7 +418,7 @@ class MainForm extends React.Component {
                       class="general-checkbox"
                       id="ada_accessible"
                     >
-              <span style={{ fontSize: '13px'}}>Is the venue ADA accessible? (Please only select this if you can verify)</span>
+                      <span style={{ fontSize: '13px' }}>Is the venue ADA accessible? (Please only select this if you can verify)</span>
                     </Checkbox>,
                   )}
               </FormItem>
@@ -497,6 +468,7 @@ const mapStateToProps = state => ({
   allPeople: lawMakerStateBranch.selectors.getAllPeople(state),
   currentTownHall: townHallStateBranch.selectors.getTownHall(state),
   formKeys: selectionStateBranch.selectors.getFormKeys(state),
+  eventTypeOptions: selectionStateBranch.selectors.getLawmakerTypeEventOptions(state),
   peopleDataUrl: selectionStateBranch.selectors.getPeopleDataUrl(state),
   peopleLookUpError: lawMakerStateBranch.selectors.getPeopleRequestError(state),
   peopleNameUrl: selectionStateBranch.selectors.getPeopleNameUrl(state),
@@ -542,6 +514,7 @@ MainForm.propTypes = {
   currentTownHall: PropTypes.shape({}).isRequired,
   errors: PropTypes.shape({}),
   form: PropTypes.shape({}).isRequired,
+  eventTypeOptions: PropTypes.arrayOf(PropTypes.string).isRequired,
   geoCodeLocation: PropTypes.func.isRequired,
   handleDatabaseLookupError: PropTypes.func.isRequired,
   mergeNotes: PropTypes.func.isRequired,

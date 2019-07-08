@@ -157,15 +157,13 @@ const updateMOCData = (payload) => {
   }
   const updates = {
     lastUpdated: Date.now(),
-    lastUpdatedBy: payload.userDisplayName,
+    lastUpdatedBy: payload.uid,
   };
   return firebasedb.ref(`${payload.mocDataPath}/${payload.memberId}`).update(updates);
 };
 
-const updateUserEvents = (payload) => {
+const updateUserMetaData = (payload) => {
   const path = `users/${payload.uid}`;
-  const updates = {};
-  const currentEvent = {};
   const mocData = {
     govtrack_id: payload.govtrack_id || null,
     lastUpdated: Date.now(),
@@ -173,13 +171,11 @@ const updateUserEvents = (payload) => {
   };
   let id = payload.govtrack_id ? payload.govtrack_id : payload.thp_id;
   id = id || 'candidate';
-  updates[`${path}/currentEvents/${payload.eventId}`] = currentEvent;
-  updates[`${path}/mocs/${id}`] = mocData;
-  return firebasedb.ref().update(updates);
+  return firebasedb.ref(`${path}/mocs/${id}`).update(mocData);
 };
 
 export const saveMetaData = payload => (dispatch) => {
-  Promise.all([updateMOCData(payload), updateUserEvents(payload)])
+  Promise.all([updateMOCData(payload), updateUserMetaData(payload)])
     .then(() => dispatch(resetTownHall()))
     .catch((error) => {
       console.log('error updating user or moc', error);
@@ -195,8 +191,7 @@ function cleanTownHall(townHall) {
   });
 }
 
-export const submitEventForReview = payload => dispatch => firebasedb.ref(`${payload.saveUrl}/${payload.currentTownHall.eventId}`).update(cleanTownHall(payload.currentTownHall))
-  .then(() => dispatch(saveMetaData(payload.metaData)))
+export const submitEventForReview = payload => () => firebasedb.ref(`${payload.saveUrl}/${payload.currentTownHall.eventId}`).update(cleanTownHall(payload.currentTownHall))
   .catch(console.log);
 
 export const setDataFromPersonInDatabase = payload => (dispatch) => {

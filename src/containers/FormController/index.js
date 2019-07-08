@@ -32,7 +32,6 @@ import './style.scss';
 
 const noopFieldNames = ['displayName', 'address', 'preview'];
 
-
 class FormController extends React.Component {
   static replacer(key, value) {
     // Filtering out properties
@@ -133,6 +132,8 @@ class FormController extends React.Component {
   render() {
     const {
       userMocs
+      currentTownHall,
+      mobile,
     } = this.props;
     const {
       displayValues,
@@ -153,8 +154,8 @@ class FormController extends React.Component {
             />
           </Col>
           {
-            this.props.mobile ? (
-              <div></div>
+            mobile ? (
+              <div />
             ) : (
             <Col md={0} lg={12}>
               <UserToolkit 
@@ -192,6 +193,7 @@ FormController.propTypes = {
   clearDisclaimer: PropTypes.func.isRequired,
   clearTempAddress: PropTypes.func.isRequired,
   currentTownHall: PropTypes.shape({}).isRequired,
+  mobile: PropTypes.bool.isRequired,
   resetFormKeys: PropTypes.func.isRequired,
   resetTownHallData: PropTypes.func.isRequired,
   setMeetingType: PropTypes.func.isRequired,

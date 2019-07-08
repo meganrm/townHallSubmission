@@ -44,8 +44,8 @@ export const lookUpAddress = payload => dispatch => request
     const {
       results,
     } = r.body;
-    if (results) {
-      const stateData = find(results[0].address_components, { types: ["administrative_area_level_1", "political"]})
+    if (results && results[0]) {
+      const stateData = find(results[0].address_components, { types: ['administrative_area_level_1', 'political'] });
       const res = {
         address: results[0].formatted_address.split(', USA')[0],
         stateName: stateData ? stateData.long_name : null,
@@ -55,6 +55,7 @@ export const lookUpAddress = payload => dispatch => request
       };
       return (dispatch(setTempAddress(res)));
     }
+    // eslint-disable-next-line prefer-promise-reject-errors
     return Promise.reject('error geocoding', r.body);
   })
   .catch((e) => {
