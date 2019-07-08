@@ -53,11 +53,11 @@ class UserToolkit extends React.Component {
     }
   }
 
-  updateSuccess = () => {
+  updateSuccess() {
     message.success('Link Updated');
   }
 
-  success = () => {
+  success() {
     message.success('Thanks for submitting info!', 4);
   };
 
@@ -117,7 +117,7 @@ class UserToolkit extends React.Component {
     return this.resetAll();
   }
 
-  showModal = (type, link) => {
+  showModal(type, link) {
     if (type === 'add') {
       this.setState({ addVisible: true });
     } else {
@@ -126,7 +126,7 @@ class UserToolkit extends React.Component {
     }
   };
 
-  handleCancel = (type) => {
+  handleCancel(type) {
     if (type === 'add') {
       this.setState({ addVisible: false });
     } else {
@@ -134,7 +134,7 @@ class UserToolkit extends React.Component {
     }
   };
 
-  handleDeleteLink = () => {
+  handleDeleteLink() {
     let payload = {
       moc_id: this.props.selectedMoc.govtrack_id,
       link_id: this.props.selectedLink.id,
@@ -142,7 +142,7 @@ class UserToolkit extends React.Component {
     this.props.deleteMemberLink(payload);
   }
 
-  handleCreate = () => {
+  handleCreate() {
     const form = this.addFormRef.props.form;
     form.validateFields((err, values) => {
       if (err) {
@@ -158,7 +158,7 @@ class UserToolkit extends React.Component {
     });
   };
 
-  handleUpdate = () => {
+  handleUpdate() {
     const form = this.editFormRef.props.form;
     form.validateFields((err, values) => {
       if (err) {
@@ -179,11 +179,11 @@ class UserToolkit extends React.Component {
     });
   }
 
-  saveAddFormRef = formRef => {
+  saveAddFormRef(formRef) {
     this.addFormRef = formRef;
   };
 
-  saveEditFormRef = formRef => {
+  saveEditFormRef(formRef) {
     this.editFormRef = formRef;
   };
 
