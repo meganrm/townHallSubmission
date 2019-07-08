@@ -4,6 +4,7 @@ import {
   Layout,
   Affix,
   Icon,
+  Tooltip,
 } from 'antd';
 import {
   connect,
@@ -93,12 +94,14 @@ class App extends React.Component {
             </Affix>
             <Header style={{ background: '#fff', padding: 0 }}>
               <Affix>
+              <Tooltip placement={this.state.collapsed ? 'right' : 'top'} title="Toggle Navbar">
                 <Icon
                   className={`trigger`}
                   style={{ marginLeft: navMargin }}
                   type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
                   onClick={this.toggle}
                 />
+                </Tooltip>
               </Affix>
             </Header>
             <Content style={{ marginTop: '1px', overflow: 'initial' }}>
