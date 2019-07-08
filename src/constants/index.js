@@ -79,3 +79,9 @@ export const EVENT_TYPES = {
     iconFlag: null,
   },
 };
+
+export const FED_REP_EVENTS = ['No Events', 'Town Hall', 'Tele-Town Hall', 'Empty Chair Town Hall', 'Campaign Town Hall', 'Adopt-A-District/State', 'DC Event', 'Office Hours', 'Other'];
+export const STATE_REP_EVENTS = ['No Events', 'Town Hall', 'Tele-Town Hall', 'Empty Chair Town Hall', 'Campaign Town Hall', 'Adopt-A-District/State', 'Hearing', 'Office Hours', 'Other'];
+export const FED_CANDIDATE_EVENTS = ['No Events', 'Campaign Town Hall', 'Other', 'Ticketed Event'];
+export const STATE_CANDIDATE_EVENTS = ['No Events', 'Campaign Town Hall', 'Other', 'Ticketed Event'];
+export const DEFAULT_EVENTS = ['No Events', 'Town Hall', 'H.R. 1 Town Hall', 'H.R. 1 Activist Event', 'Tele-Town Hall', 'Ticketed Event', 'Campaign Town Hall', 'Adopt-A-District/State', 'Empty Chair Town Hall', 'Hearing', 'DC Event', 'Office Hours', 'Other'];
