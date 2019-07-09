@@ -403,28 +403,24 @@ class MainForm extends React.Component {
                     </Checkbox>,
                   )}
               </FormItem>
-              <FormItem>
-                <label htmlFor="Notes">
-              Public Notes
-                </label>
+              <FormItem
+                label="Notes"
+              >
                 {getFieldDecorator('Notes', { initialValue: initFieldValue })(
                   <TextArea
-                    id="Notes"
                     rows={3}
                     placeholder="Notes about event that cannot be entered anywhere else."
                   />,
                 )}
               </FormItem>
-              <FormItem>
-                <label htmlFor="Internal-Notes">
-              Internal Notes to THP Team
-                </label>
-                {getFieldDecorator('Internal-Notes', {
+              <FormItem
+                label="Internal Notes to THP Team"
+              >
+                {getFieldDecorator('internalNotes', {
                   initialValue: initFieldValue,
                 })(
                   <TextArea
                     rows={3}
-                    id="Internal-Notes"
                     placeholder="Notes for Town Hall Project team."
                   />,
                 )}
