@@ -16,6 +16,7 @@ import {
   getUserMOCs,
   getUid,
   getUserName,
+  getEventCount
 } from '../../state/user/selectors';
 import {
   getSelectedMember,
@@ -216,9 +217,17 @@ class UserToolkit extends React.Component {
   }
 
   render() {
+    const {
+      eventCount
+    } = this.props
     return (
       <div>
-        <Card className="user-member-card" title={<span id="submitted-meta-data"><span>You've submitted: </span><span id="submitted-total">0</span><span> event(s)</span></span>}>
+        <Card className="user-member-card" title={
+          <span id="submitted-meta-data">
+            <span>You've submitted: </span>{eventCount}
+            <span> event(s)</span>
+          </span>}
+      >
           {this.renderMocBtns()}
         </Card>
         {this.renderMemberLinks()}
@@ -269,7 +278,8 @@ const mapStateToProps = state => ({
   peopleDataUrl: selectionStateBranch.selectors.getPeopleDataUrl(state),
   userDisplayName: getUserName(state),
   uid: getUid(state),
-  selectedLink: getSelectedLink(state)
+  selectedLink: getSelectedLink(state),
+  eventCount: getEventCount(state),
 });
 
 const mapDispatchToProps = dispatch => ({
