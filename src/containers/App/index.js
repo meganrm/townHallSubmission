@@ -105,7 +105,7 @@ class App extends React.Component {
               </Affix>
             </Header>
             <Content style={{ marginTop: '1px', overflow: 'initial' }}>
-              <MainFormController />
+              <MainFormController mobile={isMobile} />
             </Content>
           </Layout>
         </Layout>
