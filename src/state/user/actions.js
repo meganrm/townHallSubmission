@@ -29,8 +29,14 @@ export const writeUserData = payload => (dispatch) => {
     .then(dispatch(setUser(payload)));
 };
 
+// TODO: FIX - if no mocs
 export const startSetUserMocs = payload => (dispatch) => {
   firebasedb.ref(`users/${payload.uid}/mocs`).once('value').then((snapshot) => {
+    if (!snapshot.exists()) {
+      console.log('no mocs for this user');
+      dispatch(setMOCs([]));
+      return; 
+    }
     const mocIds = Object.keys(snapshot.val());
     Promise.all(mocIds.map((id) => {
       return firebasedb.ref(`mocData/${id}`).once('value').then((snapshot) => {
