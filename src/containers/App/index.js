@@ -97,7 +97,7 @@ class App extends React.Component {
               <Tooltip placement={this.state.collapsed ? 'right' : 'top'} title="Toggle Navbar">
                 <Icon
                   className={`trigger`}
-                  style={{ marginLeft: navMargin }}
+                  style={{ marginLeft: navMargin, marginTop: '24px' }}
                   type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
                   onClick={this.toggle}
                 />
