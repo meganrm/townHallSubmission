@@ -1,17 +1,17 @@
 .trigger {
-  display: flex;
-  font-size: 18px;
-  line-height: 64px;
-  padding: 0 24px;
-  cursor: pointer;
-  transition: color 0.3s;
+  display: flex !important;
+  font-size: 18px !important;
+  line-height: 64px !important;
+  padding: 0 24px !important;
+  cursor: pointer !important;
+  transition: color 0.3s !important;
   .logo {
-    height: 32px;
-    background: rgba(255, 255, 255, 0.2);
-    margin: 16px;
+    height: 32px !important;
+    background: rgba(255, 255, 255, 0.2) !important;
+    margin: 16px !important;
   }
 }
 
 .trigger:hover {
-  color: #1890ff;
+  color: #1890ff !important;
 }
