@@ -18,7 +18,7 @@
   line-height: 63px !important;
   .ant-menu-item {
     color: white;
-    background: #3facef;
+    background: #3facef !important;
     margin-right: 10px;
     .anticon {
       font-size: 18px;
@@ -26,6 +26,6 @@
     }
   }
   .ant-menu-item:hover {
-    background: #6ac9fc;
+    background-color: #6ac9fc !important;
   }
 }
