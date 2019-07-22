@@ -1,27 +1,27 @@
 .header {
-  border-bottom: 1px solid #3facef;
+  border-bottom: 1px solid #3facef !important;
 }
 
 .thp-logo {
-  width: 120px;
-  margin-left: 60px;
+  width: 120px !important;
+  margin-left: 60px !important;
 }
 
 @media screen and (max-width: 500px) {
   .thp-logo {
-    margin-left: 10px;
+    margin-left: 10px !important;
   }
 }
 
 .header-menu {
-  margin-right: 1vw;
+  margin-right: 1vw !important;
   line-height: 63px !important;
   .ant-menu-item {
-    color: white;
+    color: white !important;
     background: #3facef !important;
-    margin-right: 10px;
+    margin-right: 10px !important;
     .anticon {
-      font-size: 18px;
+      font-size: 18px !important;
       margin-right: 0 !important;
     }
   }
