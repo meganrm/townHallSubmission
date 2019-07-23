@@ -44,6 +44,8 @@ const success = () => {
   message.success('Thanks for submitting info!', 4);
 };
 
+const { confirm } = Modal;
+
 class MainForm extends React.Component {
   static shouldGetLatLng(currentTownHall, nextTownHall) {
     if (
@@ -128,6 +130,23 @@ class MainForm extends React.Component {
       return errors[field].errors[0].message;
     }
     return false;
+  }
+
+  showConfirm(submit) {
+    const { currentTownHall } = this.props;
+    if (!currentTownHall.displayName) {
+      return;
+    }
+    confirm({
+      onCancel() {},
+      onOk() {
+        return new Promise((resolve) => {
+          submit();
+          setTimeout(resolve, 1000);
+        });
+      },
+      title: `Submit No Events for ${currentTownHall.displayName}?`,
+    });
   }
 
   handleSubmit() {
@@ -311,13 +330,11 @@ class MainForm extends React.Component {
                   key="meetingType"
                   placeholder="Meeting type"
                 >
-                  {eventTypeOptions.map((item, i) => {
-                    return (
-                    <Option value={item} key={i}>
+                  {eventTypeOptions.map(item => (
+                    <Option value={item} key={`option-${item}`}>
                       {item}
                     </Option>
-                    )
-                  })}
+                  ))}
                 </Select>,
               )}
             </FormItem>
@@ -444,8 +461,8 @@ const mapStateToProps = state => ({
   allNames: lawMakerStateBranch.selectors.getAllNames(state),
   allPeople: lawMakerStateBranch.selectors.getAllPeople(state),
   currentTownHall: townHallStateBranch.selectors.getTownHall(state),
-  formKeys: selectionStateBranch.selectors.getFormKeys(state),
   eventTypeOptions: selectionStateBranch.selectors.getLawmakerTypeEventOptions(state),
+  formKeys: selectionStateBranch.selectors.getFormKeys(state),
   peopleDataUrl: selectionStateBranch.selectors.getPeopleDataUrl(state),
   peopleLookUpError: lawMakerStateBranch.selectors.getPeopleRequestError(state),
   peopleNameUrl: selectionStateBranch.selectors.getPeopleNameUrl(state),
@@ -490,8 +507,8 @@ MainForm.propTypes = {
   clearTempAddress: PropTypes.func.isRequired,
   currentTownHall: PropTypes.shape({}).isRequired,
   errors: PropTypes.shape({}),
-  form: PropTypes.shape({}).isRequired,
   eventTypeOptions: PropTypes.arrayOf(PropTypes.string).isRequired,
+  form: PropTypes.shape({}).isRequired,
   geoCodeLocation: PropTypes.func.isRequired,
   handleDatabaseLookupError: PropTypes.func.isRequired,
   mergeNotes: PropTypes.func.isRequired,
