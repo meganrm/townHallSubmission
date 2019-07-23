@@ -35,22 +35,20 @@ export const startSetUserMocs = payload => (dispatch) => {
     if (!snapshot.exists()) {
       console.log('no mocs for this user');
       dispatch(setMOCs([]));
-      return; 
+      return;
     }
     const mocIds = Object.keys(snapshot.val());
-    Promise.all(mocIds.map((id) => {
-      return firebasedb.ref(`mocData/${id}`).once('value').then((snapshot) => {
-        let moc = snapshot.val();
-        let mocData = {
-          govtrack_id: moc.govtrack_id,
-          member_name: moc.displayName,
-        }
-        return mocData;
-      })
-    }))
+    Promise.all(mocIds.map(id => firebasedb.ref(`mocData/${id}`).once('value').then((mocSnap) => {
+      const moc = mocSnap.val();
+      const mocData = {
+        govtrack_id: moc.govtrack_id,
+        member_name: moc.displayName,
+      };
+      return mocData;
+    })))
       .then((userMocData) => {
-        dispatch(setMOCs(userMocData))
+        dispatch(setMOCs(userMocData));
       })
-      .catch((err) => console.log(err))
-  })
-}
+      .catch(err => console.log(err));
+  });
+};

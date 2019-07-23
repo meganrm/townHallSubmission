@@ -62,7 +62,7 @@ module.exports = {
 
   plugins,
   resolve: {
-    extensions: [".jsx", ".js", ".json"]
+    extensions: ['.jsx', '.js', '.json'],
   },
 
   // Load this and everything it cares about
@@ -143,7 +143,7 @@ module.exports = {
   },
   devServer: {
     historyApiFallback: true,
-    host: '0.0.0.0'
+    host: '0.0.0.0',
   },
 
 };
