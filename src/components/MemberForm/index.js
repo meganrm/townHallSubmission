@@ -199,8 +199,8 @@ class MemberLookup extends React.Component {
       getError,
       peopleLookUpError,
     } = this.props;
-    const title = 'Lawmaker Information';
-    const placeHolderText = 'Lawmaker Name';
+    const title = "Lawmaker Information";
+    const placeHolderText = this.props.currentTownHall.displayName ? this.props.currentTownHall.displayName : "Lawmaker Name";
     const fieldName = key > 0 ? `displayName-${key}` : 'displayName';
     const filterFunction = (inputValue, option) => option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1;
     return (

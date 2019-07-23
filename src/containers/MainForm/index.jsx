@@ -12,7 +12,9 @@ import {
   Button,
   Input,
   Select,
+  Modal,
   Checkbox,
+  Radio,
   message,
 } from 'antd';
 
@@ -43,6 +45,8 @@ let initFieldValue;
 const success = () => {
   message.success('Thanks for submitting info!', 4);
 };
+
+const confirm = Modal.confirm;
 
 class MainForm extends React.Component {
   static shouldGetLatLng(currentTownHall, nextTownHall) {
@@ -81,6 +85,7 @@ class MainForm extends React.Component {
     this.resetAll = this.resetAll.bind(this);
     this.checkSubmit = this.checkSubmit.bind(this);
     this.getError = this.getError.bind(this);
+    this.showConfirm = this.showConfirm.bind(this);
   }
 
   componentWillMount() {
@@ -128,6 +133,21 @@ class MainForm extends React.Component {
       return errors[field].errors[0].message;
     }
     return false;
+  }
+
+  showConfirm(submit) {
+    let member = this.props.currentTownHall.Member;
+    if (!member) { return; }
+    confirm({
+      title: `Submit No Events for ${member}?`,
+      onOk() {
+        return new Promise((resolve, reject) => {
+          submit();
+          setTimeout(resolve, 1000);
+        });
+      },
+      onCancel() {},
+    });
   }
 
   handleSubmit() {
@@ -254,9 +274,8 @@ class MainForm extends React.Component {
           id="new-event-form-element"
           layout="horizontal"
         >
-          <Button
-            onClick={this.resetAll}
-          >Reset fields
+          <Button ghost type="primary" icon="rollback" size="large" onClick={this.resetAll}>
+            Reset fields
           </Button>
           <MemberForm
             allNames={allNames}

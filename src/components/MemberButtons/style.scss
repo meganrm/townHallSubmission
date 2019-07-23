@@ -1,0 +1,13 @@
+.user-member-card {
+  text-align: center;
+  .ant-card-body {
+    padding: 0 !important;
+  }
+  .ant-card-grid {
+    padding: 10px !important;
+  }
+  .selected-member-btn {
+    background: #9C27B0;
+    color: white;
+  }
+}

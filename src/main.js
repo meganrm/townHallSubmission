@@ -12,6 +12,7 @@ import {
 import './scripts/controllers/routes';
 import {
   writeUserData,
+  startSetUserMocs,
   incrementUserEventCount,
   setInitialCount,
 } from './state/user/actions';
@@ -50,6 +51,7 @@ const signIn = () => {
 
 firebase.auth().onAuthStateChanged((user) => {
   if (user) {
+    store.dispatch(startSetUserMocs(user))
     // User is signed in.
     console.log(user.displayName, ' is signed in');
     firebasedb.ref(`users/${user.uid}/events`).once('value')
