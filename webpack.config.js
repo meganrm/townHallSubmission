@@ -17,12 +17,12 @@ const { ProvidePlugin } = require('webpack');
 
 const plugins = [
   new EnvironmentPlugin({
-    DATABASE_URL: devMode ? process.env.TESTING_DATABASE_URL : process.env.PROD_DATABASE_URL,
-    FIREBASE_API_KEY: devMode ? process.env.TESTING_FIREBASE_API_KEY : process.env.PROD_FIREBASE_API_KEY,
-    FIREBASE_AUTH_DOMAIN: devMode ? process.env.TESTING_FIREBASE_AUTH_DOMAIN : process.env.PROD_FIREBASE_AUTH_DOMAIN,
-    MESSAGING_SENDER_ID: devMode ? process.env.TESTING_MESSAGING_SENDER_ID : process.env.PROD_MESSAGING_SENDER_ID,
-    PROJECT_ID: devMode ? process.env.TESTING_PROJECT_ID : process.env.PROD_PROJECT_ID,
-    STORAGE_BUCKET: devMode ? process.env.TESTING_STORAGE_BUCKET : process.env.PROD_STORAGE_BUCKET,
+    DATABASE_URL: 'https://townhalltestingsms.firebaseio.com',
+    FIREBASE_API_KEY: 'AIzaSyCJncx2G6bUnecl4H2VHSBTDfRRxg7H5Fs',
+    FIREBASE_AUTH_DOMAIN: 'townhalltestingsms.firebaseapp.com',
+    MESSAGING_SENDER_ID: 86976100332,
+    PROJECT_ID: 'townhalltestingsms',
+    STORAGE_BUCKET: 'townhalltestingsms.appspot.com',
   }),
   new ProvidePlugin({
     jQuery: 'jquery',

@@ -2,6 +2,9 @@
 // Initialize Firebase
 
 /* globals firebase */
+if (process.env.NODE_ENV !== 'production') {
+  console.log(`USING: ${process.env.PROJECT_ID}`);
+}
 
 const config = {
   apiKey: process.env.FIREBASE_API_KEY,
