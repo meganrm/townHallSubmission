@@ -19,19 +19,29 @@ export const setPeople = people => ({
   type: 'SET_PEOPLE',
 });
 
-const addLink = (payload) => ({
-  type: 'ADD_LINK',
+const addLink = payload => ({
   payload,
+  type: 'ADD_LINK',
 });
 
-const editLink = (payload) => ({
+const editLink = payload => ({
+  payload,
   type: 'EDIT_LINK',
-  payload
 });
 
-const deleteLink = (payload) => ({
+const deleteLink = payload => ({
+  payload,
   type: 'DELETE_LINK',
-  payload
+});
+
+const setSelectedMember = payload => ({
+  payload,
+  type: 'SET_SELECTED_MEMBER',
+});
+
+export const setSelectedLink = payload => ({
+  payload,
+  type: 'SET_SELECTED_LINK',
 });
 
 export const startSetPeople = peopleNameUrl => dispatch => firebasedb.ref(peopleNameUrl)
@@ -79,57 +89,43 @@ export const requestAdditionalPersonDataById = (peopleDataUrl, id, index) => dis
   })
   .catch(console.log);
 
-const setSelectedMember = payload => ({
-  payload,
-  type: 'SET_SELECTED_MEMBER',
-});
-
-export const setSelectedLink = (payload) => ({
-  type: 'SET_SELECTED_LINK',
-  payload
-});
-
 export const getSelectedMemberInfo = payload => (dispatch) => {
   firebasedb.ref(`mocData/${payload.govtrack_id}/helpful_links`).once('value').then((snapshot) => {
-    let links = snapshot.val();
-    for (let prop in links) {
+    const links = snapshot.val();
+    for (const prop in links) {
       links[prop].id = prop;
     }
     payload.moc_links = links;
     dispatch(setSelectedMember(payload));
   });
-}
+};
 
 export const addMemberLink = payload => (dispatch) => {
-  if (payload.link_title === undefined || payload.link_url === undefined) {
-    return;
-  } else {
-    let link = {
+  if (payload.link_title && payload.link_url) {
+    const link = {
       link_title: payload.link_title,
-      url: payload.link_url
-    }
-    return firebasedb.ref(`mocData/${payload.member_id}/helpful_links`).push(link).then((ref) => {
-      let newLinkInfo = {
+      url: payload.link_url,
+    };
+    return firebasedb.ref(`${payload.path}/${payload.member_id}/helpful_links`).push(link).then((ref) => {
+      const newLinkInfo = {
         id: ref.key,
-        link
-      }
-      dispatch(addLink(newLinkInfo))
-    })
+        link,
+      };
+      dispatch(addLink(newLinkInfo));
+    });
   }
-}
+};
 
 export const editMemberLink = payload => (dispatch) => {
-  let link = {
+  const link = {
     link_title: payload.linkInfo.link_title,
-    url: payload.linkInfo.url
-  }
-  return firebasedb.ref(`mocData/${payload.moc_id}/helpful_links/${payload.link_id}`).update(link).then(() => {
+    url: payload.linkInfo.url,
+  };
+  return firebasedb.ref(`${payload.path}/${payload.moc_id}/helpful_links/${payload.link_id}`).update(link).then(() => {
     dispatch(editLink(payload));
-  })
-}
+  });
+};
 
-export const deleteMemberLink = payload => (dispatch) => {
-  return firebasedb.ref(`mocData/${payload.moc_id}/helpful_links/${payload.link_id}`).remove().then(() => {
-    dispatch(deleteLink(payload));
-  })
-}
+export const deleteMemberLink = payload => dispatch => firebasedb.ref(`mocData/${payload.moc_id}/helpful_links/${payload.link_id}`).remove().then(() => {
+  dispatch(deleteLink(payload));
+});
