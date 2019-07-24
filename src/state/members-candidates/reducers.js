@@ -3,8 +3,8 @@ import { mapValues, set, omit } from "lodash";
 const initialState = {
   allPeople: [],
   error: null,
-  selectedMember: {},
-  selectedLink: {}
+  selectedMember: null,
+  selectedLink: {},
 };
 
 const peopleReducer = (state = initialState, {
@@ -31,7 +31,7 @@ const peopleReducer = (state = initialState, {
     case 'SET_SELECTED_MEMBER':
       return {
         ...state,
-        selectedMember: payload
+        selectedMember: payload.id,
       }
     case 'SET_SELECTED_LINK':
       return {
