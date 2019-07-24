@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-
+import { find } from 'lodash';
 import {
   FED_REP_EVENTS,
   STATE_REP_EVENTS,
@@ -7,6 +7,8 @@ import {
   STATE_CANDIDATE_EVENTS,
   DEFAULT_EVENTS,
 } from '../../constants/index';
+import { getSelectedMemberId } from '../members-candidates/selectors';
+import { getUserMOCs } from '../user/selectors';
 
 export const getSelectedUSState = state => state.selections.usState;
 export const getMode = state => state.selections.mode;
@@ -34,7 +36,7 @@ export const getLawmakerTypeEventOptions = createSelector([getMode, getSelectedU
     fedRep: FED_REP_EVENTS,
     stateRep: STATE_REP_EVENTS,
     fedCandidate: FED_CANDIDATE_EVENTS,
-    stateCandidate: STATE_CANDIDATE_EVENTS
+    stateCandidate: STATE_CANDIDATE_EVENTS,
   };
   return lawMakerToEventTypes[lawmakerType] || DEFAULT_EVENTS;
 });
@@ -64,4 +66,19 @@ export const getSaveUrl = createSelector([getSelectedUSState], (usState) => {
     return `state_legislators_user_submission/${usState}`;
   }
   return 'UserSubmission/';
+});
+
+export const getSelectedUserMoc = createSelector([getSelectedMemberId, getUserMOCs], (selectedId, userMocs) => find(userMocs, moc => moc.id === selectedId));
+
+export const getSelectedMemberLinks = createSelector([getSelectedUserMoc], (selectedMember) => {
+  if (selectedMember && selectedMember.moc_links) {
+    return Object.keys(selectedMember.moc_links).map((key) => {
+      const link = selectedMember.moc_links[key];
+      return {
+        id: key,
+        ...link,
+      };
+    });
+  }
+  return [];
 });
