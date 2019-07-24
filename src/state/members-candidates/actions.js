@@ -19,6 +19,31 @@ export const setPeople = people => ({
   type: 'SET_PEOPLE',
 });
 
+const addLink = payload => ({
+  payload,
+  type: 'ADD_LINK',
+});
+
+const editLink = payload => ({
+  payload,
+  type: 'EDIT_LINK',
+});
+
+const deleteLink = payload => ({
+  payload,
+  type: 'DELETE_LINK',
+});
+
+const setSelectedMember = payload => ({
+  payload,
+  type: 'SET_SELECTED_MEMBER',
+});
+
+export const setSelectedLink = payload => ({
+  payload,
+  type: 'SET_SELECTED_LINK',
+});
+
 export const startSetPeople = peopleNameUrl => dispatch => firebasedb.ref(peopleNameUrl)
   .once('value')
   .then((result) => {
@@ -63,3 +88,44 @@ export const requestAdditionalPersonDataById = (peopleDataUrl, id, index) => dis
     return dispatch(setAdditionalMember(member));
   })
   .catch(console.log);
+
+export const getSelectedMemberInfo = payload => (dispatch) => {
+  firebasedb.ref(`mocData/${payload.govtrack_id}/helpful_links`).once('value').then((snapshot) => {
+    const links = snapshot.val();
+    for (const prop in links) {
+      links[prop].id = prop;
+    }
+    payload.moc_links = links;
+    dispatch(setSelectedMember(payload));
+  });
+};
+
+export const addMemberLink = payload => (dispatch) => {
+  if (payload.link_title && payload.link_url) {
+    const link = {
+      link_title: payload.link_title,
+      url: payload.link_url,
+    };
+    return firebasedb.ref(`${payload.path}/${payload.member_id}/helpful_links`).push(link).then((ref) => {
+      const newLinkInfo = {
+        id: ref.key,
+        link,
+      };
+      dispatch(addLink(newLinkInfo));
+    });
+  }
+};
+
+export const editMemberLink = payload => (dispatch) => {
+  const link = {
+    link_title: payload.linkInfo.link_title,
+    url: payload.linkInfo.url,
+  };
+  return firebasedb.ref(`${payload.path}/${payload.moc_id}/helpful_links/${payload.link_id}`).update(link).then(() => {
+    dispatch(editLink(payload));
+  });
+};
+
+export const deleteMemberLink = payload => dispatch => firebasedb.ref(`mocData/${payload.moc_id}/helpful_links/${payload.link_id}`).remove().then(() => {
+  dispatch(deleteLink(payload));
+});
