@@ -33,6 +33,11 @@ const selectionReducer = (state = initialState, {
       ...state,
       eventCount: state.eventCount + 1,
     };
+  case 'SET_MOCS':
+    return {
+      ...state,
+      userMocs: payload,
+    };
   default:
     return state;
   }
