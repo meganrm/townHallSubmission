@@ -281,12 +281,12 @@ UserToolkit.propTypes = {
   addMemberLink: PropTypes.func.isRequired,
   eventCount: PropTypes.number,
   currentTownHall: PropTypes.shape({}).isRequired,
-  setSelectedMember: PropTypes.func.isRequired,
   peopleDataUrl: PropTypes.string.isRequired,
   resetAllData: PropTypes.func.isRequired,
   requestPersonDataById: PropTypes.func.isRequired,
-  selectedMemberLinks: PropTypes.arrayOf(PropTypes.shape({})),
   setSelectedLink: PropTypes.func.isRequired,
+  setSelectedMember: PropTypes.func.isRequired,
+  selectedMemberLinks: PropTypes.arrayOf(PropTypes.shape({})),
   submitMetaData: PropTypes.func.isRequired,
   uid: PropTypes.string,
   userDisplayName: PropTypes.string,
@@ -301,25 +301,25 @@ UserToolkit.defaultProps = {
 };
 
 const mapStateToProps = state => ({
-  userMocs: userStateBranch.selectors.getUserMOCs(state),
-  selectedMoc: selectionStateBranch.selectors.getSelectedUserMoc(state),
-  selectedMemberLinks: selectionStateBranch.selectors.getSelectedMemberLinks(state),
   currentTownHall: townHallStateBranch.selectors.getTownHall(state),
+  eventCount: userStateBranch.selectors.getEventCount(state),
   peopleDataUrl: selectionStateBranch.selectors.getPeopleDataUrl(state),
+  selectedLink: lawMakerStateBranch.selectors.getSelectedLink(state),
+  selectedMemberLinks: selectionStateBranch.selectors.getSelectedMemberLinks(state),
+  selectedMoc: selectionStateBranch.selectors.getSelectedUserMoc(state),
   userDisplayName: userStateBranch.selectors.getUserName(state),
   uid: userStateBranch.selectors.getUid(state),
-  selectedLink: lawMakerStateBranch.selectors.getSelectedLink(state),
-  eventCount: userStateBranch.selectors.getEventCount(state),
+  userMocs: userStateBranch.selectors.getUserMOCs(state),
 });
 
 const mapDispatchToProps = dispatch => ({
-  requestPersonDataById: (peopleDataUrl, id) => dispatch(lawMakerStateBranch.actions.requestPersonDataById(peopleDataUrl, id)),
   addMemberLink: payload => dispatch(lawMakerStateBranch.actions.addMemberLink(payload)),
-  editMemberLink: payload => dispatch(lawMakerStateBranch.actions.editMemberLink(payload)),
   deleteMemberLink: payload => dispatch(lawMakerStateBranch.actions.deleteMemberLink(payload)),
+  editMemberLink: payload => dispatch(lawMakerStateBranch.actions.editMemberLink(payload)),
+  requestPersonDataById: (peopleDataUrl, id) => dispatch(lawMakerStateBranch.actions.requestPersonDataById(peopleDataUrl, id)),
+  setSelectedLink: payload => dispatch(lawMakerStateBranch.actions.setSelectedLink(payload)),
   setSelectedMember: member => dispatch(lawMakerStateBranch.actions.setSelectedMember(member)),
   submitMetaData: payload => dispatch(townHallStateBranch.actions.saveMetaData(payload)),
-  setSelectedLink: payload => dispatch(lawMakerStateBranch.actions.setSelectedLink(payload)),
 });
 
 
