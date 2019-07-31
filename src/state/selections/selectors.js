@@ -44,19 +44,13 @@ export const getPeopleNameUrl = createSelector([getSelectedUSState, getMode], (u
     return 'candidate_keys';
   }
   if (usState) {
-    return `state_legislators_id/${usState}`;
+    return 'usState_state_legislator';
   }
-  return 'mocID';
+  return '116th_congress';
 });
 
 export const getPeopleDataUrl = createSelector([getSelectedUSState, getMode], (usState, mode) => {
-  if (mode === 'candidate') {
-    return 'candidate_data';
-  }
-  if (usState) {
-    return `state_legislators_data/${usState}`;
-  }
-  return 'mocData';
+  return 'office_people';
 });
 
 export const getSaveUrl = createSelector([getSelectedUSState], (usState) => {

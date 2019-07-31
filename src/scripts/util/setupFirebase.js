@@ -1,7 +1,10 @@
 // FIREBASE METHODS
 // Initialize Firebase
 
-/* globals firebase */
+import firebase from 'firebase';
+import 'firebase/firestore';
+// Required for side-effects
+
 if (process.env.NODE_ENV !== 'production') {
   console.log(`USING: ${process.env.PROJECT_ID}`);
 }
@@ -19,5 +22,11 @@ firebase.initializeApp(config);
 
 const firebasedb = firebase.database();
 const firebaseauth = firebase.auth();
+const fireStore = firebase.firestore();
 
-export { firebase, firebasedb, firebaseauth };
+export {
+  firebase,
+  firebasedb,
+  firebaseauth,
+  fireStore,
+};

@@ -478,7 +478,7 @@ const mapDispatchToProps = dispatch => ({
   setStartTime: time => dispatch(townHallStateBranch.actions.setStartTime(time)),
   setTimeZone: payload => dispatch(townHallStateBranch.actions.getTimeZone(payload)),
   setValue: payload => dispatch(townHallStateBranch.actions.setValue(payload)),
-  startSetPeople: peopleNameUrl => dispatch(lawMakerStateBranch.actions.startSetPeople(peopleNameUrl)),
+  startSetPeople: peopleNameUrl => dispatch(lawMakerStateBranch.actions.requestNamesInCollection(peopleNameUrl)),
   submitEventForReview: payload => dispatch(townHallStateBranch.actions.submitEventForReview(payload)),
   submitMetaData: payload => dispatch(townHallStateBranch.actions.saveMetaData(payload)),
   togglePersonMode: mode => dispatch(selectionStateBranch.actions.toggleMemberCandidate(mode)),

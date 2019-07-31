@@ -1,4 +1,4 @@
-import { firebasedb } from '../../scripts/util/setupFirebase';
+import { firebasedb, fireStore } from '../../scripts/util/setupFirebase';
 import {
   setDataFromPersonInDatabase,
   setAdditionalMember,
@@ -19,16 +19,20 @@ export const setPeople = people => ({
   type: 'SET_PEOPLE',
 });
 
-export const startSetPeople = peopleNameUrl => dispatch => firebasedb.ref(peopleNameUrl)
-  .once('value')
-  .then((result) => {
-    const allpeople = [];
-    result.forEach((person) => {
-      allpeople.push(person.val());
+export const requestNamesInCollection = peopleNameUrl => dispatch => fireStore.collection(peopleNameUrl).where('in_office', '==', true)
+  .get()
+  .then((querySnapshot) => {
+    const allPeople = [];
+    querySnapshot.forEach((doc) => {
+      // doc.data() is never undefined for query doc snapshots
+      console.log(doc.id, " => ", doc.data());
+      allPeople.push(doc.data());
     });
-    return (dispatch(setPeople(allpeople)));
+    return dispatch(setPeople(allPeople));
   })
-  .catch(console.log);
+  .catch((error) => {
+    console.log('Error getting documents: ', error);
+  });
 
 export const requestPersonDataById = (peopleDataUrl, id) => dispatch => firebasedb.ref(`${peopleDataUrl}/${id}`)
   .once('value')
