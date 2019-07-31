@@ -42,8 +42,6 @@ const initialState = {
 };
 
 const townhallReducer = (state = initialState, { type, payload }) => {
-  console.log(type)
-  console.log(payload)
   const timeFormats = ['hh:mm A', 'h:mm A'];
   switch (type) {
   case 'RESET_TOWNHALL':
