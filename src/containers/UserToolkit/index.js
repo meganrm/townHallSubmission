@@ -13,7 +13,7 @@ import selectionStateBranch from '../../state/selections';
 import townHallStateBranch from '../../state/townhall';
 import userStateBranch from '../../state/user';
 
-import { MOC_DATA_ENDPOINT } from '../../constants';
+import { sanitizeDistrict } from '../../scripts/util';
 
 const {
   confirm,
@@ -53,16 +53,18 @@ class UserToolkit extends React.Component {
 
   selectMoc(moc) {
     const {
-      getSelectedMemberInfo,
+      setSelectedMember,
     } = this.props;
-    getSelectedMemberInfo(moc);
+    setSelectedMember(moc);
   }
 
   handleAutoFillMember(govId) {
     const {
-      requestPersonDataById,
+      setDataFromPersonInDatabase,
+      selectedMoc,
     } = this.props;
-    requestPersonDataById(MOC_DATA_ENDPOINT, govId);
+    selectedMoc.district = sanitizeDistrict(selectedMoc.district);
+    setDataFromPersonInDatabase(selectedMoc)
   }
 
   showConfirm() {
@@ -281,12 +283,13 @@ UserToolkit.propTypes = {
   addMemberLink: PropTypes.func.isRequired,
   eventCount: PropTypes.number,
   currentTownHall: PropTypes.shape({}).isRequired,
-  getSelectedMemberInfo: PropTypes.func.isRequired,
   peopleDataUrl: PropTypes.string.isRequired,
   resetAllData: PropTypes.func.isRequired,
   requestPersonDataById: PropTypes.func.isRequired,
-  selectedMemberLinks: PropTypes.arrayOf(PropTypes.shape({})),
+  setDataFromPersonInDatabase: PropTypes.func.isRequired,
   setSelectedLink: PropTypes.func.isRequired,
+  setSelectedMember: PropTypes.func.isRequired,
+  selectedMemberLinks: PropTypes.arrayOf(PropTypes.shape({})),
   submitMetaData: PropTypes.func.isRequired,
   uid: PropTypes.string,
   userDisplayName: PropTypes.string,
@@ -301,25 +304,26 @@ UserToolkit.defaultProps = {
 };
 
 const mapStateToProps = state => ({
-  userMocs: userStateBranch.selectors.getUserMOCs(state),
-  selectedMoc: selectionStateBranch.selectors.getSelectedUserMoc(state),
-  selectedMemberLinks: selectionStateBranch.selectors.getSelectedMemberLinks(state),
   currentTownHall: townHallStateBranch.selectors.getTownHall(state),
+  eventCount: userStateBranch.selectors.getEventCount(state),
   peopleDataUrl: selectionStateBranch.selectors.getPeopleDataUrl(state),
+  selectedLink: lawMakerStateBranch.selectors.getSelectedLink(state),
+  selectedMemberLinks: selectionStateBranch.selectors.getSelectedMemberLinks(state),
+  selectedMoc: selectionStateBranch.selectors.getSelectedUserMoc(state),
   userDisplayName: userStateBranch.selectors.getUserName(state),
   uid: userStateBranch.selectors.getUid(state),
-  selectedLink: lawMakerStateBranch.selectors.getSelectedLink(state),
-  eventCount: userStateBranch.selectors.getEventCount(state),
+  userMocs: userStateBranch.selectors.getUserMOCs(state),
 });
 
 const mapDispatchToProps = dispatch => ({
-  requestPersonDataById: (peopleDataUrl, id) => dispatch(lawMakerStateBranch.actions.requestPersonDataById(peopleDataUrl, id)),
   addMemberLink: payload => dispatch(lawMakerStateBranch.actions.addMemberLink(payload)),
-  editMemberLink: payload => dispatch(lawMakerStateBranch.actions.editMemberLink(payload)),
   deleteMemberLink: payload => dispatch(lawMakerStateBranch.actions.deleteMemberLink(payload)),
-  getSelectedMemberInfo: member => dispatch(lawMakerStateBranch.actions.getSelectedMemberInfo(member)),
-  submitMetaData: payload => dispatch(townHallStateBranch.actions.saveMetaData(payload)),
+  editMemberLink: payload => dispatch(lawMakerStateBranch.actions.editMemberLink(payload)),
+  requestPersonDataById: (peopleDataUrl, id) => dispatch(lawMakerStateBranch.actions.requestPersonDataById(peopleDataUrl, id)),
+  setDataFromPersonInDatabase: payload => dispatch(townHallStateBranch.actions.setDataFromPersonInDatabase(payload)),
   setSelectedLink: payload => dispatch(lawMakerStateBranch.actions.setSelectedLink(payload)),
+  setSelectedMember: member => dispatch(lawMakerStateBranch.actions.setSelectedMember(member)),
+  submitMetaData: payload => dispatch(townHallStateBranch.actions.saveMetaData(payload)),
 });
 
 

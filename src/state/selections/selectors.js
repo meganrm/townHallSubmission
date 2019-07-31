@@ -71,9 +71,9 @@ export const getSaveUrl = createSelector([getSelectedUSState], (usState) => {
 export const getSelectedUserMoc = createSelector([getSelectedMemberId, getUserMOCs], (selectedId, userMocs) => find(userMocs, moc => moc.id === selectedId));
 
 export const getSelectedMemberLinks = createSelector([getSelectedUserMoc], (selectedMember) => {
-  if (selectedMember && selectedMember.moc_links) {
-    return Object.keys(selectedMember.moc_links).map((key) => {
-      const link = selectedMember.moc_links[key];
+  if (selectedMember && selectedMember.mocLinks) {
+    return Object.keys(selectedMember.mocLinks).map((key) => {
+      const link = selectedMember.mocLinks[key];
       return {
         id: key,
         ...link,

@@ -34,7 +34,7 @@ const deleteLink = payload => ({
   type: 'DELETE_LINK',
 });
 
-const setSelectedMember = payload => ({
+export const setSelectedMember = payload => ({
   payload,
   type: 'SET_SELECTED_MEMBER',
 });
@@ -88,17 +88,6 @@ export const requestAdditionalPersonDataById = (peopleDataUrl, id, index) => dis
     return dispatch(setAdditionalMember(member));
   })
   .catch(console.log);
-
-export const getSelectedMemberInfo = payload => (dispatch) => {
-  firebasedb.ref(`mocData/${payload.govtrack_id}/helpful_links`).once('value').then((snapshot) => {
-    const links = snapshot.val();
-    for (const prop in links) {
-      links[prop].id = prop;
-    }
-    payload.moc_links = links;
-    dispatch(setSelectedMember(payload));
-  });
-};
 
 export const addMemberLink = payload => (dispatch) => {
   if (payload.link_title && payload.link_url) {
