@@ -29,8 +29,13 @@ const MemberButtons = (props) => {
 
 MemberButtons.propTypes = {
   selectMoc: PropTypes.func.isRequired,
-  selectedMoc: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  selectedMoc: PropTypes.shape({}).isRequired,
   userMocs: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+};
+
+MemberButtons.defaultProps = {
+  selectedMoc: {},
+  userMocs: [],
 };
 
 export default MemberButtons;
