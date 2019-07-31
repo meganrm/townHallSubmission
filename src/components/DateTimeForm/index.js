@@ -8,6 +8,7 @@ import {
   DatePicker,
   Form,
   TimePicker,
+  Alert,
 } from 'antd';
 import { includes } from 'lodash';
 
@@ -30,7 +31,17 @@ class DateTimeForm extends React.Component {
       repeatingEvent: false,
       startOpen: false,
       endTimeOpen: false,
+      renderWarning: false,
     };
+  }
+
+  componentDidUpdate(prevProps) {
+    const { townHallId } = this.props;
+    if (prevProps.townHallId && !townHallId) {
+      this.setState({
+        renderWarning: false,
+      });
+    }
   }
 
   onRepeatingEventCheckboxChanged(e) {
@@ -39,6 +50,16 @@ class DateTimeForm extends React.Component {
 
   onChangeDate(date) {
     const { setDate } = this.props;
+    const { renderWarning } = this.state;
+    if (moment(date).isBefore()) {
+      this.setState({
+        renderWarning: true,
+      });
+    } else if (renderWarning) {
+      this.setState({
+        renderWarning: false,
+      });
+    }
     setDate(date);
   }
 
@@ -78,7 +99,7 @@ class DateTimeForm extends React.Component {
       requiredFields,
       getError,
     } = this.props;
-    const { repeatingEvent } = this.state;
+    const { repeatingEvent, renderWarning } = this.state;
     return repeatingEvent ? (
       <FormItem
         className="repeating"
@@ -111,6 +132,14 @@ class DateTimeForm extends React.Component {
             })(
               <DatePicker onChange={this.onChangeDate} />,
             )}
+          {renderWarning && (
+            <Alert
+              message={(<p>Date is in the past, make sure that is what you meant</p>)}
+              type="warning"
+              showIcon
+              closable
+            />
+          )}
         </FormItem>
       );
   }
@@ -205,6 +234,11 @@ DateTimeForm.propTypes = {
   setDate: PropTypes.func.isRequired,
   setEndTime: PropTypes.func.isRequired,
   setStartTime: PropTypes.func.isRequired,
+  townHallId: PropTypes.string,
+};
+
+DateTimeForm.defaultProps = {
+  townHallId: null,
 };
 
 export default DateTimeForm;
