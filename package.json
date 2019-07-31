@@ -29,6 +29,7 @@
     "classnames": "^2.2.6",
     "express": "^4.15.2",
     "express-request-proxy": "^2.2.2",
+    "firebase": "^6.3.3",
     "handlebars": "^4.1.2",
     "jquery": "^3.4.1",
     "lodash": "^4.17.11",
