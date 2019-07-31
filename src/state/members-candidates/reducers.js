@@ -43,7 +43,7 @@ const peopleReducer = (state = initialState, {
         ...state,
         selectedMember: {
           ...state.selectedMember,
-          moc_links: set(state.selectedMember.moc_links ? state.selectedMember.moc_links : {}, `${payload.id}`, { id: payload.id, ...payload.link })
+          helpful_links: set(state.selectedMember.helpful_links ? state.selectedMember.helpful_links : {}, `${payload.id}`, { id: payload.id, ...payload.link })
         }
       }
     case 'EDIT_LINK':
@@ -51,7 +51,7 @@ const peopleReducer = (state = initialState, {
         ...state,
         selectedMember: {
           ...state.selectedMember,
-          moc_links: mapValues(state.selectedMember.moc_links, (link) => {
+          helpful_links: mapValues(state.selectedMember.helpful_links, (link) => {
             if (link.id === payload.link_id) {
               return { id: payload.link_id, ...payload.linkInfo };
             }
@@ -64,7 +64,7 @@ const peopleReducer = (state = initialState, {
         ...state,
         selectedMember: {
           ...state.selectedMember,
-          moc_links: omit(state.selectedMember.moc_links, [`${payload.link_id}`])
+          helpful_links: omit(state.selectedMember.helpful_links, [`${payload.link_id}`])
         }
       }
     default:
