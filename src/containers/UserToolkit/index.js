@@ -13,7 +13,6 @@ import selectionStateBranch from '../../state/selections';
 import townHallStateBranch from '../../state/townhall';
 import userStateBranch from '../../state/user';
 
-import { MOC_DATA_ENDPOINT } from '../../constants';
 import { sanitizeDistrict } from '../../scripts/util';
 
 const {
@@ -61,14 +60,11 @@ class UserToolkit extends React.Component {
 
   handleAutoFillMember(govId) {
     const {
-      // requestPersonDataById,
       setDataFromPersonInDatabase,
       selectedMoc,
     } = this.props;
     selectedMoc.district = sanitizeDistrict(selectedMoc.district);
     setDataFromPersonInDatabase(selectedMoc)
-    // requestPersonDataById(MOC_DATA_ENDPOINT, govId);
-
   }
 
   showConfirm() {
