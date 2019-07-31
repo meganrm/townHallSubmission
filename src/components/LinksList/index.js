@@ -25,7 +25,7 @@ class LinksList extends React.Component {
         (<Card
             className="actions-section"
             title="Actions:"
-            extra={<div> <Button href="#" onClick={() => handleAutoFillMember(selectedMoc.govtrack_id)}>AutoFill Form</Button> <Button onClick={() => this.props.showConfirm()}>No Events</Button></div>}
+            extra={<div> <Button onClick={() => handleAutoFillMember()}>AutoFill Form</Button> <Button onClick={() => this.props.showConfirm()}>No Events</Button></div>}
             style={{ width: 'auto' }}
           />)
         }
