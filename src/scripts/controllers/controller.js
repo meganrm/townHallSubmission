@@ -13,6 +13,8 @@ import {
 } from '../../constants';
 
 export const switchStateTab = (ctx, next) => {
+  console.log('here ???');
+  console.log(ctx);
   store.dispatch(resetTownHall());
   const value = ctx.params.state || null;
   store.dispatch(setUsState(value));

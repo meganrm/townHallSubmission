@@ -14,6 +14,7 @@ import townHallStateBranch from '../../state/townhall';
 import userStateBranch from '../../state/user';
 
 import { MOC_DATA_ENDPOINT } from '../../constants';
+import { sanitizeDistrict } from '../../scripts/util';
 
 const {
   confirm,
@@ -60,9 +61,14 @@ class UserToolkit extends React.Component {
 
   handleAutoFillMember(govId) {
     const {
-      requestPersonDataById,
+      // requestPersonDataById,
+      setDataFromPersonInDatabase,
+      selectedMoc,
     } = this.props;
-    requestPersonDataById(MOC_DATA_ENDPOINT, govId);
+    selectedMoc.district = sanitizeDistrict(selectedMoc.district);
+    setDataFromPersonInDatabase(selectedMoc)
+    // requestPersonDataById(MOC_DATA_ENDPOINT, govId);
+
   }
 
   showConfirm() {
@@ -284,6 +290,7 @@ UserToolkit.propTypes = {
   peopleDataUrl: PropTypes.string.isRequired,
   resetAllData: PropTypes.func.isRequired,
   requestPersonDataById: PropTypes.func.isRequired,
+  setDataFromPersonInDatabase: PropTypes.func.isRequired,
   setSelectedLink: PropTypes.func.isRequired,
   setSelectedMember: PropTypes.func.isRequired,
   selectedMemberLinks: PropTypes.arrayOf(PropTypes.shape({})),
@@ -317,6 +324,7 @@ const mapDispatchToProps = dispatch => ({
   deleteMemberLink: payload => dispatch(lawMakerStateBranch.actions.deleteMemberLink(payload)),
   editMemberLink: payload => dispatch(lawMakerStateBranch.actions.editMemberLink(payload)),
   requestPersonDataById: (peopleDataUrl, id) => dispatch(lawMakerStateBranch.actions.requestPersonDataById(peopleDataUrl, id)),
+  setDataFromPersonInDatabase: payload => dispatch(townHallStateBranch.actions.setDataFromPersonInDatabase(payload)),
   setSelectedLink: payload => dispatch(lawMakerStateBranch.actions.setSelectedLink(payload)),
   setSelectedMember: member => dispatch(lawMakerStateBranch.actions.setSelectedMember(member)),
   submitMetaData: payload => dispatch(townHallStateBranch.actions.saveMetaData(payload)),
