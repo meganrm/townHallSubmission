@@ -53,9 +53,9 @@ class UserToolkit extends React.Component {
 
   selectMoc(moc) {
     const {
-      getSelectedMemberInfo,
+      setSelectedMember,
     } = this.props;
-    getSelectedMemberInfo(moc);
+    setSelectedMember(moc);
   }
 
   handleAutoFillMember(govId) {
@@ -281,7 +281,7 @@ UserToolkit.propTypes = {
   addMemberLink: PropTypes.func.isRequired,
   eventCount: PropTypes.number,
   currentTownHall: PropTypes.shape({}).isRequired,
-  getSelectedMemberInfo: PropTypes.func.isRequired,
+  setSelectedMember: PropTypes.func.isRequired,
   peopleDataUrl: PropTypes.string.isRequired,
   resetAllData: PropTypes.func.isRequired,
   requestPersonDataById: PropTypes.func.isRequired,
@@ -317,7 +317,7 @@ const mapDispatchToProps = dispatch => ({
   addMemberLink: payload => dispatch(lawMakerStateBranch.actions.addMemberLink(payload)),
   editMemberLink: payload => dispatch(lawMakerStateBranch.actions.editMemberLink(payload)),
   deleteMemberLink: payload => dispatch(lawMakerStateBranch.actions.deleteMemberLink(payload)),
-  getSelectedMemberInfo: member => dispatch(lawMakerStateBranch.actions.getSelectedMemberInfo(member)),
+  setSelectedMember: member => dispatch(lawMakerStateBranch.actions.setSelectedMember(member)),
   submitMetaData: payload => dispatch(townHallStateBranch.actions.saveMetaData(payload)),
   setSelectedLink: payload => dispatch(lawMakerStateBranch.actions.setSelectedLink(payload)),
 });
