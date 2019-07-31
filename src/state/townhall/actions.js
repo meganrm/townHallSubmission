@@ -195,7 +195,6 @@ export const submitEventForReview = payload => () => firebasedb.ref(`${payload.s
   .catch(console.log);
 
 export const setDataFromPersonInDatabase = payload => (dispatch) => {
-  console.log(payload);
   const eventId = firebasedb.ref('townHallIds').push().key;
   const eventInfo = { eventId, ...payload };
   return (dispatch(setDataFromPersonInDatabaseAction(eventInfo)));
