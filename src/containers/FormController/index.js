@@ -10,6 +10,8 @@ import {
 import {
   Row,
   Col,
+  Affix,
+  Collapse,
 } from 'antd';
 
 import {
@@ -17,20 +19,24 @@ import {
 } from '../../constants';
 
 import 'antd/dist/antd.less';
+
 import {
   getTownHall,
 } from '../../state/townhall/selectors';
-import {
-  getUserMOCs,
-} from '../../state/user/selectors';
 import selectionStateBranch from '../../state/selections';
 import townHallStateBranch from '../../state/townhall';
 import MainForm from '../MainForm';
-import UserToolkit from '../UserToolkit';
 
 import './style.scss';
 
+const { Panel } = Collapse;
+
 const noopFieldNames = ['displayName', 'address', 'preview'];
+
+const customPanelStyle = {
+  border: 0,
+  marginBottom: 24,
+};
 
 class FormController extends React.Component {
   static replacer(key, value) {
@@ -131,7 +137,6 @@ class FormController extends React.Component {
 
   render() {
     const {
-      userMocs,
       currentTownHall,
       mobile,
     } = this.props;
@@ -150,18 +155,28 @@ class FormController extends React.Component {
               errors={errors}
               resetErrors={this.resetErrors}
               setErrors={this.setErrors}
-              userMocs={userMocs}
             />
           </Col>
           {
             mobile ? (
               <div />
             ) : (
-            <Col md={0} lg={12}>
-              <UserToolkit 
-                resetAllData={this.resetAllData}
-              />
-          </Col>
+              <Col md={0} lg={12}>
+                <Affix>
+                  <Collapse bordered={false}>
+                    <Panel
+                      style={customPanelStyle}
+                      header="Data object (click to see data you've entered)"
+                    >
+                      <pre className="language-bash" style={{ overflow: 'visible' }}>
+                        {
+                          JSON.stringify(currentTownHall, FormController.replacer, 2)
+                        }
+                      </pre>
+                    </Panel>
+                  </Collapse>
+                </Affix>
+              </Col>
             )
           }
         </Row>
@@ -173,7 +188,6 @@ class FormController extends React.Component {
 
 const mapStateToProps = state => ({
   currentTownHall: getTownHall(state),
-  userMocs: getUserMOCs(state)
 });
 
 const mapDispatchToProps = dispatch => ({
