@@ -3,8 +3,8 @@ import { mapValues, set, omit } from "lodash";
 const initialState = {
   allPeople: [],
   error: null,
-  selectedMember: null,
   selectedLink: {},
+  selectedMember: null,
 };
 
 const peopleReducer = (state = initialState, {
@@ -36,14 +36,14 @@ const peopleReducer = (state = initialState, {
     case 'SET_SELECTED_LINK':
       return {
         ...state,
-        selectedLink: payload
+        selectedLink: payload,
       }
     case 'ADD_LINK':
       return {
         ...state,
         selectedMember: {
           ...state.selectedMember,
-          helpful_links: set(state.selectedMember.helpful_links ? state.selectedMember.helpful_links : {}, `${payload.id}`, { id: payload.id, ...payload.link })
+          mocLinks: set(state.selectedMember.mocLinks ? state.selectedMember.mocLinks : {}, `${payload.id}`, { id: payload.id, ...payload.link }),
         }
       }
     case 'EDIT_LINK':
@@ -51,7 +51,7 @@ const peopleReducer = (state = initialState, {
         ...state,
         selectedMember: {
           ...state.selectedMember,
-          helpful_links: mapValues(state.selectedMember.helpful_links, (link) => {
+          mocLinks: mapValues(state.selectedMember.mocLinks, (link) => {
             if (link.id === payload.link_id) {
               return { id: payload.link_id, ...payload.linkInfo };
             }
@@ -64,7 +64,7 @@ const peopleReducer = (state = initialState, {
         ...state,
         selectedMember: {
           ...state.selectedMember,
-          helpful_links: omit(state.selectedMember.helpful_links, [`${payload.link_id}`])
+          mocLinks: omit(state.selectedMember.mocLinks, [`${payload.link_id}`])
         }
       }
     default:
