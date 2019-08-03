@@ -2,7 +2,7 @@
 import React from 'react';
 import ReactDom from 'react-dom';
 import { Provider } from 'react-redux';
-
+import { Alert } from 'antd';
 import {
   firebase,
   firebaseauth,
@@ -24,12 +24,17 @@ import store from './store/configureStore';
 import { getIsInitial } from './state/user/selectors';
 
 const provider = new firebase.auth.GoogleAuthProvider();
+const redirectMessaging = (
+  <Alert
+    message="This is no longer a working url"
+    description={[<div>Please use this link, and bookmark it:</div>, (<a href="https://townhallsubmission.herokuapp.com/">Submission Form</a>)]}
+    type="success"
+  />);
 
-const jsx = (
+const jsx = window.location.href === 'https://townhallsubmission-state.herokuapp.com/' ? redirectMessaging : (
   <Provider store={store}>
     <App />
-  </Provider>
-);
+  </Provider>);
 
 const renderApp = () => {
   ReactDom.render(jsx, document.getElementById('root'));
