@@ -351,6 +351,7 @@ class MainForm extends React.Component {
               getFieldDecorator={getFieldDecorator}
               getError={this.getError}
               requiredFields={requiredFields}
+              townHallId={currentTownHall.eventId}
             />)}
           {currentTownHall.meetingType !== 'No Events' && (
 
