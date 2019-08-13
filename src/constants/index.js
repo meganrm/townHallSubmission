@@ -17,6 +17,21 @@ export const STATE_LEGS = {
   VA: 'Virginia',
 };
 
+export const NO_EVENTS = 'No Events';
+export const TOWN_HALL = 'Town Hall';
+export const TELE_TOWN_HALL = 'Tele-Town Hall';
+export const EMPTY_CHAIR_TOWN_HALL = 'Empty Chair Town Hall';
+export const CAMPAIGN_TOWN_HALL = 'Campaign Town Hall';
+export const OTHER = 'Other';
+export const TICKETED_EVENT = 'Ticketed Event';
+export const ADOPT_A_DISTRICT = 'Adopt-A-District/State';
+export const DC_EVENT = 'DC Event';
+export const OFFICE_HOURS = 'Office Hours';
+export const HEARING = 'Hearing';
+export const HR_1_ACTIVIST_EVENT = 'H.R. 1 Activist Event';
+export const HR_1_TOWN_HALL = 'H.R. 1 Town Hall';
+export const GUN_SAFETY_ACTIVISM = 'Gun Safety Activist Event';
+
 export const formItemLayout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 14 },
@@ -31,19 +46,19 @@ export const HR_1_ICON_FLAG = 'hr-one';
 
 export const EVENT_TYPES = {
   town_hall: {
-    name: 'Town Hall',
+    name: TOWN_HALL,
     iconFlag: IN_PERSON_ICON_FLAG,
   },
   hr_1_town_hall: {
-    name: 'H.R. 1 Town Hall',
+    name: HR_1_TOWN_HALL,
     iconFlag: HR_1_ICON_FLAG,
   },
   hr_1_activist_event: {
-    name: 'H.R. 1 Activist Event',
+    name: HR_1_ACTIVIST_EVENT,
     iconFlag: HR_1_ICON_FLAG,
   },
   tele_town_hall: {
-    name: 'Tele-Town Hall',
+    name: TELE_TOWN_HALL,
     iconFlag: TELE_ICON_FLAG,
   },
   ticketed_event: {
@@ -70,6 +85,10 @@ export const EVENT_TYPES = {
     name: 'Office Hours',
     iconFlag: STAFF_ICON_FLAG,
   },
+  gun_safety_activism: {
+    name: GUN_SAFETY_ACTIVISM,
+    iconFlag: ACTIVISM_ICON_FLAG,
+  },
   other: {
     name: 'Other',
     iconFlag: null,
@@ -80,8 +99,43 @@ export const EVENT_TYPES = {
   },
 };
 
-export const FED_REP_EVENTS = ['No Events', 'Town Hall', 'Tele-Town Hall', 'Empty Chair Town Hall', 'Campaign Town Hall', 'Adopt-A-District/State', 'DC Event', 'Office Hours', 'Other'];
-export const STATE_REP_EVENTS = ['No Events', 'Town Hall', 'Tele-Town Hall', 'Empty Chair Town Hall', 'Campaign Town Hall', 'Adopt-A-District/State', 'Hearing', 'Office Hours', 'Other'];
-export const FED_CANDIDATE_EVENTS = ['No Events', 'Campaign Town Hall', 'Other', 'Ticketed Event'];
-export const STATE_CANDIDATE_EVENTS = ['No Events', 'Campaign Town Hall', 'Other', 'Ticketed Event'];
-export const DEFAULT_EVENTS = ['No Events', 'Town Hall', 'H.R. 1 Town Hall', 'H.R. 1 Activist Event', 'Tele-Town Hall', 'Ticketed Event', 'Campaign Town Hall', 'Adopt-A-District/State', 'Empty Chair Town Hall', 'Hearing', 'DC Event', 'Office Hours', 'Other'];
+
+export const FED_REP_EVENTS = [
+  NO_EVENTS,
+  TOWN_HALL,
+  TELE_TOWN_HALL,
+  EMPTY_CHAIR_TOWN_HALL,
+  CAMPAIGN_TOWN_HALL,
+  ADOPT_A_DISTRICT,
+  DC_EVENT,
+  OFFICE_HOURS,
+  OTHER,
+];
+export const STATE_REP_EVENTS = [
+  NO_EVENTS,
+  TOWN_HALL,
+  TELE_TOWN_HALL,
+  EMPTY_CHAIR_TOWN_HALL,
+  CAMPAIGN_TOWN_HALL,
+  ADOPT_A_DISTRICT,
+  HEARING,
+  OFFICE_HOURS,
+  OTHER,
+];
+export const FED_CANDIDATE_EVENTS = [NO_EVENTS, CAMPAIGN_TOWN_HALL, OTHER, TICKETED_EVENT];
+export const STATE_CANDIDATE_EVENTS = [NO_EVENTS, CAMPAIGN_TOWN_HALL, OTHER, TICKETED_EVENT];
+export const DEFAULT_EVENTS = [
+  NO_EVENTS,
+  TOWN_HALL,
+  HR_1_TOWN_HALL,
+  HR_1_ACTIVIST_EVENT,
+  TELE_TOWN_HALL,
+  TICKETED_EVENT,
+  CAMPAIGN_TOWN_HALL,
+  ADOPT_A_DISTRICT,
+  EMPTY_CHAIR_TOWN_HALL,
+  HEARING,
+  DC_EVENT,
+  OFFICE_HOURS,
+  OTHER,
+];
