@@ -34,7 +34,7 @@ export const getLawmakerTypeEventOptions = createSelector([getMode, getSelectedU
     fedRep: FED_REP_EVENTS,
     stateRep: STATE_REP_EVENTS,
     fedCandidate: FED_CANDIDATE_EVENTS,
-    stateCandidate: STATE_CANDIDATE_EVENTS
+    stateCandidate: STATE_CANDIDATE_EVENTS,
   };
   return lawMakerToEventTypes[lawmakerType] || DEFAULT_EVENTS;
 });
