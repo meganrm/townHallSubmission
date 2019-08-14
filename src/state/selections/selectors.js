@@ -1,8 +1,6 @@
 import { createSelector } from 'reselect';
 
 import {
-  FED_REP_EVENTS,
-  STATE_REP_EVENTS,
   FED_CANDIDATE_EVENTS,
   STATE_CANDIDATE_EVENTS,
   DEFAULT_EVENTS,
@@ -19,20 +17,17 @@ export const getFormKeys = state => state.selections.formKeys;
 
 
 export const getLawmakerTypeEventOptions = createSelector([getMode, getSelectedUSState], (mode, usState) => {
-  let lawmakerType;
+  let lawmakerType = 'default';
 
-  if (!usState && mode === 'moc') {
-    lawmakerType = 'fedRep';
-  } else if (mode === 'moc' && usState !== null) {
-    lawmakerType = 'stateRep';
-  } else if (!usState && mode === 'candidate') {
+  if (mode === 'candidate') {
+    if (usState) {
+      lawmakerType = 'stateCandidate';
+    }
     lawmakerType = 'fedCandidate';
-  } else if (mode === 'candidate' && usState !== null) {
-    lawmakerType = 'stateCandidate';
   }
+
   const lawMakerToEventTypes = {
-    fedRep: FED_REP_EVENTS,
-    stateRep: STATE_REP_EVENTS,
+    default: DEFAULT_EVENTS,
     fedCandidate: FED_CANDIDATE_EVENTS,
     stateCandidate: STATE_CANDIDATE_EVENTS,
   };

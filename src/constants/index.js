@@ -98,9 +98,7 @@ export const EVENT_TYPES = {
     iconFlag: null,
   },
 };
-
-
-export const FED_REP_EVENTS = [
+export const REP_EVENTS = [
   NO_EVENTS,
   TOWN_HALL,
   TELE_TOWN_HALL,
@@ -108,17 +106,6 @@ export const FED_REP_EVENTS = [
   CAMPAIGN_TOWN_HALL,
   ADOPT_A_DISTRICT,
   DC_EVENT,
-  OFFICE_HOURS,
-  OTHER,
-];
-export const STATE_REP_EVENTS = [
-  NO_EVENTS,
-  TOWN_HALL,
-  TELE_TOWN_HALL,
-  EMPTY_CHAIR_TOWN_HALL,
-  CAMPAIGN_TOWN_HALL,
-  ADOPT_A_DISTRICT,
-  HEARING,
   OFFICE_HOURS,
   OTHER,
 ];
@@ -137,5 +124,6 @@ export const DEFAULT_EVENTS = [
   HEARING,
   DC_EVENT,
   OFFICE_HOURS,
+  GUN_SAFETY_ACTIVISM,
   OTHER,
 ];
