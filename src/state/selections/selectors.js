@@ -4,7 +4,9 @@ import {
   FED_CANDIDATE_EVENTS,
   STATE_CANDIDATE_EVENTS,
   DEFAULT_EVENTS,
+  REP_EVENTS,
 } from '../../constants/index';
+import { getMemberIsSelected } from '../townhall/selectors';
 
 export const getSelectedUSState = state => state.selections.usState;
 export const getMode = state => state.selections.mode;
@@ -16,7 +18,7 @@ export const getTempStateName = state => state.selections.stateName;
 export const getFormKeys = state => state.selections.formKeys;
 
 
-export const getLawmakerTypeEventOptions = createSelector([getMode, getSelectedUSState], (mode, usState) => {
+export const getLawmakerTypeEventOptions = createSelector([getMode, getSelectedUSState, getMemberIsSelected], (mode, usState, memberIsSelected) => {
   let lawmakerType = 'default';
 
   if (mode === 'candidate') {
@@ -24,11 +26,14 @@ export const getLawmakerTypeEventOptions = createSelector([getMode, getSelectedU
       lawmakerType = 'stateCandidate';
     }
     lawmakerType = 'fedCandidate';
+  } else if (memberIsSelected) {
+    lawmakerType = 'member';
   }
 
   const lawMakerToEventTypes = {
     default: DEFAULT_EVENTS,
     fedCandidate: FED_CANDIDATE_EVENTS,
+    member: REP_EVENTS,
     stateCandidate: STATE_CANDIDATE_EVENTS,
   };
   return lawMakerToEventTypes[lawmakerType] || DEFAULT_EVENTS;
