@@ -26,6 +26,7 @@ import {
 import selectionStateBranch from '../../state/selections';
 import townHallStateBranch from '../../state/townhall';
 import MainForm from '../MainForm';
+import allTownHallsStateBranch from '../../state/alltownhalls';
 
 import './style.scss';
 
@@ -37,6 +38,8 @@ const customPanelStyle = {
   border: 0,
   marginBottom: 24,
 };
+
+const dupes = [];
 
 class FormController extends React.Component {
   static replacer(key, value) {
@@ -59,6 +62,10 @@ class FormController extends React.Component {
     };
   }
 
+  componentDidMount() {
+    this.props.getAllEventToCheckDups();
+  }
+
   setErrors(errors) {
     this.setState({ errors });
   }
@@ -68,6 +75,48 @@ class FormController extends React.Component {
       errors: null,
     });
   }
+
+  
+  duplicateCheck(target, search) {
+    const govId = 'govtrack_id';
+    const displayName = 'displayName';
+    const date = 'yearMonthDay';
+    const time = 'timeStart24';
+    let dupe = false;
+    let match = false;
+
+    if (Object.keys(target).includes(govId)) {
+      if (target[govId] == search[govId]) {
+        match = true;
+      }
+    } else {
+      if (target[displayName] == search[displayName]) {
+        match = true;
+      }
+    }
+
+    if (match && (target[date] == search[date] && target[time] == search[time])) {
+      dupe = true;
+    }
+
+    return (dupe);
+  };
+
+  checkForDupes() {
+    const {
+      currentTownHall,
+      allTownhalls,
+    } = this.props;
+      for (var event in allTownhalls) {
+        var dupeCheck = DuplicateCheck(currentTownHall, event);
+        if (dupeCheck) {
+          if (dupes.length < 1) {
+            dupes.push(townhall);
+          }
+          dupes.push(event);
+        }
+      }
+  };
 
   resetAllData() {
     const {
@@ -188,10 +237,12 @@ class FormController extends React.Component {
 
 const mapStateToProps = state => ({
   currentTownHall: getTownHall(state),
+  allTownHalls: allTownHallsStateBranch.selectors.getSubmittedandApprovedTownHalls(state),
 });
 
 const mapDispatchToProps = dispatch => ({
   addDisclaimer: () => dispatch(townHallStateBranch.actions.addDisclaimer()),
+  getAllEventToCheckDups: () => dispatch(allTownHallsStateBranch.actions.getAllEventToCheckDups()),
   clearDisclaimer: () => dispatch(townHallStateBranch.actions.clearDisclaimer()),
   clearTempAddress: () => dispatch(selectionStateBranch.actions.clearTempAddress()),
   resetFormKeys: () => dispatch(selectionStateBranch.actions.resetFormKeys()),
