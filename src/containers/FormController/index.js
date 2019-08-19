@@ -29,6 +29,7 @@ import MainForm from '../MainForm';
 import allTownHallsStateBranch from '../../state/alltownhalls';
 
 import './style.scss';
+import DupeDrawer from '../../components/DupeDrawer';
 
 const { Panel } = Collapse;
 
@@ -39,7 +40,6 @@ const customPanelStyle = {
   marginBottom: 24,
 };
 
-const dupes = [];
 
 class FormController extends React.Component {
   static replacer(key, value) {
@@ -56,14 +56,21 @@ class FormController extends React.Component {
     this.resetAllData = this.resetAllData.bind(this);
     this.resetErrors = this.resetErrors.bind(this);
     this.setErrors = this.setErrors.bind(this);
+    this.checkForDupes = this.checkForDupes.bind(this);
     this.state = {
       displayValues: {},
+      dupes: [],
       errors: null,
+      hasCheckedForDupes: false,
+      dupeFieldsChanged: false,
     };
   }
 
   componentDidMount() {
-    this.props.getAllEventToCheckDups();
+    const {
+      getAllEventToCheckDups,
+    } = this.props;
+    getAllEventToCheckDups();
   }
 
   setErrors(errors) {
@@ -76,7 +83,7 @@ class FormController extends React.Component {
     });
   }
 
-  
+
   duplicateCheck(target, search) {
     const govId = 'govtrack_id';
     const displayName = 'displayName';
@@ -87,36 +94,24 @@ class FormController extends React.Component {
 
     if (Object.keys(target).includes(govId)) {
       if (target[govId] == search[govId]) {
+        console.log('matching on govtrack');
         match = true;
       }
-    } else {
-      if (target[displayName] == search[displayName]) {
-        match = true;
-      }
+    } else if (target[displayName] == search[displayName]) {
+      match = true;
     }
-
     if (match && (target[date] == search[date] && target[time] == search[time])) {
       dupe = true;
     }
-
     return (dupe);
-  };
+  }
 
-  checkForDupes() {
+  checkForDupes(currentEvent) {
     const {
-      currentTownHall,
-      allTownhalls,
+      allTownHalls,
     } = this.props;
-      for (var event in allTownhalls) {
-        var dupeCheck = DuplicateCheck(currentTownHall, event);
-        if (dupeCheck) {
-          if (dupes.length < 1) {
-            dupes.push(townhall);
-          }
-          dupes.push(event);
-        }
-      }
-  };
+    return allTownHalls.filter(townhall => this.duplicateCheck(currentEvent, townhall));
+  }
 
   resetAllData() {
     const {
@@ -144,13 +139,32 @@ class FormController extends React.Component {
       setValue,
       setUsState,
       setNumberofKeys,
+      currentTownHall,
     } = this.props;
 
+    const hasAllFields = event => !!event.yearMonthDay && !!event.timeStart24 && !!(event.govtrack_id || event.displayName);
+    const dupCheckFields = ['time', 'date', 'yearMonthDay', 'timeStart24', 'govtrack_id', 'displayName'];
     map(changedFields, (changedField) => {
       const {
         name,
         value,
       } = changedField;
+      const mergedEvent = {
+        yearMonthDay: currentTownHall.yearMonthDay,
+        timeStart24: currentTownHall.timeStart24,
+        displayName: currentTownHall.displayName,
+        govtrack_id: currentTownHall.govtrack_id,
+        [name]: value,
+      };
+      if (!this.state.hasCheckedForDupes && hasAllFields(mergedEvent)) {
+        console.log('checking for dups');
+        const dupes = this.checkForDupes(mergedEvent);
+        console.log(dupes);
+        this.setState({
+          dupes,
+          hasCheckedForDupes: true,
+        });
+      }
       if (includes(noopFieldNames, name) || includes(noopFieldNames, name.split('-')[0])) {
         this.setState({
           displayValues: {
@@ -195,6 +209,7 @@ class FormController extends React.Component {
     } = this.state;
     return (
       <div className="form-container">
+
         <Row>
           <Col md={24} lg={12}>
             <MainForm
@@ -212,6 +227,9 @@ class FormController extends React.Component {
             ) : (
               <Col md={0} lg={12}>
                 <Affix>
+                  <DupeDrawer
+                    dupes={this.state.dupes}
+                  />
                   <Collapse bordered={false}>
                     <Panel
                       style={customPanelStyle}
@@ -236,8 +254,8 @@ class FormController extends React.Component {
 
 
 const mapStateToProps = state => ({
-  currentTownHall: getTownHall(state),
   allTownHalls: allTownHallsStateBranch.selectors.getSubmittedandApprovedTownHalls(state),
+  currentTownHall: getTownHall(state),
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -255,6 +273,7 @@ const mapDispatchToProps = dispatch => ({
 
 FormController.propTypes = {
   addDisclaimer: PropTypes.func.isRequired,
+  allTownHalls: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   clearDisclaimer: PropTypes.func.isRequired,
   clearTempAddress: PropTypes.func.isRequired,
   currentTownHall: PropTypes.shape({}).isRequired,

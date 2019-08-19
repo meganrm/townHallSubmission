@@ -26,6 +26,5 @@ const getLiveEvents = () => firebasedb.ref('townHalls').once('value')
 
 export const getAllEventToCheckDups = () => dispatch => Promise.all([getLiveEvents(), getSubmittedEvents()])
   .then((events) => {
-    console.log('got event', events);
     dispatch(setEventsForCheckingDups([...events[0], ...events[1]]));
   });
