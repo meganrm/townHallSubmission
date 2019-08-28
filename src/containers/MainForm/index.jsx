@@ -228,6 +228,8 @@ class MainForm extends React.Component {
       setLatLng,
       setDate,
       setStartTime,
+      selectedOfficePerson, 
+      setDataFromPersonInDatabaseAction,
       setEndTime,
       tempAddress,
       tempLat,
@@ -263,7 +265,9 @@ class MainForm extends React.Component {
             allPeople={allPeople}
             requiredFields={requiredFields}
             currentTownHall={currentTownHall}
+            selectedOfficePerson={selectedOfficePerson}
             peopleDataUrl={peopleDataUrl}
+            setDataFromPersonInDatabaseAction={setDataFromPersonInDatabaseAction}
             requestPersonDataById={requestPersonDataById}
             requestAdditionalPersonDataById={requestAdditionalPersonDataById}
             selectedUSState={selectedUSState}
@@ -453,6 +457,7 @@ const mapStateToProps = state => ({
   requiredFields: townHallStateBranch.selectors.getRequiredFields(state),
   saveUrl: selectionStateBranch.selectors.getSaveUrl(state),
   selectedUSState: selectionStateBranch.selectors.getSelectedUSState(state),
+  selectedOfficePerson: selectionStateBranch.selectors.getSelectedOfficePerson(state),
   tempAddress: selectionStateBranch.selectors.getTempAddress(state),
   tempLat: selectionStateBranch.selectors.getTempLat(state),
   tempLng: selectionStateBranch.selectors.getTempLng(state),
@@ -471,6 +476,7 @@ const mapDispatchToProps = dispatch => ({
   requestAdditionalPersonDataById: (peopleDataUrl, id, index) => dispatch(lawMakerStateBranch.actions.requestAdditionalPersonDataById(peopleDataUrl, id, index)),
   requestPersonDataById: (peopleDataUrl, id) => dispatch(lawMakerStateBranch.actions.requestPersonDataById(peopleDataUrl, id)),
   resetDatabaseLookupError: () => dispatch(lawMakerStateBranch.actions.resetDatabaseLookUpError()),
+  setDataFromPersonInDatabaseAction: payload => dispatch(townHallStateBranch.actions.setDataFromPersonInDatabaseAction (payload)),
   setDate: date => dispatch(townHallStateBranch.actions.setDate(date)),
   setEndTime: time => dispatch(townHallStateBranch.actions.setEndTime(time)),
   setLatLng: payload => dispatch(townHallStateBranch.actions.setLatLng(payload)),

@@ -4,6 +4,9 @@ import {
   setAdditionalMember,
   updateAdditionalMember,
 } from '../townhall/actions';
+import {
+  setSelectedMember
+} from '../selections/actions';
 import { sanitizeDistrict } from '../../scripts/util';
 
 export const databaseLookupError = () => ({
@@ -25,7 +28,6 @@ export const requestNamesInCollection = peopleNameUrl => dispatch => fireStore.c
     const allPeople = [];
     querySnapshot.forEach((doc) => {
       // doc.data() is never undefined for query doc snapshots
-      console.log(doc.id, " => ", doc.data());
       allPeople.push(doc.data());
     });
     return dispatch(setPeople(allPeople));
@@ -34,13 +36,21 @@ export const requestNamesInCollection = peopleNameUrl => dispatch => fireStore.c
     console.log('Error getting documents: ', error);
   });
 
-export const requestPersonDataById = (peopleDataUrl, id) => dispatch => firebasedb.ref(`${peopleDataUrl}/${id}`)
-  .once('value')
+export const requestPersonDataById = (peopleDataUrl, id) => dispatch => fireStore.collection('office_people').doc(id)
+  .get()
   .then((result) => {
-    if (result.exists()) {
-      const personData = result.val();
+    if (result.exists) {
+      const personData = result.data();
       personData.district = sanitizeDistrict(personData.district);
-      return (dispatch(setDataFromPersonInDatabase(personData)));
+      console.log('campaigns', personData)
+      if (!personData.campaigns || !personData.campaigns.length) {
+        const flattedData = {
+          ...personData,
+          ...personData.roles[0],
+        }
+        return (dispatch(setDataFromPersonInDatabase(flattedData)))
+      }
+      return (dispatch(setSelectedMember(personData)))
     }
     return dispatch(databaseLookupError());
   });

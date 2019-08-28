@@ -7,14 +7,15 @@ import {
   Form,
   Radio,
   Icon,
-  // Button,
+  Button,
 } from 'antd';
 import { find } from 'lodash';
 import renderCustomPersonForm from './customMemberForm';
 
 import './style.scss';
 import { MOC_MODE, CANDIDATE_MODE, MANUAL_MODE } from '../../constants';
-
+import ButtonGroup from 'antd/lib/button/button-group';
+import { getOfficeFromData } from '../../scripts/util';
 const FormItem = Form.Item;
 
 let uuid = 1;
@@ -73,7 +74,7 @@ class MemberLookup extends React.Component {
       resetDatabaseLookUpError,
     } = this.props;
     const person = find(allPeople, {
-      nameEntered: value,
+      display_name: value,
     });
     if (!person) {
       return handleDatabaseLookupError();
@@ -196,12 +197,15 @@ class MemberLookup extends React.Component {
       getFieldDecorator,
       // selectedUSState,
       // personMode,
+      setDataFromPersonInDatabaseAction,
       getError,
+      selectedOfficePerson,
       peopleLookUpError,
     } = this.props;
     const title = 'Lawmaker Information';
     const placeHolderText = 'Lawmaker Name';
     const fieldName = key > 0 ? `displayName-${key}` : 'displayName';
+    console.log(selectedOfficePerson)
     const filterFunction = (inputValue, option) => option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1;
     return (
       <React.Fragment key={key}>
@@ -250,6 +254,22 @@ class MemberLookup extends React.Component {
               </div>,
             )}
 
+        </FormItem>
+        <FormItem>
+          <ButtonGroup>
+              {selectedOfficePerson.campaigns && <Button onClick={() => setDataFromPersonInDatabaseAction({
+                ...selectedOfficePerson,
+                ...selectedOfficePerson.campaigns[0],
+              })}>
+                Candidate for: {getOfficeFromData(selectedOfficePerson.campaigns[0])}
+              </Button>}
+              {selectedOfficePerson.campaigns && <Button onClick={() => setDataFromPersonInDatabaseAction({
+                ...selectedOfficePerson,
+                ...selectedOfficePerson.roles[0],
+              })}>
+                Current office: {getOfficeFromData(selectedOfficePerson.roles[0])}
+              </Button>}
+          </ButtonGroup>
         </FormItem>
         <FormItem
           extra="How lawmaker or candidate name will be displayed"
@@ -309,13 +329,13 @@ class MemberLookup extends React.Component {
           buttonStyle="solid"
           onChange={event => togglePersonMode(event.target.value)}
         >
-          <Radio.Button value={MOC_MODE}>
+          {/* <Radio.Button value={MOC_MODE}>
             Official Lawmaker Event
           </Radio.Button>
           {!selectedUSState && (
             <Radio.Button value={CANDIDATE_MODE}>
               Candidate Event
-            </Radio.Button>)}
+            </Radio.Button>)} */}
           {/* <Radio.Button value={MANUAL_MODE}>
             Manually Enter
           </Radio.Button> */}

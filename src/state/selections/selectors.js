@@ -16,7 +16,7 @@ export const getTempLng = state => state.selections.lng;
 export const getTempState = state => state.selections.state;
 export const getTempStateName = state => state.selections.stateName;
 export const getFormKeys = state => state.selections.formKeys;
-
+export const getSelectedOfficePerson = state => state.selections.selectedOfficePerson;
 
 export const getLawmakerTypeEventOptions = createSelector([getMode, getSelectedUSState], (mode, usState) => {
   let lawmakerType;

@@ -7,6 +7,7 @@ const initialState = {
   address: null,
   state: null,
   stateName: null,
+  selectedOfficePerson: {},
 };
 
 const selectionReducer = (state = initialState, { type, payload }) => {
@@ -35,6 +36,11 @@ const selectionReducer = (state = initialState, { type, payload }) => {
       ...state,
       mode: payload,
     };
+  case 'SET_SELECTED_OFFICE_PERSON':
+    return {
+      ...state,
+      selectedOfficePerson: payload,
+    }
   case 'SET_TEMP_ADDRESS':
     return {
       ...state,

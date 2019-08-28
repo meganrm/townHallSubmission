@@ -33,6 +33,11 @@ export const resetFormKeys = () => ({
   type: 'RESET_FORM_KEYS',
 });
 
+export const setSelectedMember = (payload) => ({
+  type: 'SET_SELECTED_OFFICE_PERSON',
+  payload,
+})
+
 
 export const lookUpAddress = payload => dispatch => request
   .get('https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyDP8q2OVisSLyFyOUU6OTgGjNNQCq7Q3rE')
