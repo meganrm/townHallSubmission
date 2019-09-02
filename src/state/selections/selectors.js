@@ -41,6 +41,9 @@ export const getLawmakerTypeEventOptions = createSelector([getMode, getSelectedU
 
 export const getPeopleNameUrl = createSelector([getSelectedUSState, getMode], (usState, mode) => {
   if (mode === 'candidate') {
+    if (usState) {
+      return `state_candidate_keys/${usState}`
+    }
     return 'candidate_keys';
   }
   if (usState) {

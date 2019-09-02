@@ -312,10 +312,9 @@ class MemberLookup extends React.Component {
           <Radio.Button value={MOC_MODE}>
             Official Lawmaker Event
           </Radio.Button>
-          {!selectedUSState && (
-            <Radio.Button value={CANDIDATE_MODE}>
-              Candidate Event
-            </Radio.Button>)}
+          <Radio.Button value={CANDIDATE_MODE}>
+            Candidate Event
+          </Radio.Button>
           {/* <Radio.Button value={MANUAL_MODE}>
             Manually Enter
           </Radio.Button> */}
