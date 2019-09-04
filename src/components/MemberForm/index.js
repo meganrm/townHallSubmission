@@ -315,8 +315,13 @@ class MemberLookup extends React.Component {
         } else if (currentLocation === '/') {
           page(newPathName)
         }
+      } else {
+        if (currentLocation.includes('candidate')) {
+          console.log('include candidate')
+          let newLocation = currentLocation.split('/candidate')[0]
+          page(newLocation || '/')
+        }
       }
-      togglePersonMode(mode)
     }
 
     return (
