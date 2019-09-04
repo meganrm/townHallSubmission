@@ -34,6 +34,7 @@ const plugins = [
     // both options are optional
     chunkFilename: '[id].css',
     filename: '[name].css',
+    publicPath: '/',
   }),
 
   new HTMLPlugin({
@@ -74,6 +75,7 @@ module.exports = {
   output: {
     filename: 'bundle.[hash].js',
     path: `${__dirname}/build`,
+    publicPath: '/',
   },
   module: {
     rules: [

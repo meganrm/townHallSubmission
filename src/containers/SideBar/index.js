@@ -14,7 +14,7 @@ import page from '../../vendor/scripts/page';
 import {
   setUsState,
 } from '../../state/selections/actions';
-import { getSelectedUSState } from '../../state/selections/selectors';
+import { getSelectedUSState, getMode } from '../../state/selections/selectors';
 import { STATE_LEGS } from '../../constants';
 import './style.scss';
 import { getEventCount } from '../../state/user/selectors';
@@ -22,14 +22,32 @@ import { getEventCount } from '../../state/user/selectors';
 const MenuItemGroup = Menu.ItemGroup;
 
 class SideBar extends React.Component {
-  static handleClick(e) {
+
+  constructor(props) {
+    super(props)
+    this.handleClick = this.handleClick.bind(this);
+  }
+  
+  handleClick(e) {
+    const {
+      currentMode
+    } = this.props;
     const {
       key,
     } = e;
-    if (key === 'federal') {
-      page('/');
+    if (currentMode === 'candidate') {
+         if (key === 'federal') {
+           page('/candidate');
+         } else {
+           page(`/${key}/candidate`);
+         }
     } else {
-      page(`/${key}`);
+
+      if (key === 'federal') {
+        page('/');
+      } else {
+        page(`/${key}`);
+      }
     }
   }
 
@@ -42,7 +60,7 @@ class SideBar extends React.Component {
     return (
       <section className="session-data">
         <Menu
-          onClick={SideBar.handleClick}
+          onClick={this.handleClick}
           defaultSelectedKeys={
             [selectedKey]
           }
@@ -69,6 +87,7 @@ class SideBar extends React.Component {
 
 const mapStateToProps = state => ({
   currentUsState: getSelectedUSState(state),
+  currentMode: getMode(state),
   eventCount: getEventCount(state),
 });
 
