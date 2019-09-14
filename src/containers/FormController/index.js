@@ -4,6 +4,7 @@ import {
   includes,
   map,
 } from 'lodash';
+import { moment } from 'moment';
 import {
   connect,
 } from 'react-redux';
@@ -91,10 +92,8 @@ class FormController extends React.Component {
     const time = 'timeStart24';
     let dupe = false;
     let match = false;
-
     if (Object.keys(target).includes(govId)) {
       if (target[govId] == search[govId]) {
-        console.log('matching on govtrack');
         match = true;
       }
     } else if (target[displayName] == search[displayName]) {
@@ -149,13 +148,22 @@ class FormController extends React.Component {
         name,
         value,
       } = changedField;
+      let newValue = value;
+      if (name === 'time') {
+        newValue = value.format('HH:mm:00')
+      }
       const mergedEvent = {
         yearMonthDay: currentTownHall.yearMonthDay,
         timeStart24: currentTownHall.timeStart24,
         displayName: currentTownHall.displayName,
         govtrack_id: currentTownHall.govtrack_id,
-        [name]: value,
+        [name]: newValue,
       };
+      // if change any of the dup check fields, set back to false
+      if (dupCheckFields.includes(name) && this.state.hasCheckedForDupes) {
+        this.setState({ hasCheckedForDupes: false })
+      }
+      // only check once, and only when all the fields are there
       if (!this.state.hasCheckedForDupes && hasAllFields(mergedEvent)) {
         console.log('checking for dups');
         const dupes = this.checkForDupes(mergedEvent);

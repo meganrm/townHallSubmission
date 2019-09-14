@@ -1,5 +1,5 @@
 import React from 'react';
-import { Affix, Button, Drawer } from 'antd';
+import { notification, Button, Drawer, Icon } from 'antd';
 
 class DupeDrawer extends React.Component {
   constructor(props) {
@@ -9,7 +9,28 @@ class DupeDrawer extends React.Component {
     this.onClose = this.onClose.bind(this);
   }
 
+  componentDidUpdate(prevProps) {
+    const { dupes } = this.props;
+
+    if (dupes.length && !prevProps.dupes.length){
+      notification.warning({
+        message: 'Possible duplicate event',
+        duration: null,
+        key: 'dupe',
+        description:
+          <div>This event might have already been submitted, click to see full details:         
+            <Button type="primary" onClick={this.showDrawer}>
+            Show possible duplicates
+            </Button></div>,
+        icon: <Icon type="alert" style={{ color: '#108ee9' }} />,
+      });
+    }
+  }
+
+
   showDrawer() {
+    notification.close("dupe")
+    
     this.setState({
       visible: true,
     });
@@ -29,9 +50,6 @@ class DupeDrawer extends React.Component {
     return (
       <div>
 
-        <Button type="primary" onClick={this.showDrawer}>
-            Show possible duplicate events
-        </Button>
         <Drawer
           title="Possible Duplicate Events"
           placement="right"
