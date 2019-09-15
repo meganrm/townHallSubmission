@@ -153,6 +153,10 @@ class FormController extends React.Component {
         newName = 'timeStart24'
         newValue = value.format('HH:mm:00')
       }
+      if (name === 'date') {
+        newName = 'yearMonthDay';
+        newValue = value.format('YYYY-MM-DD');
+      }
       const mergedEvent = {
         yearMonthDay: currentTownHall.yearMonthDay,
         timeStart24: currentTownHall.timeStart24,

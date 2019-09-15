@@ -60,9 +60,11 @@ class DupeDrawer extends React.Component {
           {dupes.map(dupe => (
 
             <Card
-              title={`${dupe.displayName} ${dupe.state} ${dupe.district || ''}`}
-              description={dupe.meetingType}
             >
+              <Card.Meta
+                title={`${dupe.displayName} ${dupe.state} ${dupe.district || ''}`}
+                description={dupe.meetingType}
+              />
               <ul>
                 <li>
                   Location: {dupe.Location}
