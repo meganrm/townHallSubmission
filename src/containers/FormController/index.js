@@ -141,7 +141,6 @@ class FormController extends React.Component {
       currentTownHall,
     } = this.props;
 
-    const hasAllFields = event => !!event.yearMonthDay && !!event.timeStart24 && !!(event.govtrack_id || event.displayName);
     const dupCheckFields = ['time', 'date', 'yearMonthDay', 'timeStart24', 'govtrack_id', 'displayName'];
     map(changedFields, (changedField) => {
       const {
@@ -149,7 +148,9 @@ class FormController extends React.Component {
         value,
       } = changedField;
       let newValue = value;
+      let newName = name;
       if (name === 'time') {
+        newName = 'timeStart24'
         newValue = value.format('HH:mm:00')
       }
       const mergedEvent = {
@@ -157,8 +158,9 @@ class FormController extends React.Component {
         timeStart24: currentTownHall.timeStart24,
         displayName: currentTownHall.displayName,
         govtrack_id: currentTownHall.govtrack_id,
-        [name]: newValue,
+        [newName]: newValue,
       };
+      const hasAllFields = mergedEvent => !!mergedEvent.yearMonthDay && !!mergedEvent.timeStart24 && !!(mergedEvent.govtrack_id || mergedEvent.displayName);
       // if change any of the dup check fields, set back to false
       if (dupCheckFields.includes(name) && this.state.hasCheckedForDupes) {
         this.setState({ hasCheckedForDupes: false })
