@@ -1,5 +1,5 @@
 import React from 'react';
-import { notification, Button, Drawer, Icon } from 'antd';
+import { notification, Button, Drawer, Icon, Card } from 'antd';
 
 class DupeDrawer extends React.Component {
   constructor(props) {
@@ -17,11 +17,10 @@ class DupeDrawer extends React.Component {
         message: 'Possible duplicate event',
         duration: null,
         key: 'dupe',
-        description:
-          <div>This event might have already been submitted, click to see full details:         
-            <Button type="primary" onClick={this.showDrawer}>
+        btn: <Button type="primary" onClick={this.showDrawer}>
             Show possible duplicates
-            </Button></div>,
+            </Button>,
+        description: 'This event might have already been submitted, click to see full details:',
         icon: <Icon type="alert" style={{ color: '#108ee9' }} />,
       });
     }
@@ -51,7 +50,7 @@ class DupeDrawer extends React.Component {
       <div>
 
         <Drawer
-          title="Possible Duplicate Events"
+          title="Possible Duplicate Event(s)"
           placement="right"
           closable={false}
           onClose={this.onClose}
@@ -60,10 +59,25 @@ class DupeDrawer extends React.Component {
         >
           {dupes.map(dupe => (
 
-            <pre className="language-bash" style={{ overflow: 'visible' }}>
-
-              {JSON.stringify(dupe, null, 2)}
-            </pre>) )}
+            <Card
+              title={`${dupe.displayName} ${dupe.state} ${dupe.district || ''}`}
+              description={dupe.meetingType}
+            >
+              <ul>
+                <li>
+                  Location: {dupe.Location}
+                </li>
+                <li>
+                  Address: {dupe.address}
+                </li>
+                <li>
+                  Time: {dupe.Time}
+                </li>
+                <li>
+                  Date: {dupe.dateString}
+                </li>
+              </ul>
+            </Card>) )}
         </Drawer>
       </div>
     );
