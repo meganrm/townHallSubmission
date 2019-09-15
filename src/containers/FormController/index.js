@@ -149,11 +149,11 @@ class FormController extends React.Component {
       } = changedField;
       let newValue = value;
       let newName = name;
-      if (name === 'time') {
+      if (name === 'time' && value) {
         newName = 'timeStart24'
         newValue = value.format('HH:mm:00')
       }
-      if (name === 'date') {
+      if (name === 'date' && value) {
         newName = 'yearMonthDay';
         newValue = value.format('YYYY-MM-DD');
       }
