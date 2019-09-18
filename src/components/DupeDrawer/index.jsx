@@ -7,6 +7,7 @@ class DupeDrawer extends React.Component {
     this.state = { visible: false };
     this.showDrawer = this.showDrawer.bind(this);
     this.onClose = this.onClose.bind(this);
+    this.resetFields = this.resetFields.bind(this);
   }
 
   componentDidUpdate(prevProps) {
@@ -41,6 +42,14 @@ class DupeDrawer extends React.Component {
     });
   }
 
+  resetFields() {
+    const { resetAllData } = this.props;
+    resetAllData();
+    this.setState({
+      visible: false,
+    });
+  }
+
   render() {
     const { dupes } = this.props;
     if (!dupes.length) {
@@ -57,6 +66,8 @@ class DupeDrawer extends React.Component {
           visible={this.state.visible}
           width={550}
         >
+          <Button onClick={this.resetFields}>Reset Form</Button>
+          <Button onClick={this.onClose}>Dismiss</Button>
           {dupes.map(dupe => (
 
             <Card
