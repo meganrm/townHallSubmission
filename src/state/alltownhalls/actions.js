@@ -6,7 +6,7 @@ export const setEventsForCheckingDups = payload => ({
   type: 'SET_EVENTS_FOR_DUP_CHECK',
 });
 
-const getSubmittedEvents = () => firebasedb.ref('UserSubmission').once('value')
+const getSubmittedEvents = (submissionUrl) => firebasedb.ref(submissionUrl).once('value')
   .then((snapshot) => {
     const allTownHalls = [];
     snapshot.forEach((ele) => {
@@ -15,7 +15,7 @@ const getSubmittedEvents = () => firebasedb.ref('UserSubmission').once('value')
     return allTownHalls;
   });
 
-const getLiveEvents = () => firebasedb.ref('townHalls').once('value')
+const getLiveEvents = (liveUrl) => firebasedb.ref(liveUrl).once('value')
   .then((snapshot) => {
     const allTownHalls = [];
     snapshot.forEach((ele) => {
@@ -24,7 +24,7 @@ const getLiveEvents = () => firebasedb.ref('townHalls').once('value')
     return allTownHalls;
   });
 
-export const getAllEventToCheckDups = () => dispatch => Promise.all([getLiveEvents(), getSubmittedEvents()])
+export const getAllEventToCheckDups = (liveUrl, submissionUrl) => dispatch => Promise.all([getLiveEvents(liveUrl), getSubmittedEvents(submissionUrl)])
   .then((events) => {
     dispatch(setEventsForCheckingDups([...events[0], ...events[1]]));
   });

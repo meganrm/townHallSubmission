@@ -70,8 +70,22 @@ class FormController extends React.Component {
   componentDidMount() {
     const {
       getAllEventToCheckDups,
+      submissionUrl,
+      liveUrl,
+
     } = this.props;
-    getAllEventToCheckDups();
+    getAllEventToCheckDups(liveUrl, submissionUrl);
+  }
+
+  componentDidUpdate(prevProps) {
+    const {
+      submissionUrl,
+      liveUrl,
+      getAllEventToCheckDups
+    } = this.props;
+    if (submissionUrl !== prevProps.submissionUrl) {
+        getAllEventToCheckDups(liveUrl, submissionUrl);
+    }
   }
 
   setErrors(errors) {
@@ -243,6 +257,7 @@ class FormController extends React.Component {
                 <Affix>
                   <DupeDrawer
                     dupes={this.state.dupes}
+                    resetAllData={this.resetAllData}
                   />
                   <Collapse bordered={false}>
                     <Panel
@@ -269,12 +284,14 @@ class FormController extends React.Component {
 
 const mapStateToProps = state => ({
   allTownHalls: allTownHallsStateBranch.selectors.getSubmittedandApprovedTownHalls(state),
+  submissionUrl: selectionStateBranch.selectors.getSaveUrl(state),
+  liveUrl: selectionStateBranch.selectors.getLiveUrl(state),
   currentTownHall: getTownHall(state),
 });
 
 const mapDispatchToProps = dispatch => ({
   addDisclaimer: () => dispatch(townHallStateBranch.actions.addDisclaimer()),
-  getAllEventToCheckDups: () => dispatch(allTownHallsStateBranch.actions.getAllEventToCheckDups()),
+  getAllEventToCheckDups: (liveUrl, submissionUrl) => dispatch(allTownHallsStateBranch.actions.getAllEventToCheckDups(liveUrl, submissionUrl)),
   clearDisclaimer: () => dispatch(townHallStateBranch.actions.clearDisclaimer()),
   clearTempAddress: () => dispatch(selectionStateBranch.actions.clearTempAddress()),
   resetFormKeys: () => dispatch(selectionStateBranch.actions.resetFormKeys()),

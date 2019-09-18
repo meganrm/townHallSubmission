@@ -68,3 +68,10 @@ export const getSaveUrl = createSelector([getSelectedUSState], (usState) => {
   }
   return 'UserSubmission/';
 });
+
+export const getLiveUrl = createSelector([getSelectedUSState], (usState) => {
+  if (usState) {
+    return `state_townhalls/${usState}`;
+  }
+  return 'townHalls';
+})
