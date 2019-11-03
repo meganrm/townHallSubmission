@@ -41,8 +41,9 @@ const initialState = {
   zoneString: null,
 };
 
+const timeFormats = ['hh:mm A', 'h:mm A'];
+
 const townhallReducer = (state = initialState, { type, payload }) => {
-  const timeFormats = ['hh:mm A', 'h:mm A'];
   switch (type) {
   case 'RESET_TOWNHALL':
     return initialState;

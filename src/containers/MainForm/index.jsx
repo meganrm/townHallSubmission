@@ -287,6 +287,16 @@ class MainForm extends React.Component {
             <h4>
               Information about the Event
             </h4>
+            {currentTownHall.meetingType !== 'No Events' && (
+              <DateTimeForm
+                setDate={setDate}
+                setStartTime={setStartTime}
+                setEndTime={setEndTime}
+                getFieldDecorator={getFieldDecorator}
+                getError={this.getError}
+                requiredFields={requiredFields}
+                townHallId={currentTownHall.eventId}
+              />)}
             <FormItem>
               {getFieldDecorator('eventName', {
                 initialValue: initFieldValue,
@@ -347,15 +357,7 @@ class MainForm extends React.Component {
               requiredFields={requiredFields}
             />
           )}
-          {currentTownHall.meetingType !== 'No Events' && (
-            <DateTimeForm
-              setDate={setDate}
-              setStartTime={setStartTime}
-              setEndTime={setEndTime}
-              getFieldDecorator={getFieldDecorator}
-              getError={this.getError}
-              requiredFields={requiredFields}
-            />)}
+
           {currentTownHall.meetingType !== 'No Events' && (
 
             <section className="extra-data event-details">

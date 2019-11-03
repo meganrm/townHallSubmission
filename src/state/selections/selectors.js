@@ -1,12 +1,12 @@
 import { createSelector } from 'reselect';
 
 import {
-  FED_REP_EVENTS,
-  STATE_REP_EVENTS,
   FED_CANDIDATE_EVENTS,
   STATE_CANDIDATE_EVENTS,
   DEFAULT_EVENTS,
+  REP_EVENTS,
 } from '../../constants/index';
+import { getMemberIsSelected } from '../townhall/selectors';
 
 export const getSelectedUSState = state => state.selections.usState;
 export const getMode = state => state.selections.mode;
@@ -18,29 +18,32 @@ export const getTempStateName = state => state.selections.stateName;
 export const getFormKeys = state => state.selections.formKeys;
 export const getSelectedOfficePerson = state => state.selections.selectedOfficePerson;
 
-export const getLawmakerTypeEventOptions = createSelector([getMode, getSelectedUSState], (mode, usState) => {
-  let lawmakerType;
+export const getLawmakerTypeEventOptions = createSelector([getMode, getSelectedUSState, getMemberIsSelected], (mode, usState, memberIsSelected) => {
+  let lawmakerType = 'default';
 
-  if (!usState && mode === 'moc') {
-    lawmakerType = 'fedRep';
-  } else if (mode === 'moc' && usState !== null) {
-    lawmakerType = 'stateRep';
-  } else if (!usState && mode === 'candidate') {
+  if (mode === 'candidate') {
+    if (usState) {
+      lawmakerType = 'stateCandidate';
+    }
     lawmakerType = 'fedCandidate';
-  } else if (mode === 'candidate' && usState !== null) {
-    lawmakerType = 'stateCandidate';
+  } else if (memberIsSelected) {
+    lawmakerType = 'member';
   }
+
   const lawMakerToEventTypes = {
-    fedRep: FED_REP_EVENTS,
-    stateRep: STATE_REP_EVENTS,
+    default: DEFAULT_EVENTS,
     fedCandidate: FED_CANDIDATE_EVENTS,
-    stateCandidate: STATE_CANDIDATE_EVENTS
+    member: REP_EVENTS,
+    stateCandidate: STATE_CANDIDATE_EVENTS,
   };
   return lawMakerToEventTypes[lawmakerType] || DEFAULT_EVENTS;
 });
 
 export const getPeopleNameUrl = createSelector([getSelectedUSState, getMode], (usState, mode) => {
   if (mode === 'candidate') {
+    if (usState) {
+      return `state_candidate_keys/${usState}`
+    }
     return 'candidate_keys';
   }
   if (usState) {
@@ -59,3 +62,10 @@ export const getSaveUrl = createSelector([getSelectedUSState], (usState) => {
   }
   return 'UserSubmission/';
 });
+
+export const getLiveUrl = createSelector([getSelectedUSState], (usState) => {
+  if (usState) {
+    return `state_townhalls/${usState}`;
+  }
+  return 'townHalls';
+})

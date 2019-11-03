@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import page from '../../vendor/scripts/page';
 
 import {
   AutoComplete,
@@ -322,12 +323,33 @@ class MemberLookup extends React.Component {
       initialValue: [0],
     });
 
+    const setPersonMode = (mode) => {
+      const currentLocation = window.location.pathname;
+      const newPathName = `/${mode}`
+      if (currentLocation === newPathName) {
+        return;
+      }
+      if (mode === 'candidate') {
+        if (currentLocation !== '/' && !currentLocation.includes('candidate')) {
+          page(currentLocation + newPathName)
+        } else if (currentLocation === '/') {
+          page(newPathName)
+        }
+      } else {
+        if (currentLocation.includes('candidate')) {
+          console.log('include candidate')
+          let newLocation = currentLocation.split('/candidate')[0]
+          page(newLocation || '/')
+        }
+      }
+    }
+
     return (
       <section className="member-info">
         <Radio.Group
           defaultValue={personMode}
           buttonStyle="solid"
-          onChange={event => togglePersonMode(event.target.value)}
+          onChange={event => setPersonMode(event.target.value)}
         >
           {/* <Radio.Button value={MOC_MODE}>
             Official Lawmaker Event

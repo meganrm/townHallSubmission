@@ -21,7 +21,8 @@ page('/manual',
 
 page('/:state',
   switchStateTab,
-  selectDefaultMode);
+  selectDefaultMode
+  );
 
 page('/:state/candidate',
   switchStateTab,
