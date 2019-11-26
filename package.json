@@ -1,6 +1,6 @@
 {
   "name": "thp-submission",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "submission site for new town hall events",
   "main": "lib/index.js",
   "module": "es/package-main.js",
