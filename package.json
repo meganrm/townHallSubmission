@@ -1,11 +1,25 @@
 {
-  "name": "townhallsubmission",
-  "version": "1.0.0",
+  "name": "thp-submission",
+  "version": "1.0.12",
   "description": "submission site for new town hall events",
-  "main": "server.js",
+  "main": "lib/index.js",
+  "module": "es/package-main.js",
+  "browser": "build/index.js",
+  "files": [
+    "es",
+    "lib",
+    "dist",
+    "style",
+    "type-declarations",
+    "README.md",
+    "package.json"
+  ],
   "scripts": {
     "lint": "eslint --fix .",
     "build": "webpack --config webpack.prod.js",
+    "prebundle": "rm -rf dist/*",
+    "bundle": "webpack --config webpack.package.js",
+    "transpile": "babel src --filename src/package-main.js --out-dir es --extensions .js,.jsx --ignore src/**/*.test.*",
     "start": "node server.js",
     "prebuild": "rm -rf build/bundle.*",
     "heroku-postbuild": "webpack --config webpack.prod.js",
@@ -23,8 +37,8 @@
   },
   "homepage": "https://github.com/meganrm/townHallSubmission#readme",
   "dependencies": {
-    "antd": "^3.19.7",
-    "antd-mobile": "^2.2.13",
+    "antd": "^3.25.2",
+    "antd-mobile": "^2.3.1",
     "bootstrap3": "^3.3.5",
     "classnames": "^2.2.6",
     "express": "^4.15.2",
@@ -43,8 +57,15 @@
     "reselect": "^3.0.1",
     "superagent": "^3.8.3"
   },
+  "peerDependencies": {
+    "antd": "^3.25.2",
+    "antd-mobile": "^2.3.1"
+  },
   "devDependencies": {
+    "antd": "^3.25.2",
+    "antd-mobile": "^2.3.1",
     "autoprefixer-loader": "^3.2.0",
+    "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.5",
     "babel-plugin-import": "^1.12.0",

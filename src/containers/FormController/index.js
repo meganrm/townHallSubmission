@@ -19,7 +19,6 @@ import {
   disclaimerMeetingTypes,
 } from '../../constants';
 
-import 'antd/dist/antd.less';
 
 import {
   getTownHall,

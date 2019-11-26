@@ -47,9 +47,7 @@ const plugins = [
       from: 'src/assets/downloads/*.pdf',
       to: 'downloads',
     },
-    // {
-    //   from: 'src/CNAME',
-    // },
+
     {
       flatten: true,
       from: 'src/assets/images',
