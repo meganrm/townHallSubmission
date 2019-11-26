@@ -40,8 +40,12 @@ const { TextArea } = Input;
 
 let initFieldValue;
 
-const success = () => {
+const displaySuccessMessage = () => {
   message.success('Thanks for submitting info!', 4);
+};
+
+const displayErrorMessage = (error) => {
+  message.error(`Something went wrong: ${error}`, 8);
 };
 
 class MainForm extends React.Component {
@@ -151,8 +155,12 @@ class MainForm extends React.Component {
         uid,
         userDisplayName,
       };
-      submitMetaData(metaData);
-      success();
+      submitMetaData(metaData)
+        .then(() => {
+          displaySuccessMessage();
+        }).catch((error) => {
+          displayErrorMessage(error);
+        })
       return this.resetAll();
     }
     mergeNotes();
@@ -169,8 +177,12 @@ class MainForm extends React.Component {
       },
       saveUrl,
     };
-    submitEventForReview(submit);
-    success();
+    submitEventForReview(submit)
+      .then(() => {
+
+        displaySuccessMessage();
+      })
+      .catch(error => displayErrorMessage(error))
     return this.resetAll();
   }
 
@@ -211,6 +223,8 @@ class MainForm extends React.Component {
     const {
       allNames,
       allPeople,
+      clearSelectedMember,
+      clearMemberCandidateMode,
       currentTownHall,
       eventTypeOptions,
       peopleDataUrl,
@@ -282,6 +296,8 @@ class MainForm extends React.Component {
             peopleLookUpError={peopleLookUpError}
             resetDatabaseLookUpError={resetDatabaseLookupError}
             handleDatabaseLookupError={handleDatabaseLookupError}
+            clearSelectedMember={clearSelectedMember}
+            clearMemberCandidateMode={clearMemberCandidateMode}
           />
           <section className="meeting information">
             <h4>
@@ -470,13 +486,15 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   addDisclaimer: () => dispatch(townHallStateBranch.actions.addDisclaimer()),
   clearTempAddress: () => dispatch(selectionStateBranch.actions.clearTempAddress()),
+  clearSelectedMember: () => dispatch(selectionStateBranch.actions.clearSelectedMember()),
+  clearMemberCandidateMode: () => dispatch(selectionStateBranch.actions.clearMemberCandidateMode()),
   geoCodeLocation: address => dispatch(selectionStateBranch.actions.lookUpAddress(address)),
   handleDatabaseLookupError: () => dispatch(lawMakerStateBranch.actions.databaseLookupError()),
   mergeNotes: () => dispatch(townHallStateBranch.actions.mergeNotes()),
   requestAdditionalPersonDataById: (peopleDataUrl, id, index) => dispatch(lawMakerStateBranch.actions.requestAdditionalPersonDataById(peopleDataUrl, id, index)),
   requestPersonDataById: (peopleDataUrl, id) => dispatch(lawMakerStateBranch.actions.requestPersonDataById(peopleDataUrl, id)),
   resetDatabaseLookupError: () => dispatch(lawMakerStateBranch.actions.resetDatabaseLookUpError()),
-  setDataFromPersonInDatabaseAction: payload => dispatch(townHallStateBranch.actions.setDataFromPersonInDatabaseAction (payload)),
+  setDataFromPersonInDatabaseAction: payload => dispatch(townHallStateBranch.actions.setDataFromPersonInDatabase(payload)),
   setDate: date => dispatch(townHallStateBranch.actions.setDate(date)),
   setEndTime: time => dispatch(townHallStateBranch.actions.setEndTime(time)),
   setLatLng: payload => dispatch(townHallStateBranch.actions.setLatLng(payload)),

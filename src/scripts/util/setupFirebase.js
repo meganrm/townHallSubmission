@@ -22,11 +22,11 @@ firebase.initializeApp(config);
 
 const firebasedb = firebase.database();
 const firebaseauth = firebase.auth();
-const fireStore = firebase.firestore();
+const firestore = firebase.firestore();
 
 export {
   firebase,
   firebasedb,
   firebaseauth,
-  fireStore,
+  firestore,
 };

@@ -39,12 +39,9 @@ export const getLawmakerTypeEventOptions = createSelector([getMode, getSelectedU
   return lawMakerToEventTypes[lawmakerType] || DEFAULT_EVENTS;
 });
 
-export const getPeopleNameUrl = createSelector([getSelectedUSState, getMode], (usState, mode) => {
-  if (mode === 'candidate') {
-    return 'candidate_keys';
-  }
+export const getPeopleNameUrl = createSelector([getSelectedUSState, getMode], (usState) => {
   if (usState) {
-    return 'usState_state_legislator';
+    return `${usState}_state_legislature`;
   }
   return '116th_congress';
 });

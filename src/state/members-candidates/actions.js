@@ -1,4 +1,4 @@
-import { firebasedb, fireStore } from '../../scripts/util/setupFirebase';
+import { firebasedb, firestore } from '../../scripts/util/setupFirebase';
 import {
   setDataFromPersonInDatabase,
   setAdditionalMember,
@@ -22,7 +22,7 @@ export const setPeople = people => ({
   type: 'SET_PEOPLE',
 });
 
-export const requestNamesInCollection = peopleNameUrl => dispatch => fireStore.collection(peopleNameUrl).where('in_office', '==', true)
+export const requestNamesInCollection = peopleNameUrl => dispatch => firestore.collection(peopleNameUrl).where('in_office', '==', true)
   .get()
   .then((querySnapshot) => {
     const allPeople = [];
@@ -36,13 +36,13 @@ export const requestNamesInCollection = peopleNameUrl => dispatch => fireStore.c
     console.log('Error getting documents: ', error);
   });
 
-export const requestPersonDataById = (peopleDataUrl, id) => dispatch => fireStore.collection('office_people').doc(id)
+export const requestPersonDataById = (peopleDataUrl, id) => dispatch => firestore.collection('office_people').doc(id)
   .get()
   .then((result) => {
     if (result.exists) {
       const personData = result.data();
       personData.district = sanitizeDistrict(personData.district);
-      console.log('campaigns', personData)
+
       if (!personData.campaigns || !personData.campaigns.length) {
         const flattedData = {
           ...personData,
