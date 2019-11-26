@@ -8,6 +8,7 @@ import {
   Radio,
   Icon,
   Button,
+  Modal,
 } from 'antd';
 import { find } from 'lodash';
 import renderCustomPersonForm from './customMemberForm';
@@ -38,6 +39,9 @@ class MemberLookup extends React.Component {
     this.selectOffice = this.selectOffice.bind(this);
     this.formatName = this.formatName.bind(this);
     this.shouldUpdatePersonDisplay = this.shouldUpdatePersonDisplay.bind(this);
+    this.state = {
+      modalVisible: false
+    }
   }
 
   shouldUpdatePersonDisplay(prevProps) {
@@ -52,7 +56,13 @@ class MemberLookup extends React.Component {
       setFieldsValue,
       getFieldValue,
       personMode,
+      selectedOfficePerson
     } = this.props;
+
+
+    if (selectedOfficePerson && !currentTownHall.eventId && !this.state.modalVisible) {
+      this.setState({modalVisible: true})
+    }
 
     if (currentTownHall.members.length !== prevProps.currentTownHall.members.length) {
       currentTownHall.members.forEach((member, index) => {
@@ -111,7 +121,7 @@ class MemberLookup extends React.Component {
       resetDatabaseLookUpError,
     } = this.props;
      if (!value) {
-       resetInfoBasedOnSelectedPerson();
+       this.resetInfoBasedOnSelectedPerson();
     }
     const person = find(allPeople, {
       displayName: value,
@@ -143,6 +153,7 @@ class MemberLookup extends React.Component {
       ...selectedOfficePerson,
       ...selectedOfficePerson.campaigns[0],
     })
+    this.setState({modalVisible: false})
   }
 
   selectOffice() {
@@ -163,6 +174,7 @@ class MemberLookup extends React.Component {
       ...selectedOfficePerson,
       ...selectedOfficePerson.roles[0],
     })
+    this.setState({modalVisible: false})
   }
 
   formatName() {
@@ -185,6 +197,9 @@ class MemberLookup extends React.Component {
     }
     if (currentTownHall.displayName && personMode === CANDIDATE_MODE) {
       return `${currentTownHall.displayName} (${currentTownHall.party}), Running for: `;
+    } 
+    if (currentTownHall.displayName) {
+      return `${currentTownHall.displayName}`
     }
     return '';
   }
@@ -267,18 +282,35 @@ class MemberLookup extends React.Component {
     return formItems;
   }
 
+  renderOptions() {
+    const { selectedOfficePerson } = this.props;
+    if (selectedOfficePerson.roles && selectedOfficePerson.campaigns) {
+      return (<Modal
+        visible={this.state.modalVisible}
+        footer={null}
+      > 
+         <ButtonGroup>
+              {selectedOfficePerson.campaigns && <Button onClick={this.selectCampaign}>
+                Candidate for: {getOfficeFromData(selectedOfficePerson.campaigns[0])}
+              </Button>}
+              {selectedOfficePerson.roles && <Button onClick={this.selectOffice}>
+                Current office: {getOfficeFromData(selectedOfficePerson.roles[0])}
+              </Button>}
+          </ButtonGroup>
+      </Modal>)
+    }
+  }
+
   renderDatabaseLookupForm(key, keys) {
     const {
       allNames,
       getFieldDecorator,
-      allPeople,
-      setDataFromPersonInDatabaseAction,
       getError,
       selectedOfficePerson,
       peopleLookUpError,
     } = this.props;
     const title = 'Lawmaker Information';
-    const placeHolderText = 'Lawmaker Name';
+    const placeHolderText = 'Lawmaker/candidate Name';
     const fieldName = key > 0 ? `displayName-${key}` : 'displayName';
     const filterFunction = (inputValue, option) => option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1;
     return (
@@ -331,14 +363,7 @@ class MemberLookup extends React.Component {
 
         </FormItem>
         <FormItem>
-          <ButtonGroup>
-              {selectedOfficePerson.campaigns && <Button onClick={this.selectCampaign}>
-                Candidate for: {getOfficeFromData(selectedOfficePerson.campaigns[0])}
-              </Button>}
-              {selectedOfficePerson.roles && <Button onClick={this.selectOffice}>
-                Current office: {getOfficeFromData(selectedOfficePerson.roles[0])}
-              </Button>}
-          </ButtonGroup>
+          {this.renderOptions()}
         </FormItem>
         <FormItem
           extra="How lawmaker or candidate name will be displayed"
