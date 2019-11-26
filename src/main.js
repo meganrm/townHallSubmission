@@ -65,7 +65,6 @@ firebase.auth().onAuthStateChanged((user) => {
         store.dispatch(incrementUserEventCount());
       }
     });
-    console.log(user)
     store.dispatch(writeUserData(user));
   } else {
     signIn();
