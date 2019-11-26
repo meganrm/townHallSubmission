@@ -3,6 +3,8 @@ import { filter } from 'lodash';
 
 export const getTownHall = state => state.townhall;
 
+export const getMemberIsSelected = createSelector([getTownHall], townHall => !!townHall.party);
+
 export const getRequiredFields = createSelector([getTownHall], (townHall) => {
   const required = ['address', 'displayName', 'time', 'date', 'state', 'meetingType'];
   if (townHall.meetingType === 'No Events') {
