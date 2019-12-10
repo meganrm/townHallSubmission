@@ -22,7 +22,7 @@ export const setUsState = payload => ({
   type: 'SET_US_STATE',
 });
 
-export const setDataFromPersonInDatabaseAction = payload => ({
+const setDataFromPersonInDatabaseAction = payload => ({
   payload,
   type: 'SET_DATA_FROM_PERSON',
 });
@@ -175,7 +175,7 @@ const updateUserMetaData = (payload) => {
 };
 
 export const saveMetaData = payload => (dispatch) => {
-  Promise.all([updateMOCData(payload), updateUserMetaData(payload)])
+  return Promise.all([updateMOCData(payload), updateUserMetaData(payload)])
     .then(() => dispatch(resetTownHall()))
     .catch((error) => {
       console.log('error updating user or moc', error);
@@ -192,7 +192,6 @@ function cleanTownHall(townHall) {
 }
 
 export const submitEventForReview = payload => () => firebasedb.ref(`${payload.saveUrl}/${payload.currentTownHall.eventId}`).update(cleanTownHall(payload.currentTownHall))
-  .catch(console.log);
 
 export const setDataFromPersonInDatabase = payload => (dispatch) => {
   const eventId = firebasedb.ref('townHallIds').push().key;

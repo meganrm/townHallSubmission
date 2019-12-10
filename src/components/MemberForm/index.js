@@ -8,14 +8,21 @@ import {
   Form,
   Radio,
   Icon,
-  // Button,
+  Button,
+  Modal,
 } from 'antd';
 import { find } from 'lodash';
 import renderCustomPersonForm from './customMemberForm';
 
 import './style.scss';
-import { MOC_MODE, CANDIDATE_MODE, MANUAL_MODE } from '../../constants';
-
+import {
+  MOC_MODE,
+  CANDIDATE_MODE,
+  MANUAL_MODE,
+  EVENT_TYPES
+} from '../../constants';
+import ButtonGroup from 'antd/lib/button/button-group';
+import { getOfficeFromData } from '../../scripts/util';
 const FormItem = Form.Item;
 
 let uuid = 1;
@@ -29,6 +36,19 @@ class MemberLookup extends React.Component {
     this.memberForms = this.memberForms.bind(this);
     this.addMember = this.addMember.bind(this);
     this.removeAdditionalMember = this.removeAdditionalMember.bind(this);
+    this.selectCampaign = this.selectCampaign.bind(this);
+    this.selectOffice = this.selectOffice.bind(this);
+    this.formatName = this.formatName.bind(this);
+    this.shouldUpdatePersonDisplay = this.shouldUpdatePersonDisplay.bind(this);
+    this.state = {
+      modalVisible: false
+    }
+  }
+
+  shouldUpdatePersonDisplay(prevProps) {
+    const { currentTownHall } = this.props;
+    return (currentTownHall.displayName && currentTownHall.displayName !== prevProps.currentTownHall.displayName) ||
+    (currentTownHall.displayName && this.props.personMode !== prevProps.personMode)
   }
 
   componentDidUpdate(prevProps) {
@@ -37,7 +57,14 @@ class MemberLookup extends React.Component {
       setFieldsValue,
       getFieldValue,
       personMode,
+      selectedOfficePerson
     } = this.props;
+
+
+    if (selectedOfficePerson && !currentTownHall.eventId && !this.state.modalVisible) {
+      this.setState({modalVisible: true})
+    }
+
     if (currentTownHall.members.length !== prevProps.currentTownHall.members.length) {
       currentTownHall.members.forEach((member, index) => {
         const key = `preview-${index}`;
@@ -46,7 +73,8 @@ class MemberLookup extends React.Component {
         });
       });
     }
-    if (currentTownHall.displayName && currentTownHall.displayName !== prevProps.currentTownHall.displayName) {
+
+    if (this.shouldUpdatePersonDisplay(prevProps)) {
       const key = 'preview-0';
       setFieldsValue({
         [key]: `${this.formatName(currentTownHall)} ${this.formatDistrict()}`,
@@ -63,6 +91,27 @@ class MemberLookup extends React.Component {
     }
   }
 
+  resetInfoBasedOnSelectedPerson() {
+    const {
+      clearSelectedMember,
+      setFieldsValue,
+      clearMemberCandidateMode,
+    } = this.props;
+    clearSelectedMember();
+    clearMemberCandidateMode();
+    setFieldsValue({
+      displayName: '',
+      'preview-0': '',
+      meetingType: '',
+    });
+  }
+
+  onInputChange(value) {
+    if (!value) {
+      this.resetInfoBasedOnSelectedPerson();
+    }
+  }
+
   onNameSelect(value, index) {
     const {
       allPeople,
@@ -70,14 +119,16 @@ class MemberLookup extends React.Component {
       peopleDataUrl,
       requestPersonDataById,
       requestAdditionalPersonDataById,
-      handleDatabaseLookupError,
       resetDatabaseLookUpError,
     } = this.props;
+     if (!value) {
+       this.resetInfoBasedOnSelectedPerson();
+    }
     const person = find(allPeople, {
-      nameEntered: value,
+      displayName: value,
     });
     if (!person) {
-      return handleDatabaseLookupError();
+      return;
     }
     resetDatabaseLookUpError();
     if (index === 0) {
@@ -87,6 +138,44 @@ class MemberLookup extends React.Component {
       return requestAdditionalPersonDataById(peopleDataUrl, person.id, index);
     }
     return requestAdditionalPersonDataById(peopleDataUrl, person.id);
+  }
+
+  selectCampaign() {
+    const {
+      setDataFromPersonInDatabaseAction,
+      selectedOfficePerson,
+      togglePersonMode,
+      setFieldsValue,
+    } = this.props;
+
+    togglePersonMode(CANDIDATE_MODE);
+    setFieldsValue({meetingType: EVENT_TYPES.campaign_town_hall.name})
+    setDataFromPersonInDatabaseAction({
+      ...selectedOfficePerson,
+      ...selectedOfficePerson.campaigns[0],
+    })
+    this.setState({modalVisible: false})
+  }
+
+  selectOffice() {
+    const {
+      setDataFromPersonInDatabaseAction,
+      selectedOfficePerson,
+      togglePersonMode,
+      setFieldsValue,
+    } = this.props;
+
+    togglePersonMode(MOC_MODE);
+    // reset since we dont know what the default option should be here
+    setFieldsValue({
+      meetingType: ''
+    })
+
+    setDataFromPersonInDatabaseAction({
+      ...selectedOfficePerson,
+      ...selectedOfficePerson.roles[0],
+    })
+    this.setState({modalVisible: false})
   }
 
   formatName() {
@@ -104,11 +193,14 @@ class MemberLookup extends React.Component {
       statewide: 'Governor',
       upper: 'Sen.',
     };
-    if (currentTownHall.displayName && personMode === 'moc') {
+    if (currentTownHall.displayName && personMode === MOC_MODE) {
       return `${prefixMapping[currentTownHall.chamber]} ${currentTownHall.displayName} (${currentTownHall.party})`;
     }
-    if (currentTownHall.displayName && personMode === 'candidate') {
+    if (currentTownHall.displayName && personMode === CANDIDATE_MODE) {
       return `${currentTownHall.displayName} (${currentTownHall.party}), Running for: `;
+    } 
+    if (currentTownHall.displayName) {
+      return `${currentTownHall.displayName}`
     }
     return '';
   }
@@ -191,17 +283,35 @@ class MemberLookup extends React.Component {
     return formItems;
   }
 
+  renderOptions() {
+    const { selectedOfficePerson } = this.props;
+    if (selectedOfficePerson.roles && selectedOfficePerson.campaigns) {
+      return (<Modal
+        visible={this.state.modalVisible}
+        footer={null}
+      > 
+         <ButtonGroup>
+              {selectedOfficePerson.campaigns && <Button onClick={this.selectCampaign}>
+                Candidate for: {getOfficeFromData(selectedOfficePerson.campaigns[0])}
+              </Button>}
+              {selectedOfficePerson.roles && <Button onClick={this.selectOffice}>
+                Current office: {getOfficeFromData(selectedOfficePerson.roles[0])}
+              </Button>}
+          </ButtonGroup>
+      </Modal>)
+    }
+  }
+
   renderDatabaseLookupForm(key, keys) {
     const {
       allNames,
       getFieldDecorator,
-      // selectedUSState,
-      // personMode,
       getError,
+      selectedOfficePerson,
       peopleLookUpError,
     } = this.props;
     const title = 'Lawmaker Information';
-    const placeHolderText = 'Lawmaker Name';
+    const placeHolderText = 'Lawmaker/candidate Name';
     const fieldName = key > 0 ? `displayName-${key}` : 'displayName';
     const filterFunction = (inputValue, option) => option.props.children.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1;
     return (
@@ -235,6 +345,7 @@ class MemberLookup extends React.Component {
                   key={key}
                   dataSource={allNames}
                   onSelect={value => this.onNameSelect(value, key)}
+                  onChange={value => this.onInputChange(value)}
                   onBlur={value => this.onNameSelect(value, key)}
                   filterOption={filterFunction}
                   placeholder={placeHolderText}
@@ -251,6 +362,9 @@ class MemberLookup extends React.Component {
               </div>,
             )}
 
+        </FormItem>
+        <FormItem>
+          {this.renderOptions()}
         </FormItem>
         <FormItem
           extra="How lawmaker or candidate name will be displayed"
@@ -291,7 +405,6 @@ class MemberLookup extends React.Component {
   render() {
     const {
       personMode,
-      togglePersonMode,
       currentTownHall,
       selectedUSState,
       getFieldValue,
@@ -326,21 +439,6 @@ class MemberLookup extends React.Component {
 
     return (
       <section className="member-info">
-        <Radio.Group
-          defaultValue={personMode}
-          buttonStyle="solid"
-          onChange={event => setPersonMode(event.target.value)}
-        >
-          <Radio.Button value={MOC_MODE}>
-            Official Lawmaker Event
-          </Radio.Button>
-          <Radio.Button value={CANDIDATE_MODE}>
-            Candidate Event
-          </Radio.Button>
-          {/* <Radio.Button value={MANUAL_MODE}>
-            Manually Enter
-          </Radio.Button> */}
-        </Radio.Group>
         {personMode === 'manual' ? renderCustomPersonForm(
           {
             currentTownHall,
@@ -367,7 +465,7 @@ MemberLookup.propTypes = {
   allNames: PropTypes.arrayOf(PropTypes.string).isRequired,
   allPeople: PropTypes.arrayOf(PropTypes.shape(
     {
-      id: PropTypes.number,
+      id: PropTypes.string,
       nameEntered: PropTypes.string,
     },
   )).isRequired,

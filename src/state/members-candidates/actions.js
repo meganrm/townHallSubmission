@@ -1,9 +1,12 @@
-import { firebasedb } from '../../scripts/util/setupFirebase';
+import { firebasedb, firestore } from '../../scripts/util/setupFirebase';
 import {
   setDataFromPersonInDatabase,
   setAdditionalMember,
   updateAdditionalMember,
 } from '../townhall/actions';
+import {
+  setSelectedMember
+} from '../selections/actions';
 import { sanitizeDistrict } from '../../scripts/util';
 
 export const databaseLookupError = () => ({
@@ -19,24 +22,35 @@ export const setPeople = people => ({
   type: 'SET_PEOPLE',
 });
 
-export const startSetPeople = peopleNameUrl => dispatch => firebasedb.ref(peopleNameUrl)
-  .once('value')
-  .then((result) => {
-    const allpeople = [];
-    result.forEach((person) => {
-      allpeople.push(person.val());
+export const requestNamesInCollection = peopleNameUrl => dispatch => firestore.collection(peopleNameUrl).where('in_office', '==', true)
+  .get()
+  .then((querySnapshot) => {
+    const allPeople = [];
+    querySnapshot.forEach((doc) => {
+      // doc.data() is never undefined for query doc snapshots
+      allPeople.push(doc.data());
     });
-    return (dispatch(setPeople(allpeople)));
+    return dispatch(setPeople(allPeople));
   })
-  .catch(console.log);
+  .catch((error) => {
+    console.log('Error getting documents: ', error);
+  });
 
-export const requestPersonDataById = (peopleDataUrl, id) => dispatch => firebasedb.ref(`${peopleDataUrl}/${id}`)
-  .once('value')
+export const requestPersonDataById = (peopleDataUrl, id) => dispatch => firestore.collection('office_people').doc(id)
+  .get()
   .then((result) => {
-    if (result.exists()) {
-      const personData = result.val();
+    if (result.exists) {
+      const personData = result.data();
       personData.district = sanitizeDistrict(personData.district);
-      return (dispatch(setDataFromPersonInDatabase(personData)));
+
+      if (!personData.campaigns || !personData.campaigns.length) {
+        const flattedData = {
+          ...personData,
+          ...personData.roles[0],
+        }
+        return (dispatch(setDataFromPersonInDatabase(flattedData)))
+      }
+      return (dispatch(setSelectedMember(personData)))
     }
     return dispatch(databaseLookupError());
   });

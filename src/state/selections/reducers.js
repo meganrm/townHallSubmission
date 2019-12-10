@@ -1,12 +1,13 @@
 const initialState = {
   formKeys: [0],
-  mode: 'moc',
+  mode: '',
   usState: null,
   lat: null,
   lng: null,
   address: null,
   state: null,
   stateName: null,
+  selectedOfficePerson: {},
 };
 
 const selectionReducer = (state = initialState, { type, payload }) => {
@@ -35,6 +36,21 @@ const selectionReducer = (state = initialState, { type, payload }) => {
       ...state,
       mode: payload,
     };
+  case 'CLEAR_MODE':
+    return {
+      ...state,
+      mode: '',
+    }
+  case 'SET_SELECTED_OFFICE_PERSON':
+    return {
+      ...state,
+      selectedOfficePerson: payload,
+    }
+  case 'CLEAR_SELECTED_OFFICE_PERSON':
+  return {
+    ...state,
+    selectedOfficePerson: {},
+  }
   case 'SET_TEMP_ADDRESS':
     return {
       ...state,

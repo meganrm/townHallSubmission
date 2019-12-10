@@ -11,6 +11,10 @@ export const toggleMemberCandidate = payload => ({
   type: 'TOGGLE_MODE',
 });
 
+export const clearMemberCandidateMode = () => ({
+  type: 'CLEAR_MODE',
+});
+
 export const setTempAddress = payload => ({
   payload,
   type: 'SET_TEMP_ADDRESS',
@@ -33,6 +37,14 @@ export const resetFormKeys = () => ({
   type: 'RESET_FORM_KEYS',
 });
 
+export const setSelectedMember = (payload) => ({
+  type: 'SET_SELECTED_OFFICE_PERSON',
+  payload,
+})
+
+export const clearSelectedMember = () => ({
+  type: 'CLEAR_SELECTED_OFFICE_PERSON',
+  })
 
 export const lookUpAddress = payload => dispatch => request
   .get('https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyDP8q2OVisSLyFyOUU6OTgGjNNQCq7Q3rE')
