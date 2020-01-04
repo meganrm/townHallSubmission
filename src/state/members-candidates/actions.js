@@ -1,11 +1,18 @@
 import { firebasedb, firestore } from '../../scripts/util/setupFirebase';
+
+import {
+  CANDIDATE_MODE,
+  MOC_MODE
+} from '../../constants';
+
 import {
   setDataFromPersonInDatabase,
   setAdditionalMember,
   updateAdditionalMember,
 } from '../townhall/actions';
 import {
-  setSelectedMember
+  setSelectedMember,
+  toggleMemberCandidate
 } from '../selections/actions';
 import { sanitizeDistrict } from '../../scripts/util';
 
@@ -68,6 +75,8 @@ export const requestPersonDataById = (peopleDataUrl, id) => dispatch => firestor
           ...personData,
           ...personData.roles[0],
         }
+        dispatch(toggleMemberCandidate(CANDIDATE_MODE))
+
         return (dispatch(setDataFromPersonInDatabase(flattedData)))
       } else if (!personData.roles || !personData.roles.length) {
         // only has a campaign
@@ -75,6 +84,7 @@ export const requestPersonDataById = (peopleDataUrl, id) => dispatch => firestor
           ...personData,
           ...personData.campaigns[0],
         }
+        dispatch(toggleMemberCandidate(MOC_MODE))
         return (dispatch(setDataFromPersonInDatabase(flattedData)))
       }
       return (dispatch(setSelectedMember(personData)))
