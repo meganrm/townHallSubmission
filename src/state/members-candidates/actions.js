@@ -75,7 +75,7 @@ export const requestPersonDataById = (peopleDataUrl, id) => dispatch => firestor
           ...personData,
           ...personData.roles[0],
         }
-        dispatch(toggleMemberCandidate(CANDIDATE_MODE))
+        dispatch(toggleMemberCandidate(MOC_MODE))
 
         return (dispatch(setDataFromPersonInDatabase(flattedData)))
       } else if (!personData.roles || !personData.roles.length) {
@@ -84,7 +84,7 @@ export const requestPersonDataById = (peopleDataUrl, id) => dispatch => firestor
           ...personData,
           ...personData.campaigns[0],
         }
-        dispatch(toggleMemberCandidate(MOC_MODE))
+        dispatch(toggleMemberCandidate(CANDIDATE_MODE))
         return (dispatch(setDataFromPersonInDatabase(flattedData)))
       }
       return (dispatch(setSelectedMember(personData)))
