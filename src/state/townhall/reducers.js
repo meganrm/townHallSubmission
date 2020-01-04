@@ -60,7 +60,6 @@ const townhallReducer = (state = initialState, { type, payload }) => {
       state: payload,
       stateName: statesAb[payload],
     };
-
   case 'SET_DATA_FROM_PERSON':
     return {
       ...state,
