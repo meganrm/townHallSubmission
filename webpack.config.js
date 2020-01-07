@@ -24,11 +24,6 @@ const plugins = [
     PROJECT_ID: 'townhalltestingsms',
     STORAGE_BUCKET: 'townhalltestingsms.appspot.com',
   }),
-  new ProvidePlugin({
-    jQuery: 'jquery',
-    $: 'jquery',
-    jquery: 'jquery',
-  }),
   new MiniCssExtractPlugin({
     // Options similar to the same options in webpackOptions.output
     // both options are optional
