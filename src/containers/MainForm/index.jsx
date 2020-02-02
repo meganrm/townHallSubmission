@@ -83,7 +83,6 @@ class MainForm extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.checkSubmit = this.checkSubmit.bind(this);
     this.resetAll = this.resetAll.bind(this);
-    this.checkSubmit = this.checkSubmit.bind(this);
     this.getError = this.getError.bind(this);
   }
 
