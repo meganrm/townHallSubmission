@@ -37,6 +37,7 @@ class LocationForm extends React.Component {
   }
 
   onKeyDown(e) {
+    e.preventDefault()
     if (e.keyCode === 13) {
       this.handleSearch();
     }
@@ -158,7 +159,7 @@ class LocationForm extends React.Component {
                 }],
               })(
                 <Search
-                  onPressEnter={this.handleSearch}
+                  onPressEnter={this.onKeyDown}
                   onSearch={this.handleSearch}
                   placeholder="address"
                   style={style}
