@@ -252,6 +252,7 @@ class MainForm extends React.Component {
       setValue,
       errors,
       form,
+      setIconFlag,
     } = this.props;
     const {
       getFieldDecorator,
@@ -290,6 +291,7 @@ class MainForm extends React.Component {
             setGenericTownHallValue={setValue}
             getFieldValue={getFieldValue}
             setFieldsValue={setFieldsValue}
+            setIconFlag={setIconFlag}
             fields={getFieldsValue()}
             getError={this.getError}
             peopleLookUpError={peopleLookUpError}
@@ -498,6 +500,7 @@ const mapDispatchToProps = dispatch => ({
   setDataFromPersonInDatabaseAction: payload => dispatch(townHallStateBranch.actions.setDataFromPersonInDatabase(payload)),
   setDate: date => dispatch(townHallStateBranch.actions.setDate(date)),
   setEndTime: time => dispatch(townHallStateBranch.actions.setEndTime(time)),
+  setIconFlag: payload => dispatch(townHallStateBranch.actions.setIconFlag(payload)),
   setLatLng: payload => dispatch(townHallStateBranch.actions.setLatLng(payload)),
   setMeetingType: payload => dispatch(townHallStateBranch.actions.setMeetingType(payload)),
   setStartTime: time => dispatch(townHallStateBranch.actions.setStartTime(time)),

@@ -134,6 +134,11 @@ const townhallReducer = (state = initialState, { type, payload }) => {
           name: payload,
         }).iconFlag : null,
     };
+  case 'SET_ICON_FLAG':
+    return {
+      ...state,
+      iconFlag: payload
+    }
   case 'SET_START_TIME':
     return {
       ...state,

@@ -19,7 +19,8 @@ import {
   MOC_MODE,
   CANDIDATE_MODE,
   MANUAL_MODE,
-  EVENT_TYPES
+  EVENT_TYPES,
+  CAMPAIGN_ICON_FLAG
 } from '../../constants';
 import ButtonGroup from 'antd/lib/button/button-group';
 import { getOfficeFromData } from '../../scripts/util';
@@ -146,6 +147,7 @@ class MemberLookup extends React.Component {
       selectedOfficePerson,
       togglePersonMode,
       setFieldsValue,
+      setIconFlag,
     } = this.props;
 
     togglePersonMode(CANDIDATE_MODE);
@@ -154,6 +156,7 @@ class MemberLookup extends React.Component {
       ...selectedOfficePerson,
       ...selectedOfficePerson.campaigns[0],
     })
+    setIconFlag(CAMPAIGN_ICON_FLAG);
     this.setState({modalVisible: false})
   }
 

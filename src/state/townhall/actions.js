@@ -84,6 +84,11 @@ export const setValue = payload => ({
   type: 'SET_VALUE',
 });
 
+export const setIconFlag = payload => ({
+  payload,
+  type: 'SET_ICON_FLAG',
+})
+
 export const getLatLng = payload => dispatch => request
   .get('https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyDP8q2OVisSLyFyOUU6OTgGjNNQCq7Q3rE')
   .set('Accept', 'application/json')
