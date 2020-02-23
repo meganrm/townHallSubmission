@@ -51,7 +51,7 @@ class DateTimeForm extends React.Component {
   onChangeDate(date) {
     const { setDate } = this.props;
     const { renderWarning } = this.state;
-    if (moment(date).isBefore()) {
+    if (moment(date).isBefore(moment(), 'day')) {
       this.setState({
         renderWarning: true,
       });
