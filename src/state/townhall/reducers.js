@@ -69,6 +69,7 @@ const townhallReducer = (state = initialState, { type, payload }) => {
       displayName: payload.displayName,
       city: payload.city || null,
       Member: payload.displayName,
+      officePersonId: payload.id || null,
       govtrack_id: payload.govtrack_id || null,
       thp_id: payload.thp_id || payload.thp_key || null,
       stateName: payload.stateName || statesAb[payload.state] || null,
