@@ -6,11 +6,12 @@ export const getTownHall = state => state.townhall;
 export const getMemberIsSelected = createSelector([getTownHall], townHall => !!townHall.party);
 
 export const getRequiredFields = createSelector([getTownHall], (townHall) => {
+  const { meetingType } = townHall
   const required = ['address', 'displayName', 'time', 'date', 'state', 'meetingType'];
-  if (townHall.meetingType === 'No Events') {
+  if (meetingType === 'No Events') {
     return [];
   }
-  if (townHall.meetingType === 'Tele-Town Hall') {
+  if (meetingType === 'Tele-Town Hall' || meetingType === 'Campaign Tele-Town Hall') {
     return filter(required, ele => ele !== 'address');
   }
   return required;
