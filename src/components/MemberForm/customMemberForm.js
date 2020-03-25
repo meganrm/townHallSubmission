@@ -2,13 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { map } from 'lodash';
 import {
-  Input,
-  Select,
+  Button,
   Form,
+  Icon,
+  Input,
+  Radio,
+  Select,
 } from 'antd';
 
 import states from '../../data/states';
-import { formItemLayout } from '../../constants';
+import { formItemLayout, MOC_MODE } from '../../constants';
 
 const { Option } = Select;
 const FormItem = Form.Item;
@@ -19,7 +22,9 @@ const customMemberForm = (props) => {
     getFieldValue,
     getFieldDecorator,
     setGenericTownHallValue,
+    togglePersonMode,
   } = props;
+
   const onNameChange = (e) => {
     const { value } = e.target;
     setGenericTownHallValue({
@@ -158,8 +163,12 @@ const customMemberForm = (props) => {
           </Select>,
         )}
       </FormItem>
+      <FormItem>
+        <Button type="dashed" onClick={() => togglePersonMode(MOC_MODE)}>
+          <Icon type="minus-circle-o" /> Cancel add new lawmaker
+        </Button>
+      </FormItem>
     </React.Fragment>
-
   );
 };
 
