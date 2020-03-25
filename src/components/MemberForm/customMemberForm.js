@@ -11,18 +11,18 @@ import {
 } from 'antd';
 
 import states from '../../data/states';
-import { formItemLayout, MOC_MODE } from '../../constants';
+import { formItemLayout } from '../../constants';
 
 const { Option } = Select;
 const FormItem = Form.Item;
 
 const customMemberForm = (props) => {
   const {
-    selectedUSState,
     getFieldValue,
     getFieldDecorator,
+    resetAllData,
+    selectedUSState,
     setGenericTownHallValue,
-    togglePersonMode,
   } = props;
 
   const onNameChange = (e) => {
@@ -32,6 +32,15 @@ const customMemberForm = (props) => {
       value,
     });
   };
+
+  const cancelCustomMember = () => {
+    const {
+      resetAllData,
+      clearSelectedMember,
+    } = props;
+    clearSelectedMember()
+    resetAllData()
+  }
 
   const renderDistrict = () => selectedUSState ? (
         <FormItem
@@ -164,7 +173,7 @@ const customMemberForm = (props) => {
         )}
       </FormItem>
       <FormItem>
-        <Button type="dashed" onClick={() => togglePersonMode(MOC_MODE)}>
+        <Button type="dashed" onClick={() => cancelCustomMember()}>
           <Icon type="minus-circle-o" /> Cancel add new lawmaker
         </Button>
       </FormItem>

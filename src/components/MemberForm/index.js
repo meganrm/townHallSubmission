@@ -276,6 +276,17 @@ class MemberLookup extends React.Component {
     });
   }
 
+  addCustomMember = () => {
+    const {
+      clearSelectedMember,
+      togglePersonMode,
+      resetAllData,
+    } = this.props
+    clearSelectedMember();
+    resetAllData();
+    togglePersonMode(MANUAL_MODE);
+  }
+
   memberForms() {
     const {
       getFieldValue,
@@ -371,7 +382,7 @@ class MemberLookup extends React.Component {
         <FormItem
           extra="Please first check if the individual already exists in our system"
         >
-          <Button type="dashed" onClick={() => this.props.togglePersonMode(MANUAL_MODE)} style={{ width: '60%' }}>
+          <Button type="dashed" onClick={() => this.addCustomMember()} style={{ width: '60%' }}>
             <Icon type="plus" /> Add new lawmaker
           </Button>
         </FormItem>
@@ -416,13 +427,14 @@ class MemberLookup extends React.Component {
 
   render() {
     const {
-      personMode,
+      clearSelectedMember,
       currentTownHall,
-      selectedUSState,
       getFieldValue,
       getFieldDecorator,
+      personMode,
+      resetAllData,
+      selectedUSState,
       setGenericTownHallValue,
-      togglePersonMode,
     } = this.props;
 
     getFieldDecorator('formKeys', {
@@ -462,12 +474,13 @@ class MemberLookup extends React.Component {
 
         {personMode === 'manual'
         ? <CustomMemberForm
+          clearSelectedMember={clearSelectedMember}
           currentTownHall={currentTownHall}
           getFieldDecorator={getFieldDecorator}
           getFieldValue={getFieldValue}
+          resetAllData={resetAllData}
           selectedUSState={selectedUSState}
           setGenericTownHallValue={setGenericTownHallValue}
-          togglePersonMode={togglePersonMode}
         />
         : this.memberForms()}
       </section>
