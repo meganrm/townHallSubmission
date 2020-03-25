@@ -131,12 +131,14 @@ class FormController extends React.Component {
       resetTownHallData,
       resetFormKeys,
       clearTempAddress,
+      clearMemberCandidateMode,
     } = this.props;
     this.setState({
       displayValues: null,
       errors: null,
     });
     resetFormKeys();
+    clearMemberCandidateMode();
     clearTempAddress();
     resetTownHallData();
   }
@@ -293,6 +295,7 @@ const mapDispatchToProps = dispatch => ({
   addDisclaimer: () => dispatch(townHallStateBranch.actions.addDisclaimer()),
   getAllEventToCheckDups: (liveUrl, submissionUrl) => dispatch(allTownHallsStateBranch.actions.getAllEventToCheckDups(liveUrl, submissionUrl)),
   clearDisclaimer: () => dispatch(townHallStateBranch.actions.clearDisclaimer()),
+  clearMemberCandidateMode: () => dispatch(selectionStateBranch.actions.clearMemberCandidateMode()),
   clearTempAddress: () => dispatch(selectionStateBranch.actions.clearTempAddress()),
   resetFormKeys: () => dispatch(selectionStateBranch.actions.resetFormKeys()),
   resetTownHallData: () => dispatch(townHallStateBranch.actions.resetTownHall()),
