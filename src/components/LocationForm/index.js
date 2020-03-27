@@ -140,7 +140,7 @@ class LocationForm extends React.Component {
             />,
           )}
         </FormItem>
-        {meetingType === 'Tele-Town Hall' ? this.renderTeleInputs()
+        {(meetingType === 'Tele-Town Hall' || meetingType === 'Campaign Tele-Town Hall') ? this.renderTeleInputs()
           : (
             <FormItem
               className="general-inputs"
