@@ -6,13 +6,12 @@ import {
   AutoComplete,
   Input,
   Form,
-  Radio,
   Icon,
   Button,
   Modal,
 } from 'antd';
 import { find } from 'lodash';
-import renderCustomPersonForm from './customMemberForm';
+import CustomMemberForm from './customMemberForm';
 
 import './style.scss';
 import {
@@ -277,6 +276,17 @@ class MemberLookup extends React.Component {
     });
   }
 
+  addCustomMember = () => {
+    const {
+      clearSelectedMember,
+      togglePersonMode,
+      resetAllData,
+    } = this.props
+    clearSelectedMember();
+    resetAllData();
+    togglePersonMode(MANUAL_MODE);
+  }
+
   memberForms() {
     const {
       getFieldValue,
@@ -324,7 +334,7 @@ class MemberLookup extends React.Component {
           <br />
         </h4>
         <FormItem
-          extra="Enter their name and we will auto-fill the information"
+          extra="Enter their name and we will auto-fill their information"
           validateStatus={(getError('displayName') || peopleLookUpError) ? 'error' : ''}
           help={getError('displayName') || peopleLookUpError || ''}
         >
@@ -365,6 +375,16 @@ class MemberLookup extends React.Component {
               </div>,
             )}
 
+        </FormItem>
+        <h5>
+          If you are unable to find the lawmaker or candidate you are looking for, you may request to add a new individual to the system.
+        </h5>
+        <FormItem
+          extra="Please first check if the individual already exists in our system"
+        >
+          <Button type="dashed" onClick={() => this.addCustomMember()} style={{ width: '60%' }}>
+            <Icon type="plus" /> Add new lawmaker
+          </Button>
         </FormItem>
         <FormItem>
           {this.renderOptions()}
@@ -407,11 +427,13 @@ class MemberLookup extends React.Component {
 
   render() {
     const {
-      personMode,
+      clearSelectedMember,
       currentTownHall,
-      selectedUSState,
       getFieldValue,
       getFieldDecorator,
+      personMode,
+      resetAllData,
+      selectedUSState,
       setGenericTownHallValue,
     } = this.props;
 
@@ -442,23 +464,25 @@ class MemberLookup extends React.Component {
 
     return (
       <section className="member-info">
-        {personMode === 'manual' ? renderCustomPersonForm(
-          {
-            currentTownHall,
-            getFieldDecorator,
-            getFieldValue,
-            selectedUSState,
-            setGenericTownHallValue,
-          },
-        ) : this.memberForms()}
-
         {/* <div className="district-group federal-district-group" id="federal-district-group">
-          <FormItem>
-            <Button type="dashed" onClick={this.addMember} style={{ width: '60%' }}>
-              <Icon type="plus" /> Add another lawmaker
-            </Button>
-          </FormItem>
-        </div> */}
+           <FormItem>
+             <Button type="dashed" onClick={this.addMember} style={{ width: '60%' }}>
+               <Icon type="plus" /> Add another lawmaker
+             </Button>
+           </FormItem>
+         </div> */}
+
+        {personMode === 'manual'
+        ? <CustomMemberForm
+          clearSelectedMember={clearSelectedMember}
+          currentTownHall={currentTownHall}
+          getFieldDecorator={getFieldDecorator}
+          getFieldValue={getFieldValue}
+          resetAllData={resetAllData}
+          selectedUSState={selectedUSState}
+          setGenericTownHallValue={setGenericTownHallValue}
+        />
+        : this.memberForms()}
       </section>
     );
   }

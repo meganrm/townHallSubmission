@@ -2,9 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { map } from 'lodash';
 import {
-  Input,
-  Select,
+  Button,
   Form,
+  Icon,
+  Input,
+  Radio,
+  Select,
 } from 'antd';
 
 import states from '../../data/states';
@@ -15,11 +18,13 @@ const FormItem = Form.Item;
 
 const customMemberForm = (props) => {
   const {
-    selectedUSState,
     getFieldValue,
     getFieldDecorator,
+    resetAllData,
+    selectedUSState,
     setGenericTownHallValue,
   } = props;
+
   const onNameChange = (e) => {
     const { value } = e.target;
     setGenericTownHallValue({
@@ -27,6 +32,15 @@ const customMemberForm = (props) => {
       value,
     });
   };
+
+  const cancelCustomMember = () => {
+    const {
+      resetAllData,
+      clearSelectedMember,
+    } = props;
+    clearSelectedMember()
+    resetAllData()
+  }
 
   const renderDistrict = () => selectedUSState ? (
         <FormItem
@@ -158,8 +172,12 @@ const customMemberForm = (props) => {
           </Select>,
         )}
       </FormItem>
+      <FormItem>
+        <Button type="dashed" onClick={() => cancelCustomMember()}>
+          <Icon type="minus-circle-o" /> Cancel add new lawmaker
+        </Button>
+      </FormItem>
     </React.Fragment>
-
   );
 };
 

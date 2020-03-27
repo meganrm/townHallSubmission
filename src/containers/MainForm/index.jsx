@@ -236,6 +236,7 @@ class MainForm extends React.Component {
       togglePersonMode,
       selectedUSState,
       geoCodeLocation,
+      resetAllData,
       resetDatabaseLookupError,
       requiredFields,
       setLatLng,
@@ -284,6 +285,7 @@ class MainForm extends React.Component {
             setDataFromPersonInDatabaseAction={setDataFromPersonInDatabaseAction}
             requestPersonDataById={requestPersonDataById}
             requestAdditionalPersonDataById={requestAdditionalPersonDataById}
+            resetAllData={resetAllData}
             selectedUSState={selectedUSState}
             togglePersonMode={togglePersonMode}
             getFieldDecorator={getFieldDecorator}
