@@ -116,7 +116,7 @@ class FormController extends React.Component {
     if (match && (target[date] == search[date] && target[time] == search[time])) {
       dupe = true;
     }
-    return (dupe);
+    return dupe;
   }
 
   checkForDupes(currentEvent) {
