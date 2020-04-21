@@ -102,13 +102,49 @@ class LocationForm extends React.Component {
   renderTeleInputs() {
     const {
       getFieldDecorator,
+      requiredFields,
+      tempAddress,
+      style,
     } = this.props;
+    const {
+      validating,
+    } = this.state;
     return (
-      <FormItem>
-        {getFieldDecorator('phoneNumber', {
-          initialValue: '',
-        })(<Input type="tel" class="form-control" placeholder="Phone Number" />)}
-      </FormItem>);
+      <React.Fragment>
+            <FormItem>
+              {getFieldDecorator('phoneNumber', {
+                initialValue: '',
+              })(<Input type="tel" class="form-control" placeholder="Phone Number" />)}
+            </FormItem>
+
+            <FormItem
+              className="general-inputs"
+              id="location-form-group"
+              hasFeedback
+              // help={getError('address') || ''}
+              validateStatus={validating && !tempAddress ? 'validating' : ''}
+              label="Zipcode"
+              {...formItemLayout}
+            >
+              {getFieldDecorator('address', {
+                initialValue: '',
+                rules: [{
+                  message: 'please enter a zipcode',
+                  required: includes(requiredFields, 'address'),
+                }],
+              })(
+                <Search
+                  onPressEnter={this.onKeyDown}
+                  onSearch={this.handleSearch}
+                  placeholder="zipcode for geocoding"
+                  style={style}
+                  onChange={this.handleChange}
+                  onBlur={this.handleSearch}
+                />,
+              )}
+            </FormItem>
+          </React.Fragment>
+      );
   }
 
   render() {
