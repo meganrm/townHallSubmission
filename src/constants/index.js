@@ -1,4 +1,4 @@
-export const disclaimerMeetingTypes = ['Ticketed Event', 'Campaign Town Hall'];
+export const disclaimerMeetingTypes = ['Ticketed Event', 'Campaign Town Hall', 'Campaign Tele-Town Hall'];
 export const MANUAL_MODE = 'manual';
 export const MOC_MODE = 'moc';
 export const CANDIDATE_MODE = 'candidate';
@@ -22,6 +22,7 @@ export const TOWN_HALL = 'Town Hall';
 export const TELE_TOWN_HALL = 'Tele-Town Hall';
 export const EMPTY_CHAIR_TOWN_HALL = 'Empty Chair Town Hall';
 export const CAMPAIGN_TOWN_HALL = 'Campaign Town Hall';
+export const CAMPAIGN_TELE_TOWN_HALL = 'Campaign Tele-Town Hall';
 export const OTHER = 'Other';
 export const TICKETED_EVENT = 'Ticketed Event';
 export const ADOPT_A_DISTRICT = 'Adopt-A-District/State';
@@ -69,6 +70,10 @@ export const EVENT_TYPES = {
     name: 'Campaign Town Hall',
     iconFlag: CAMPAIGN_ICON_FLAG,
   },
+  campaign_tele_town_hall: {
+    name: 'Campaign Tele-Town Hall',
+    iconFlag: CAMPAIGN_ICON_FLAG,
+  },
   adopt_a_district: {
     name: 'Adopt-A-District/State',
     iconFlag: ACTIVISM_ICON_FLAG,
@@ -104,14 +109,15 @@ export const REP_EVENTS = [
   TELE_TOWN_HALL,
   EMPTY_CHAIR_TOWN_HALL,
   CAMPAIGN_TOWN_HALL,
+  CAMPAIGN_TELE_TOWN_HALL,
   ADOPT_A_DISTRICT,
   DC_EVENT,
   OFFICE_HOURS,
   GUN_SAFETY_ACTIVISM,
   OTHER,
 ];
-export const FED_CANDIDATE_EVENTS = [NO_EVENTS, CAMPAIGN_TOWN_HALL, TELE_TOWN_HALL, OTHER, TICKETED_EVENT];
-export const STATE_CANDIDATE_EVENTS = [NO_EVENTS, CAMPAIGN_TOWN_HALL, TELE_TOWN_HALL, OTHER, TICKETED_EVENT];
+export const FED_CANDIDATE_EVENTS = [NO_EVENTS, CAMPAIGN_TOWN_HALL, CAMPAIGN_TELE_TOWN_HALL, OTHER, TICKETED_EVENT];
+export const STATE_CANDIDATE_EVENTS = [NO_EVENTS, CAMPAIGN_TOWN_HALL, CAMPAIGN_TELE_TOWN_HALL, OTHER, TICKETED_EVENT];
 export const DEFAULT_EVENTS = [
   NO_EVENTS,
   TOWN_HALL,
@@ -120,6 +126,7 @@ export const DEFAULT_EVENTS = [
   TELE_TOWN_HALL,
   TICKETED_EVENT,
   CAMPAIGN_TOWN_HALL,
+  CAMPAIGN_TELE_TOWN_HALL,
   ADOPT_A_DISTRICT,
   EMPTY_CHAIR_TOWN_HALL,
   HEARING,
