@@ -243,6 +243,9 @@ class MainForm extends React.Component {
       setStartTime,
       selectedOfficePerson, 
       setDataFromPersonInDatabaseAction,
+      setDataFromManualEnter,
+      setUsState,
+      setDistrict,
       setEndTime,
       tempAddress,
       tempLat,
@@ -279,6 +282,9 @@ class MainForm extends React.Component {
             allPeople={allPeople}
             requiredFields={requiredFields}
             currentTownHall={currentTownHall}
+            setDataFromManualEnter={setDataFromManualEnter}
+            setUsState={setUsState}
+            setDistrict={setDistrict}
             selectedOfficePerson={selectedOfficePerson}
             peopleDataUrl={peopleDataUrl}
             setDataFromPersonInDatabaseAction={setDataFromPersonInDatabaseAction}
@@ -498,7 +504,10 @@ const mapDispatchToProps = dispatch => ({
   requestPersonDataById: (peopleDataUrl, id) => dispatch(lawMakerStateBranch.actions.requestPersonDataById(peopleDataUrl, id)),
   resetDatabaseLookupError: () => dispatch(lawMakerStateBranch.actions.resetDatabaseLookUpError()),
   setDataFromPersonInDatabaseAction: payload => dispatch(townHallStateBranch.actions.setDataFromPersonInDatabase(payload)),
+  setDataFromManualEnter: payload => dispatch(townHallStateBranch.actions.setDataFromManualEnter(payload)),
   setDate: date => dispatch(townHallStateBranch.actions.setDate(date)),
+  setUsState: state => dispatch(townHallStateBranch.actions.setUsState(state)),
+  setDistrict: district => dispatch(townHallStateBranch.actions.setDistrict(district)),
   setEndTime: time => dispatch(townHallStateBranch.actions.setEndTime(time)),
   setIconFlag: payload => dispatch(townHallStateBranch.actions.setIconFlag(payload)),
   setLatLng: payload => dispatch(townHallStateBranch.actions.setLatLng(payload)),

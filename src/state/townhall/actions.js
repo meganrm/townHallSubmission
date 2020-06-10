@@ -27,6 +27,11 @@ const setDataFromPersonInDatabaseAction = payload => ({
   type: 'SET_DATA_FROM_PERSON',
 });
 
+const setDataFromManualEnterAction = payload => ({
+  payload,
+  type: 'SET_DATA_FROM_MANUAL_ENTER',
+});
+
 export const setAdditionalMember = payload => ({
   payload,
   type: 'SET_ADDITIONAL_MEMBER',
@@ -87,7 +92,7 @@ export const setValue = payload => ({
 export const setIconFlag = payload => ({
   payload,
   type: 'SET_ICON_FLAG',
-})
+});
 
 export const getLatLng = payload => dispatch => request
   .get('https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyDP8q2OVisSLyFyOUU6OTgGjNNQCq7Q3rE')
@@ -179,13 +184,11 @@ const updateUserMetaData = (payload) => {
   return firebasedb.ref(`${path}/mocs/${id}`).update(mocData);
 };
 
-export const saveMetaData = payload => (dispatch) => {
-  return Promise.all([updateMOCData(payload), updateUserMetaData(payload)])
-    .then(() => dispatch(resetTownHall()))
-    .catch((error) => {
-      console.log('error updating user or moc', error);
-    });
-};
+export const saveMetaData = payload => dispatch => Promise.all([updateMOCData(payload), updateUserMetaData(payload)])
+  .then(() => dispatch(resetTownHall()))
+  .catch((error) => {
+    console.log('error updating user or moc', error);
+  });
 
 function cleanTownHall(townHall) {
   return mapValues(townHall, (value) => {
@@ -196,10 +199,20 @@ function cleanTownHall(townHall) {
   });
 }
 
-export const submitEventForReview = payload => () => firebasedb.ref(`${payload.saveUrl}/${payload.currentTownHall.eventId}`).update(cleanTownHall(payload.currentTownHall))
+export const submitEventForReview = payload => () => firebasedb.ref(`${payload.saveUrl}/${payload.currentTownHall.eventId}`).update(cleanTownHall(payload.currentTownHall));
 
 export const setDataFromPersonInDatabase = payload => (dispatch) => {
   const eventId = firebasedb.ref('townHallIds').push().key;
   const eventInfo = { eventId, ...payload };
   return (dispatch(setDataFromPersonInDatabaseAction(eventInfo)));
+};
+
+export const setDataFromManualEnter = payload => (dispatch) => {
+  const eventId = firebasedb.ref('townHallIds').push().key;
+  console.log(eventId)
+  const eventInfo = {
+    eventId,
+    ...payload,
+  };
+  return (dispatch(setDataFromManualEnterAction(eventInfo)));
 };

@@ -44,6 +44,7 @@ const initialState = {
 const timeFormats = ['hh:mm A', 'h:mm A'];
 
 const townhallReducer = (state = initialState, { type, payload }) => {
+  // console.log(type, payload)
   switch (type) {
   case 'RESET_TOWNHALL':
     return initialState;
@@ -51,7 +52,7 @@ const townhallReducer = (state = initialState, { type, payload }) => {
   case 'SET_DISTRICT':
     return {
       ...state,
-      district: payload.district,
+      district: payload,
     };
 
   case 'SET_US_STATE':
@@ -59,6 +60,11 @@ const townhallReducer = (state = initialState, { type, payload }) => {
       ...state,
       state: payload,
       stateName: statesAb[payload],
+    };
+  case 'SET_DATA_FROM_MANUAL_ENTER':
+    return {
+      ...state,
+      ...payload,
     };
   case 'SET_DATA_FROM_PERSON':
     return {
@@ -138,8 +144,8 @@ const townhallReducer = (state = initialState, { type, payload }) => {
   case 'SET_ICON_FLAG':
     return {
       ...state,
-      iconFlag: payload
-    }
+      iconFlag: payload,
+    };
   case 'SET_START_TIME':
     return {
       ...state,

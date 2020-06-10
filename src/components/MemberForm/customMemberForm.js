@@ -5,67 +5,117 @@ import {
   Input,
   Select,
   Form,
+  Button,
 } from 'antd';
 
 import states from '../../data/states';
-import { formItemLayout } from '../../constants';
+import { formItemLayout, LEVEL_FEDERAL, LEVEL_STATE } from '../../constants';
 
 const { Option } = Select;
 const FormItem = Form.Item;
 
+
+const stateChambers = [
+  {
+    value: 'upper',
+    label: 'upper',
+  },
+  {
+    value: 'lower',
+    label: 'lower',
+  },
+  {
+    value: 'statewide',
+    label: 'Gov',
+  },
+  {
+    value: 'citywide',
+    label: 'Mayor or City Council',
+  },
+];
+
+const federalChambers = [{
+  value: 'upper',
+  label: 'Senate',
+},
+{
+  value: 'lower',
+  label: 'House',
+},
+{
+  value: 'nationwide',
+  label: 'Pres',
+},
+];
 const customMemberForm = (props) => {
   const {
     selectedUSState,
     getFieldValue,
     getFieldDecorator,
     setGenericTownHallValue,
+    setDataFromManualEnter,
+    setUsState,
+    setDistrict,
   } = props;
+  // setGenericTownHallValue({ key: 'level', value: selectedUSState ? LEVEL_STATE : LEVEL_FEDERAL });
   const onNameChange = (e) => {
     const { value } = e.target;
+    setDataFromManualEnter({ displayName: value });
+  };
+  
+  const onSelect = (key, value) => {
     setGenericTownHallValue({
-      key: 'displayName',
+      key,
       value,
     });
   };
 
-  const renderDistrict = () => selectedUSState ? (
-        <FormItem
-          className="district-group"
-          id="state-district-group"
-          extra="ex HD-02 or SD-02"
-          label="District"
-          {...formItemLayout}
-        >
-          <Input
-            type="text"
-            className="input-underline"
-            id="district"
-            placeholder="District"
-            {...formItemLayout}
+  const onDistrictBlur = (e) => {
+    const { value } = e.target;
+    setDistrict(value);
+  };
 
-          />
-        </FormItem>)
-        : (
-          <FormItem
-            className="district-group federal-district-group"
-            id="federal-district-group"
-            extra="Zero padded number, ex '09', leave blank for senated"
-            label="District"
-            {...formItemLayout}
-          >
-            {
-              getFieldDecorator('district', {
-                initialValue: '',
-              })(
-                <Input
-                  type="text"
-                  className="input-underline"
-                  id="district"
-                  placeholder="District"
-                />,
-              )}
-          </FormItem>
-        );
+
+  const renderDistrict = () => (selectedUSState ? (
+    <FormItem
+      className="district-group"
+      id="state-district-group"
+      extra="ex HD-02 or SD-02"
+      label="District"
+      {...formItemLayout}
+    >
+      <Input
+        type="text"
+        className="input-underline"
+        id="district"
+        onBlur={setDistrict}
+        placeholder="District"
+        {...formItemLayout}
+
+      />
+    </FormItem>)
+    : (
+      <FormItem
+        className="district-group federal-district-group"
+        id="federal-district-group"
+        extra="Zero padded number, ex '09', leave blank"
+        label="District"
+        {...formItemLayout}
+      >
+        {
+          getFieldDecorator('district', {
+            initialValue: '',
+          })(
+            <Input
+              type="text"
+              className="input-underline"
+              id="district"
+              placeholder="District"
+              onBlur={onDistrictBlur}
+            />,
+          )}
+      </FormItem>
+    ));
 
   return (
     <React.Fragment>
@@ -87,7 +137,22 @@ const customMemberForm = (props) => {
             />,
           )}
       </FormItem>
-      <FormItem 
+
+      <FormItem label="Level (state or federal)" {...formItemLayout}>
+        {getFieldDecorator('level', {
+          initialValue: '',
+          rules: [{ required: true }],
+        })(
+          <Select
+            onSelect={value => onSelect('level', value)}
+
+          >
+            <Option key={LEVEL_FEDERAL} value={LEVEL_FEDERAL}>{LEVEL_FEDERAL}</Option>
+            <Option key={LEVEL_STATE} value={LEVEL_STATE}>{LEVEL_STATE}</Option>
+          </Select>,
+        )}
+      </FormItem>
+      <FormItem
         className="chamber"
         label="Chamber"
         {...formItemLayout}
@@ -98,17 +163,13 @@ const customMemberForm = (props) => {
           })(
 
             <Select
-              placeholder="chamber"
+              onSelect={value => onSelect('chamber', value)}
+
             >
-              <Option value="upper">
-                Upper (Senate)
-              </Option>
-              <Option value="lower">
-                Lower (House)
-              </Option>
-              <Option value="statewide">
-                Statewide (executive)
-              </Option>
+              {getFieldValue('level') === LEVEL_FEDERAL
+                ? map(federalChambers, item => <Option key={item.value} value={item.value}>{item.label}</Option>)
+                : map(stateChambers, item => <Option key={item.value} value={item.value}>{item.label}</Option>)
+              }
             </Select>,
           )}
       </FormItem>
@@ -119,7 +180,7 @@ const customMemberForm = (props) => {
         {...formItemLayout}
       >
         {getFieldDecorator('state', {
-          initialValue: '',
+          initialValue: selectedUSState || '',
           rules: [{
             message: 'Please select a state',
             required: true,
@@ -128,6 +189,8 @@ const customMemberForm = (props) => {
           <Select
             placeholder="State (abbrivation)"
             style={{ width: '100%' }}
+            onSelect={setUsState}
+
           >
             {map(states, (stateAb, key) => (<Option value={key} key={key}>{stateAb}</Option>))}
           </Select>
@@ -136,7 +199,20 @@ const customMemberForm = (props) => {
         }
 
       </FormItem>
+      <FormItem
+      {...formItemLayout}
+      label='City'
+    >
+      <Input
+        type="text"
+        className="input-underline"
+        id="city"
+        onBlur={(e) => setGenericTownHallValue({key: 'city', value: e.target.value})}
+        placeholder="city"
+        {...formItemLayout}
 
+      />
+    </FormItem>
       <FormItem
         label="Party"
         {...formItemLayout}
@@ -145,6 +221,7 @@ const customMemberForm = (props) => {
         })(
           <Select
             placeholder="Party"
+            onSelect={value => onSelect('party', value)}
           >
             <Option value="Democratic">
               Democratic
@@ -158,6 +235,7 @@ const customMemberForm = (props) => {
           </Select>,
         )}
       </FormItem>
+
     </React.Fragment>
 
   );

@@ -1,17 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import page from '../../vendor/scripts/page';
-
 import {
   AutoComplete,
   Input,
   Form,
-  Radio,
   Icon,
   Button,
   Modal,
 } from 'antd';
 import { find } from 'lodash';
+import page from '../../vendor/scripts/page';
+
 import renderCustomPersonForm from './customMemberForm';
 
 import './style.scss';
@@ -20,10 +19,11 @@ import {
   CANDIDATE_MODE,
   MANUAL_MODE,
   EVENT_TYPES,
-  CAMPAIGN_ICON_FLAG
+  CAMPAIGN_ICON_FLAG,
 } from '../../constants';
 import ButtonGroup from 'antd/lib/button/button-group';
 import { getOfficeFromData } from '../../scripts/util';
+
 const FormItem = Form.Item;
 
 let uuid = 1;
@@ -42,14 +42,14 @@ class MemberLookup extends React.Component {
     this.formatName = this.formatName.bind(this);
     this.shouldUpdatePersonDisplay = this.shouldUpdatePersonDisplay.bind(this);
     this.state = {
-      modalVisible: false
-    }
+      modalVisible: false,
+    };
   }
 
   shouldUpdatePersonDisplay(prevProps) {
     const { currentTownHall } = this.props;
-    return (currentTownHall.displayName && currentTownHall.displayName !== prevProps.currentTownHall.displayName) ||
-    (currentTownHall.displayName && this.props.personMode !== prevProps.personMode)
+    return (currentTownHall.displayName && currentTownHall.displayName !== prevProps.currentTownHall.displayName)
+    || (currentTownHall.displayName && this.props.personMode !== prevProps.personMode);
   }
 
   componentDidUpdate(prevProps) {
@@ -58,12 +58,12 @@ class MemberLookup extends React.Component {
       setFieldsValue,
       getFieldValue,
       personMode,
-      selectedOfficePerson
+      selectedOfficePerson,
     } = this.props;
 
 
     if (selectedOfficePerson && !currentTownHall.eventId && !this.state.modalVisible) {
-      this.setState({modalVisible: true})
+      this.setState({ modalVisible: true });
     }
 
     if (currentTownHall.members.length !== prevProps.currentTownHall.members.length) {
@@ -122,8 +122,8 @@ class MemberLookup extends React.Component {
       requestAdditionalPersonDataById,
       resetDatabaseLookUpError,
     } = this.props;
-     if (!value) {
-       this.resetInfoBasedOnSelectedPerson();
+    if (!value) {
+      this.resetInfoBasedOnSelectedPerson();
     }
     const person = find(allPeople, {
       displayName: value,
@@ -151,13 +151,13 @@ class MemberLookup extends React.Component {
     } = this.props;
 
     togglePersonMode(CANDIDATE_MODE);
-    setFieldsValue({meetingType: EVENT_TYPES.campaign_town_hall.name})
+    setFieldsValue({ meetingType: EVENT_TYPES.campaign_town_hall.name });
     setDataFromPersonInDatabaseAction({
       ...selectedOfficePerson,
       ...selectedOfficePerson.campaigns[0],
-    })
+    });
     setIconFlag(CAMPAIGN_ICON_FLAG);
-    this.setState({modalVisible: false})
+    this.setState({ modalVisible: false });
   }
 
   selectOffice() {
@@ -171,14 +171,14 @@ class MemberLookup extends React.Component {
     togglePersonMode(MOC_MODE);
     // reset since we dont know what the default option should be here
     setFieldsValue({
-      meetingType: ''
-    })
+      meetingType: '',
+    });
 
     setDataFromPersonInDatabaseAction({
       ...selectedOfficePerson,
       ...selectedOfficePerson.roles[0],
-    })
-    this.setState({modalVisible: false})
+    });
+    this.setState({ modalVisible: false });
   }
 
   formatName() {
@@ -201,9 +201,9 @@ class MemberLookup extends React.Component {
     }
     if (currentTownHall.displayName && personMode === CANDIDATE_MODE) {
       return `${currentTownHall.displayName} (${currentTownHall.party}), Running for: `;
-    } 
+    }
     if (currentTownHall.displayName) {
-      return `${currentTownHall.displayName}`
+      return `${currentTownHall.displayName}`;
     }
     return '';
   }
@@ -289,19 +289,25 @@ class MemberLookup extends React.Component {
   renderOptions() {
     const { selectedOfficePerson } = this.props;
     if (selectedOfficePerson.roles && selectedOfficePerson.campaigns) {
-      return (<Modal
-        visible={this.state.modalVisible}
-        footer={null}
-      > 
-         <ButtonGroup>
-              {selectedOfficePerson.campaigns && <Button onClick={this.selectCampaign}>
+      return (
+        <Modal
+          visible={this.state.modalVisible}
+          footer={null}
+        >
+          <ButtonGroup>
+            {selectedOfficePerson.campaigns && (
+              <Button onClick={this.selectCampaign}>
                 Candidate for: {getOfficeFromData(selectedOfficePerson.campaigns[0])}
-              </Button>}
-              {selectedOfficePerson.roles && <Button onClick={this.selectOffice}>
+              </Button>
+            )}
+            {selectedOfficePerson.roles && (
+              <Button onClick={this.selectOffice}>
                 Current office: {getOfficeFromData(selectedOfficePerson.roles[0])}
-              </Button>}
+              </Button>
+            )}
           </ButtonGroup>
-      </Modal>)
+        </Modal>
+      );
     }
   }
 
@@ -413,6 +419,9 @@ class MemberLookup extends React.Component {
       getFieldValue,
       getFieldDecorator,
       setGenericTownHallValue,
+      setDataFromManualEnter,
+      setUsState,
+      setDistrict,
     } = this.props;
 
     getFieldDecorator('formKeys', {
@@ -421,24 +430,22 @@ class MemberLookup extends React.Component {
 
     const setPersonMode = (mode) => {
       const currentLocation = window.location.pathname;
-      const newPathName = `/${mode}`
+      const newPathName = `/${mode}`;
       if (currentLocation === newPathName) {
         return;
       }
       if (mode === 'candidate') {
         if (currentLocation !== '/' && !currentLocation.includes('candidate')) {
-          page(currentLocation + newPathName)
+          page(currentLocation + newPathName);
         } else if (currentLocation === '/') {
-          page(newPathName)
+          page(newPathName);
         }
-      } else {
-        if (currentLocation.includes('candidate')) {
-          console.log('include candidate')
-          let newLocation = currentLocation.split('/candidate')[0]
-          page(newLocation || '/')
-        }
+      } else if (currentLocation.includes('candidate')) {
+        console.log('include candidate');
+        const newLocation = currentLocation.split('/candidate')[0];
+        page(newLocation || '/');
       }
-    }
+    };
 
     return (
       <section className="member-info">
@@ -449,6 +456,9 @@ class MemberLookup extends React.Component {
             getFieldValue,
             selectedUSState,
             setGenericTownHallValue,
+            setDataFromManualEnter,
+            setUsState,
+            setDistrict,
           },
         ) : this.memberForms()}
 
