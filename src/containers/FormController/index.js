@@ -154,7 +154,7 @@ class FormController extends React.Component {
       setNumberofKeys,
       currentTownHall,
     } = this.props;
-
+    console.log(changedFields)
     const dupCheckFields = ['time', 'date', 'yearMonthDay', 'timeStart24', 'govtrack_id', 'displayName'];
     map(changedFields, (changedField) => {
       const {

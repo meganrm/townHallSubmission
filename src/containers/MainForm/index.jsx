@@ -33,6 +33,7 @@ import DateTimeForm from '../../components/DateTimeForm';
 import townHallStateBranch from '../../state/townhall';
 
 import { formItemLayout } from '../../constants';
+import AdditionalLinks from '../../components/AdditionalLinks';
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -417,6 +418,9 @@ class MainForm extends React.Component {
                   />,
                 )}
               </FormItem>
+              <AdditionalLinks 
+                form={form}
+              />
               <FormItem>
                 {
                   getFieldDecorator('ada_accessible', {
