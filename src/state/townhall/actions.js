@@ -99,6 +99,11 @@ export const updateAdditionalLinkUrls = payload => ({
   type: 'UPDATE_ADDITIONAL_LINKS_URLS',
 });
 
+export const removeAdditionalLinks = payload => ({
+  payload,
+  type: 'REMOVE_ADDITIONAL_LINKS',
+});
+
 export const getLatLng = payload => dispatch => request
   .get('https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyDP8q2OVisSLyFyOUU6OTgGjNNQCq7Q3rE')
   .set('Accept', 'application/json')

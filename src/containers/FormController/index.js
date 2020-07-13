@@ -145,14 +145,8 @@ class FormController extends React.Component {
     const {
       updateAdditionalLinkNames,
       updateAdditionalLinkUrls,
-      currentTownHall
     } = this.props;
-    if (changedFields.links) {
-      if (currentTownHall.additionalLinks.length && changedFields.links.value.length < currentTownHall.additionalLinks.length) {
-        console.log(changedFields.links.value.length)
-        return console.log('need to remove link')
-      }
-    }
+ 
     if (changedFields.linkNames) {
       updateAdditionalLinkNames(map(changedFields.linkNames, 'value'))
     }
@@ -211,9 +205,12 @@ class FormController extends React.Component {
       setValue,
       setUsState,
       setNumberofKeys,
+      currentTownHall,
+      removeAdditionalLinks
     } = this.props;
     map(changedFields, (changedField) => {
-      if (changedField.length ) {
+      // only array values are additional links
+      if (changedField.length) {
         return this.handleAdditionalLinks(changedFields)
       }
       const {
@@ -222,7 +219,12 @@ class FormController extends React.Component {
       } = changedField;
      
       this.processForDupCheck(name, value);
-
+      if (changedFields.links) {
+        if (currentTownHall.additionalLinks.length && changedFields.links.value.length < currentTownHall.additionalLinks.length) {
+          
+          removeAdditionalLinks(value)
+        }
+      }
       if (includes(noopFieldNames, name) || includes(noopFieldNames, name.split('-')[0])) {
         this.setState({
           displayValues: {
@@ -330,6 +332,7 @@ const mapDispatchToProps = dispatch => ({
   setNumberofKeys: payload => dispatch(selectionStateBranch.actions.setFormKeys(payload)),
   updateAdditionalLinkUrls: payload => dispatch(townHallStateBranch.actions.updateAdditionalLinkUrls(payload)),
   updateAdditionalLinkNames: payload => dispatch(townHallStateBranch.actions.updateAdditionalLinkNames(payload)),
+  removeAdditionalLinks: payload => dispatch(townHallStateBranch.actions.removeAdditionalLinks(payload)),
   setUsState: payload => dispatch(townHallStateBranch.actions.setUsState(payload)),
   setValue: payload => dispatch(townHallStateBranch.actions.setValue(payload)),
 });

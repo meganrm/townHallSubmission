@@ -206,7 +206,6 @@ const townhallReducer = (state = initialState, { type, payload }) => {
     }
     return state;
   case 'UPDATE_ADDITIONAL_LINKS_URLS': 
-    console.log(payload)
     return {
       ...state,
       additionalLinks: payload.map((newUrl, index) => {
@@ -217,7 +216,6 @@ const townhallReducer = (state = initialState, { type, payload }) => {
       })
     }
   case 'UPDATE_ADDITIONAL_LINKS_NAMES':
-    console.log(payload)
     return {
       ...state,
       additionalLinks: payload.map((newName, index) => {
@@ -226,6 +224,11 @@ const townhallReducer = (state = initialState, { type, payload }) => {
           name: newName
         }: state.additionalLinks[index]
       })
+    }
+  case 'REMOVE_ADDITIONAL_LINKS':
+    return {
+      ...state,
+      additionalLinks: state.additionalLinks.filter((ele, index) => payload.includes(index))
     }
   case 'SET_VALUE':
     return {

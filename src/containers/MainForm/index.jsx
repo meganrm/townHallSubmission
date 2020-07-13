@@ -167,6 +167,8 @@ class MainForm extends React.Component {
     const submit = {
       currentTownHall: {
         ...currentTownHall,
+        // deleting blank links, can happen if the user adds a link, removes it, and then adds one again
+        additionalLinks: currentTownHall.additionalLinks.filter((ele) => !!ele),
         // deleting fields that come from the antd components
         date: null,
         time: null,
