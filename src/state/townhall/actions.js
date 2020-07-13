@@ -89,9 +89,14 @@ export const setValue = payload => ({
   type: 'SET_VALUE',
 });
 
-export const setIconFlag = payload => ({
+export const updateAdditionalLinkNames = payload => ({
   payload,
-  type: 'SET_ICON_FLAG',
+  type: 'UPDATE_ADDITIONAL_LINKS_NAMES',
+});
+
+export const updateAdditionalLinkUrls = payload => ({
+  payload,
+  type: 'UPDATE_ADDITIONAL_LINKS_URLS',
 });
 
 export const getLatLng = payload => dispatch => request

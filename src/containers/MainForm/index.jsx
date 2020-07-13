@@ -420,6 +420,7 @@ class MainForm extends React.Component {
               </FormItem>
               <AdditionalLinks 
                 form={form}
+                currentTownHall={currentTownHall}
               />
               <FormItem>
                 {

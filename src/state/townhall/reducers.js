@@ -24,6 +24,7 @@ const initialState = {
   iconFlag: null,
   lat: 0,
   lng: 0,
+  additionalLinks: [],
   meetingType: null,
   members: [],
   office: null,
@@ -204,6 +205,28 @@ const townhallReducer = (state = initialState, { type, payload }) => {
       };
     }
     return state;
+  case 'UPDATE_ADDITIONAL_LINKS_URLS': 
+    console.log(payload)
+    return {
+      ...state,
+      additionalLinks: payload.map((newUrl, index) => {
+        return newUrl ? {
+          ...state.additionalLinks[index],
+          url: newUrl
+        }: state.additionalLinks[index]
+      })
+    }
+  case 'UPDATE_ADDITIONAL_LINKS_NAMES':
+    console.log(payload)
+    return {
+      ...state,
+      additionalLinks: payload.map((newName, index) => {
+        return newName ? {
+          ...state.additionalLinks[index],
+          name: newName
+        }: state.additionalLinks[index]
+      })
+    }
   case 'SET_VALUE':
     return {
       ...state,

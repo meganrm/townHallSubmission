@@ -8,11 +8,6 @@ class AdditionalLinks extends React.Component {
         const { form } = this.props;
         // can use data-binding to get
         const links = form.getFieldValue('links');
-        // We need at least one passenger
-        if (links.length === 1) {
-            return;
-        }
-
         // can use data-binding to set
         form.setFieldsValue({
             links: links.filter(key => key !== k),
@@ -32,6 +27,7 @@ class AdditionalLinks extends React.Component {
     };
 
     render() {
+        const { additionalLinks } = this.props.currentTownHall;
         const { getFieldDecorator, getFieldValue } = this.props.form;
         const formItemLayout = {
             labelCol: {
@@ -51,7 +47,9 @@ class AdditionalLinks extends React.Component {
         getFieldDecorator('links', { initialValue: [] });
         const links = getFieldValue('links');
         const formItems = links.map((k, index) => (
-            <React.Fragment>
+            <React.Fragment
+                key={k}
+            >
                 <Form.Item
                     {...formItemLayout}
                     label={index === 0 ? 'Additional links (rsvp, sign up for comments, live stream etc)' : ''}
@@ -60,12 +58,13 @@ class AdditionalLinks extends React.Component {
                 >
 
                     {getFieldDecorator(`linkUrls[${k}]`, {
+                        initialValue: additionalLinks[k] ? additionalLinks[k].url : '',
                         validateTrigger: ['onChange', 'onBlur'],
                         rules: [
                             {
                                 required: true,
                                 whitespace: true,
-                                message: "Please input a url.",
+                                message: "Please input a url or remove this field.",
                             },
                         ],}
                                 
@@ -77,6 +76,7 @@ class AdditionalLinks extends React.Component {
                     key={`linkNames[${k}]`}
                 >
                     {getFieldDecorator(`linkNames[${k}]`, {
+                        initialValue: additionalLinks[k]? additionalLinks[k].name : '',
                         validateTrigger: ['onChange', 'onBlur'],
                         rules: [
                             {

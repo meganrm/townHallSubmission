@@ -34,7 +34,7 @@ import DupeDrawer from '../../components/DupeDrawer';
 
 const { Panel } = Collapse;
 
-const noopFieldNames = ['displayName', 'address', 'preview'];
+const noopFieldNames = ['displayName', 'address', 'preview', 'links'];
 
 const customPanelStyle = {
   border: 0,
@@ -141,6 +141,65 @@ class FormController extends React.Component {
     resetTownHallData();
   }
 
+  handleAdditionalLinks = (changedFields) => {
+    const {
+      updateAdditionalLinkNames,
+      updateAdditionalLinkUrls,
+      currentTownHall
+    } = this.props;
+    if (changedFields.links) {
+      if (currentTownHall.additionalLinks.length && changedFields.links.value.length < currentTownHall.additionalLinks.length) {
+        console.log(changedFields.links.value.length)
+        return console.log('need to remove link')
+      }
+    }
+    if (changedFields.linkNames) {
+      updateAdditionalLinkNames(map(changedFields.linkNames, 'value'))
+    }
+    if (changedFields.linkUrls) {
+      updateAdditionalLinkUrls(map(changedFields.linkUrls, 'value'))
+    }
+  }
+
+  processForDupCheck = (name, value) => {
+    const { currentTownHall } = this.props;
+    const dupCheckFields = ['time', 'date', 'yearMonthDay', 'timeStart24', 'govtrack_id', 'displayName'];
+    let newValue = value;
+    let newName = name;
+    if (name === 'time' && value) {
+      newName = 'timeStart24'
+      newValue = value.format('HH:mm:00')
+    }
+    if (name === 'date' && value) {
+      newName = 'yearMonthDay';
+      newValue = value.format('YYYY-MM-DD');
+    }
+    const mergedEvent = {
+      yearMonthDay: currentTownHall.yearMonthDay,
+      timeStart24: currentTownHall.timeStart24,
+      displayName: currentTownHall.displayName,
+      govtrack_id: currentTownHall.govtrack_id,
+      [newName]: newValue,
+    };
+    const hasAllFields = mergedEvent => !!mergedEvent.yearMonthDay && !!mergedEvent.timeStart24 && !!(mergedEvent.govtrack_id || mergedEvent.displayName);
+    // if change any of the dup check fields, set back to false
+    if (dupCheckFields.includes(name) && this.state.hasCheckedForDupes) {
+      this.setState({
+        hasCheckedForDupes: false
+      })
+    }
+    // only check once, and only when all the fields are there
+    if (!this.state.hasCheckedForDupes && hasAllFields(mergedEvent)) {
+      console.log('checking for dups');
+      const dupes = this.checkForDupes(mergedEvent);
+      console.log(dupes);
+      this.setState({
+        dupes,
+        hasCheckedForDupes: true,
+      });
+    }
+  }
+
   handleFormChange(changedFields) {
     const {
       displayValues,
@@ -152,47 +211,18 @@ class FormController extends React.Component {
       setValue,
       setUsState,
       setNumberofKeys,
-      currentTownHall,
     } = this.props;
-    console.log(changedFields)
-    const dupCheckFields = ['time', 'date', 'yearMonthDay', 'timeStart24', 'govtrack_id', 'displayName'];
     map(changedFields, (changedField) => {
+      if (changedField.length ) {
+        return this.handleAdditionalLinks(changedFields)
+      }
       const {
         name,
         value,
       } = changedField;
-      let newValue = value;
-      let newName = name;
-      if (name === 'time' && value) {
-        newName = 'timeStart24'
-        newValue = value.format('HH:mm:00')
-      }
-      if (name === 'date' && value) {
-        newName = 'yearMonthDay';
-        newValue = value.format('YYYY-MM-DD');
-      }
-      const mergedEvent = {
-        yearMonthDay: currentTownHall.yearMonthDay,
-        timeStart24: currentTownHall.timeStart24,
-        displayName: currentTownHall.displayName,
-        govtrack_id: currentTownHall.govtrack_id,
-        [newName]: newValue,
-      };
-      const hasAllFields = mergedEvent => !!mergedEvent.yearMonthDay && !!mergedEvent.timeStart24 && !!(mergedEvent.govtrack_id || mergedEvent.displayName);
-      // if change any of the dup check fields, set back to false
-      if (dupCheckFields.includes(name) && this.state.hasCheckedForDupes) {
-        this.setState({ hasCheckedForDupes: false })
-      }
-      // only check once, and only when all the fields are there
-      if (!this.state.hasCheckedForDupes && hasAllFields(mergedEvent)) {
-        console.log('checking for dups');
-        const dupes = this.checkForDupes(mergedEvent);
-        console.log(dupes);
-        this.setState({
-          dupes,
-          hasCheckedForDupes: true,
-        });
-      }
+     
+      this.processForDupCheck(name, value);
+
       if (includes(noopFieldNames, name) || includes(noopFieldNames, name.split('-')[0])) {
         this.setState({
           displayValues: {
@@ -203,26 +233,26 @@ class FormController extends React.Component {
         return;
       }
       switch (name) {
-      case 'formKeys':
-        setNumberofKeys(value);
-        break;
-      case 'meetingType':
-        if (includes(disclaimerMeetingTypes, value)) {
-          addDisclaimer();
-        } else {
-          clearDisclaimer();
+        case 'formKeys':
+          setNumberofKeys(value);
+          break;
+        case 'meetingType':
+          if (includes(disclaimerMeetingTypes, value)) {
+            addDisclaimer();
+          } else {
+            clearDisclaimer();
+          }
+          setMeetingType(value);
+          break;
+        case 'state':
+          setUsState(value);
+          break;
+        default:
+          setValue({
+            key: name,
+            value,
+          });
         }
-        setMeetingType(value);
-        break;
-      case 'state':
-        setUsState(value);
-        break;
-      default:
-        setValue({
-          key: name,
-          value,
-        });
-      }
     });
   }
 
@@ -298,6 +328,8 @@ const mapDispatchToProps = dispatch => ({
   resetTownHallData: () => dispatch(townHallStateBranch.actions.resetTownHall()),
   setMeetingType: payload => dispatch(townHallStateBranch.actions.setMeetingType(payload)),
   setNumberofKeys: payload => dispatch(selectionStateBranch.actions.setFormKeys(payload)),
+  updateAdditionalLinkUrls: payload => dispatch(townHallStateBranch.actions.updateAdditionalLinkUrls(payload)),
+  updateAdditionalLinkNames: payload => dispatch(townHallStateBranch.actions.updateAdditionalLinkNames(payload)),
   setUsState: payload => dispatch(townHallStateBranch.actions.setUsState(payload)),
   setValue: payload => dispatch(townHallStateBranch.actions.setValue(payload)),
 });
