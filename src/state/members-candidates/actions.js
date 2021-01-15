@@ -54,7 +54,7 @@ export const requestNamesInCollection = peopleNameUrl => dispatch =>
       // doc.data() is never undefined for query doc snapshots
       allPeople.push(doc.data());
     });
-    if (peopleNameUrl === '116th_congress') {
+    if (peopleNameUrl === '117th_congress') {
       return dispatch(getFederalCandidates(allPeople));
     }
     return dispatch(setPeople(allPeople));

@@ -43,7 +43,7 @@ export const getPeopleNameUrl = createSelector([getSelectedUSState, getMode], (u
   if (usState) {
     return `${usState}_state_legislature`;
   }
-  return '116th_congress';
+  return '117th_congress';
 });
 
 export const getPeopleDataUrl = createSelector([getSelectedUSState, getMode], (usState, mode) => {
