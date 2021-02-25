@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "submission site for new town hall events",
   "main": "server.js",
+  "engines": {
+    "node": "12"
+  },
   "scripts": {
     "lint": "eslint --fix .",
     "build": "webpack --config webpack.prod.js",
