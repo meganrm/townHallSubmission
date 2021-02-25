@@ -3,6 +3,7 @@ import { find, map } from 'lodash';
 
 import statesAb from '../../data/states';
 import { EVENT_TYPES } from '../../constants';
+import { sanitizeDistrict } from '../../scripts/util';
 
 const initialState = {
   Location: null,
@@ -70,7 +71,7 @@ const townhallReducer = (state = initialState, { type, payload }) => {
   case 'SET_DATA_FROM_PERSON':
     return {
       ...state,
-      district: payload.district,
+      district: sanitizeDistrict(payload.district),
       chamber: payload.chamber,
       state: payload.state || null,
       displayName: payload.displayName,
