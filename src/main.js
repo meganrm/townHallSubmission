@@ -44,13 +44,13 @@ renderApp();
 
 const signIn = () => {
   firebaseauth.signInWithRedirect(provider);
-  firebaseauth.getRedirectResult().then(() => {
-  }).catch((error) => {
-    // Handle Errors here.
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    console.log(errorCode, errorMessage);
-  });
+  // firebaseauth.getRedirectResult().then(() => {
+  // }).catch((error) => {
+  //   // Handle Errors here.
+  //   const errorCode = error.code;
+  //   const errorMessage = error.message;
+  //   console.log(errorCode, errorMessage);
+  // });
 };
 
 firebase.auth().onAuthStateChanged((user) => {
