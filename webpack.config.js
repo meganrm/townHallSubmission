@@ -72,6 +72,9 @@ module.exports = {
     path: `${__dirname}/build`,
     publicPath: '/',
   },
+  optimization: {
+    minimize: false
+  }, 
   module: {
     rules: [
       // If it's a .js file not in node_modules, use the babel-loader
