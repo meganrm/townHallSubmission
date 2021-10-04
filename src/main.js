@@ -43,7 +43,7 @@ const renderApp = () => {
 renderApp();
 
 const signIn = () => {
-  firebaseauth.signInWithPopup(provider);
+  firebaseauth.signInWithRedirect(provider);
   // firebaseauth.getRedirectResult().then(() => {
   // }).catch((error) => {
   //   // Handle Errors here.
@@ -53,7 +53,12 @@ const signIn = () => {
   // });
 };
 
+var i = 0;
 firebase.auth().onAuthStateChanged((user) => {
+  console.log(i);
+  i += 1;
+
+
   if (user) {
     // User is signed in.
     console.log(user.displayName, ' is signed in');
@@ -72,7 +77,9 @@ firebase.auth().onAuthStateChanged((user) => {
     });
     store.dispatch(writeUserData(user));
   } else {
-    signIn();
+    if (i > 1) {
+      signIn();
+    }
     // No user is signed in.
   }
 });
