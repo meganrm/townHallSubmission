@@ -43,7 +43,7 @@ const renderApp = () => {
 renderApp();
 
 const signIn = () => {
-  firebaseauth.signInWithRedirect(provider);
+  firebaseauth.signInWithPopup(provider);
   // firebaseauth.getRedirectResult().then(() => {
   // }).catch((error) => {
   //   // Handle Errors here.
@@ -54,8 +54,6 @@ const signIn = () => {
 };
 
 firebase.auth().onAuthStateChanged((user) => {
-  debugger;
-  alert("DEBUG");
   if (user) {
     // User is signed in.
     console.log(user.displayName, ' is signed in');
