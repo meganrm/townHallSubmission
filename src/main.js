@@ -54,6 +54,8 @@ const signIn = () => {
 };
 
 firebase.auth().onAuthStateChanged((user) => {
+  debugger;
+  alert("DEBUG");
   if (user) {
     // User is signed in.
     console.log(user.displayName, ' is signed in');
