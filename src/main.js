@@ -43,22 +43,21 @@ const renderApp = () => {
 renderApp();
 
 const signIn = () => {
+  console.log("calling signInWithRedirect");
+  alert("pause");
   firebaseauth.signInWithRedirect(provider);
-  // firebaseauth.getRedirectResult().then(() => {
-  // }).catch((error) => {
-  //   // Handle Errors here.
-  //   const errorCode = error.code;
-  //   const errorMessage = error.message;
-  //   console.log(errorCode, errorMessage);
-  // });
+  console.log("calling getRedirectResult");
+  firebaseauth.getRedirectResult().then((user) => {
+  }).catch((error) => {
+    // Handle Errors here.
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    console.log(errorCode, errorMessage);
+  });
 };
 
 var i = 0;
 firebase.auth().onAuthStateChanged((user) => {
-  console.log(i);
-  i += 1;
-
-
   if (user) {
     // User is signed in.
     console.log(user.displayName, ' is signed in');
@@ -77,8 +76,13 @@ firebase.auth().onAuthStateChanged((user) => {
     });
     store.dispatch(writeUserData(user));
   } else {
-    if (i > 1) {
+    console.log("i:")
+    console.log(i)
+    if(i > 0) {
+      i += 1;
       signIn();
+    } else {
+      i += 1;
     }
     // No user is signed in.
   }
