@@ -44,16 +44,18 @@ renderApp();
 
 const signIn = () => {
   firebaseauth.signInWithRedirect(provider);
-  firebaseauth.getRedirectResult().then(() => {
-  }).catch((error) => {
-    // Handle Errors here.
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    console.log(errorCode, errorMessage);
-  });
 };
 
-firebase.auth().onAuthStateChanged((user) => {
+// Get the result from a potential previous redirect so onAuthStateChanged will see it.
+firebaseauth.getRedirectResult().then(() => {
+}).catch((error) => {
+  // Handle Errors here.
+  const errorCode = error.code;
+  const errorMessage = error.message;
+  console.log(errorCode, errorMessage);
+});
+
+firebaseauth.onAuthStateChanged((user) => {
   if (user) {
     // User is signed in.
     console.log(user.displayName, ' is signed in');
