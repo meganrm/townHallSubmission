@@ -43,11 +43,14 @@ const renderApp = () => {
 renderApp();
 
 const signIn = () => {
+  alert("wait");
   firebaseauth.signInWithRedirect(provider);
 };
 
 // Get the result from a potential previous redirect so onAuthStateChanged will see it.
-firebaseauth.getRedirectResult().then(() => {
+console.log("Getting redirect result.");
+firebaseauth.getRedirectResult().then((user) => {
+  console.log(user);
 }).catch((error) => {
   // Handle Errors here.
   const errorCode = error.code;
