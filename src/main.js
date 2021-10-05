@@ -50,6 +50,7 @@ const signIn = () => {
 // Get the result from a potential previous redirect so onAuthStateChanged will see it.
 console.log("Getting redirect result.");
 firebaseauth.getRedirectResult().then((user) => {
+  console.log("getRedirectResult")
   console.log(user);
 }).catch((error) => {
   // Handle Errors here.
@@ -58,7 +59,10 @@ firebaseauth.getRedirectResult().then((user) => {
   console.log(errorCode, errorMessage);
 });
 
-firebaseauth.onAuthStateChanged((user) => {
+firebaseauth.onAuthStateChanged((user, context) => {
+  console.log("onAuthStateChanged")
+  console.log(user)
+  console.log(context)
   if (user) {
     // User is signed in.
     console.log(user.displayName, ' is signed in');
