@@ -36,9 +36,22 @@ const jsx = window.location.href === 'https://townhallsubmission-state.herokuapp
     <App />
   </Provider>);
 
+const securityMessage = (
+  <div>
+    <h1>Logging In</h1>
+    <p>Attempting to log you in. If you're having trouble, you might need to enable pop ups
+    for this page in your browser.</p>
+  </div>
+);
+
 const renderApp = () => {
   ReactDom.render(jsx, document.getElementById('root'));
 };
+
+const renderLogInLanding = () => {
+  ReactDom.render(securityMessage, document.getElementById('root'));
+};
+renderLogInLanding();
 
 const signIn = () => {
   firebaseauth.signInWithPopup(provider);
