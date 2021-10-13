@@ -40,24 +40,15 @@ const renderApp = () => {
   ReactDom.render(jsx, document.getElementById('root'));
 };
 
-renderApp();
-
 const signIn = () => {
-  firebaseauth.signInWithRedirect(provider);
+  firebaseauth.signInWithPopup(provider);
 };
-
-// Get the result from a potential previous redirect so onAuthStateChanged will see it.
-firebaseauth.getRedirectResult().then(() => {
-}).catch((error) => {
-  // Handle Errors here.
-  const errorCode = error.code;
-  const errorMessage = error.message;
-  console.log(errorCode, errorMessage);
-});
 
 firebaseauth.onAuthStateChanged((user) => {
   if (user) {
     // User is signed in.
+    renderApp();
+
     console.log(user.displayName, ' is signed in');
     firebasedb.ref(`users/${user.uid}/events`).once('value')
       .then((snapshot) => {
