@@ -46,6 +46,7 @@ const signIn = () => {
 
 firebaseauth.onAuthStateChanged((user) => {
   if (user) {
+    alert("Signed in")
     // User is signed in.
     renderApp();
 
@@ -65,6 +66,7 @@ firebaseauth.onAuthStateChanged((user) => {
     });
     store.dispatch(writeUserData(user));
   } else {
+    alert("Not signed in")
     signIn();
     // No user is signed in.
   }
