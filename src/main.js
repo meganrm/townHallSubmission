@@ -37,10 +37,10 @@ const jsx = window.location.href === 'https://townhallsubmission-state.herokuapp
   </Provider>);
 
 const securityMessage = (
-  <div>
+  <div id="content">
     <h1>Logging In</h1>
     <p>Attempting to log you in. If you're having trouble, you might need to enable pop ups
-    for this page in your browser.</p>
+    for this page in your browser and refresh the page.</p>
   </div>
 );
 
@@ -54,12 +54,21 @@ const renderLogInLanding = () => {
 renderLogInLanding();
 
 const signIn = () => {
-  firebaseauth.signInWithPopup(provider);
+  try {
+    firebaseauth.signInWithPopup(provider);
+  } catch (e) {
+    console.log(e);
+    if (e.code === "auth/popup-blocked") {
+      const warning = document.createElement("p");
+      warning.innerHTML = "The browser pop-up blocker has prevented you from logging in." +
+                          "<b>Please allow pop-ups, refresh your browser, and try again</b>.";
+      document.getElementById("content").appendChild(warning);
+    }
+  }
 };
 
 firebaseauth.onAuthStateChanged((user) => {
   if (user) {
-    alert("Signed in")
     // User is signed in.
     renderApp();
 
