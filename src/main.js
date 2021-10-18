@@ -54,17 +54,16 @@ const renderLogInLanding = () => {
 renderLogInLanding();
 
 const signIn = () => {
-  try {
-    firebaseauth.signInWithPopup(provider);
-  } catch (e) {
-    console.log(e);
-    if (e.code === "auth/popup-blocked") {
-      const warning = document.createElement("p");
-      warning.innerHTML = "The browser pop-up blocker has prevented you from logging in." +
-                          "<b>Please allow pop-ups, refresh your browser, and try again</b>.";
-      document.getElementById("content").appendChild(warning);
-    }
-  }
+  firebaseauth.signInWithPopup(provider)
+    .catch((e) => {
+      console.log(e);
+      if (e.code === "auth/popup-blocked") {
+        const warning = document.createElement("p");
+        warning.innerHTML = "The browser pop-up blocker has prevented you from logging in. " +
+                            "<b>Please allow pop-ups, refresh your browser, and try again</b>.";
+        document.getElementById("content").appendChild(warning);
+      }
+    });
 };
 
 firebaseauth.onAuthStateChanged((user) => {
