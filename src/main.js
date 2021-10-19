@@ -36,28 +36,41 @@ const jsx = window.location.href === 'https://townhallsubmission-state.herokuapp
     <App />
   </Provider>);
 
+const securityMessage = (
+  <div id="content">
+    <h1>Logging In</h1>
+    <p>Attempting to log you in. If you're having trouble, you might need to enable pop ups
+    for this page in your browser and refresh the page.</p>
+  </div>
+);
+
 const renderApp = () => {
   ReactDom.render(jsx, document.getElementById('root'));
 };
 
-renderApp();
+const renderLogInLanding = () => {
+  ReactDom.render(securityMessage, document.getElementById('root'));
+};
+renderLogInLanding();
 
 const signIn = () => {
-  firebaseauth.signInWithRedirect(provider);
+  firebaseauth.signInWithPopup(provider)
+    .catch((e) => {
+      console.log(e);
+      if (e.code === "auth/popup-blocked") {
+        const warning = document.createElement("p");
+        warning.innerHTML = "The browser pop-up blocker has prevented you from logging in. " +
+                            "<b>Please allow pop-ups, refresh your browser, and try again</b>.";
+        document.getElementById("content").appendChild(warning);
+      }
+    });
 };
-
-// Get the result from a potential previous redirect so onAuthStateChanged will see it.
-firebaseauth.getRedirectResult().then(() => {
-}).catch((error) => {
-  // Handle Errors here.
-  const errorCode = error.code;
-  const errorMessage = error.message;
-  console.log(errorCode, errorMessage);
-});
 
 firebaseauth.onAuthStateChanged((user) => {
   if (user) {
     // User is signed in.
+    renderApp();
+
     console.log(user.displayName, ' is signed in');
     firebasedb.ref(`users/${user.uid}/events`).once('value')
       .then((snapshot) => {
@@ -74,7 +87,7 @@ firebaseauth.onAuthStateChanged((user) => {
     });
     store.dispatch(writeUserData(user));
   } else {
-    signIn();
     // No user is signed in.
+    signIn();
   }
 });
