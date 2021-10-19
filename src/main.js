@@ -87,8 +87,7 @@ firebaseauth.onAuthStateChanged((user) => {
     });
     store.dispatch(writeUserData(user));
   } else {
-    alert("Not signed in")
-    signIn();
     // No user is signed in.
+    signIn();
   }
 });
